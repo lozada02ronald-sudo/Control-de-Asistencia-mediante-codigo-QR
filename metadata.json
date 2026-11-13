@@ -1,0 +1,6 @@
+{
+  "name": "AcadeQR — Institutional Attendance System",
+  "description": "Dynamic QR code classroom attendance verification, live instructor token projection, learner scanner, and cohort roster management for technical education institutions.",
+  "requestFramePermissions": ["camera", "geolocation"],
+  "majorCapabilities": []
+}

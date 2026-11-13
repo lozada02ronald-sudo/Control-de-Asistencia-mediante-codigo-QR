@@ -1,0 +1,106 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --surface: #faf8ff;
+    --surface-canvas: #f8fafc;
+    --surface-card: #ffffff;
+    --surface-low: #f2f3ff;
+    --surface-container: #eaedff;
+    --on-surface: #131b2e;
+    --on-surface-variant: #3d4a42;
+    --primary: #006948;
+    --primary-action: #059669;
+    --primary-bright: #10b981;
+    --secondary: #0051d5;
+    --secondary-action: #2563eb;
+    --tertiary: #8d4b00;
+    --tertiary-action: #d97706;
+    --error: #ba1a1a;
+    --error-action: #e11d48;
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: var(--surface-canvas);
+    color: var(--on-surface);
+  }
+}
+
+.font-mono-tabular {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-feature-settings: "tnum" 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.tabular-nums-strict {
+  font-feature-settings: "tnum" 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.surface-level-1 {
+  background-color: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.04), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
+}
+
+.surface-level-2 {
+  background-color: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 12px 32px -4px rgba(15, 23, 42, 0.10);
+}
+
+.glass-light {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.glass-dark {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: rgba(15, 23, 42, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.institutional-input {
+  background-color: #f8fafc;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  transition: border-color 150ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 150ms cubic-bezier(0.16, 1, 0.3, 1), background-color 150ms;
+}
+
+.institutional-input:focus {
+  outline: none;
+  background-color: #ffffff;
+  border-color: #059669;
+  box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.15);
+}
+
+@keyframes scan-beam {
+  0% {
+    transform: translateY(8px);
+    opacity: 0.35;
+  }
+  50% {
+    transform: translateY(236px);
+    opacity: 0.95;
+  }
+  100% {
+    transform: translateY(8px);
+    opacity: 0.35;
+  }
+}
+
+.animate-scan-beam {
+  animation: scan-beam 2.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-scan-beam {
+    animation: none;
+    transform: translateY(128px);
+  }
+}
