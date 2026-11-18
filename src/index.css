@@ -66,20 +66,22 @@
   box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7);
 }
 
-.modern-input {
-  height: 2.75rem;
-  padding: 0 0.95rem;
-  border-radius: 0.75rem;
-  background: rgba(2, 6, 23, 0.75);
-  border: 1px solid rgba(148, 163, 184, 0.24);
-  color: #f8fafc;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
+@layer components {
+  .modern-input {
+    height: 2.75rem;
+    padding: 0 0.95rem;
+    border-radius: 0.75rem;
+    background: rgba(2, 6, 23, 0.75);
+    border: 1px solid rgba(148, 163, 184, 0.24);
+    color: #f8fafc;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
 
-.modern-input:focus {
-  outline: none;
-  border-color: #10b981;
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+  .modern-input:focus {
+    outline: none;
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+  }
 }
 
 @keyframes scan-beam {

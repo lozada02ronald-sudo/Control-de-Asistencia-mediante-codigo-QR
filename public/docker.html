@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Docker Compose MySQL — AcadeQR</title>
+  <style>
+    :root {
+      --bg: #060b14;
+      --card: #0f172a;
+      --border: #1e293b;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --primary: #10b981;
+      --cyan: #06b6d4;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 2rem 1rem;
+    }
+    .wrap {
+      max-width: 960px;
+      margin: 0 auto;
+      space-y: 1.5rem;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    h1 { margin: 0 0 0.5rem; font-size: 1.6rem; }
+    h2 { margin: 0 0 0.75rem; font-size: 1.1rem; color: var(--cyan); }
+    p { color: var(--muted); font-size: 0.92rem; margin: 0 0 1rem; }
+    .actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1rem; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.65rem 1.15rem;
+      border-radius: 0.7rem;
+      font-weight: 700;
+      font-size: 0.875rem;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .btn-primary { background: var(--primary); color: #020617; }
+    .btn-secondary { background: #1e293b; color: #f8fafc; border: 1px solid #334155; }
+    pre {
+      background: #020617;
+      border: 1px solid #1e293b;
+      border-radius: 0.75rem;
+      padding: 1rem;
+      overflow-x: auto;
+      font-size: 0.82rem;
+      color: #e2e8f0;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Docker Compose Completo (MySQL 8.4 + phpMyAdmin + Redis + Backend + Frontend)</h1>
+      <p>
+        Descarga el archivo <code>docker-compose.yml</code> y el script SQL inicial de MySQL <code>init.sql</code> listos para levantar todo el entorno con <code>docker compose up -d --build</code>.
+      </p>
+      <div class="actions">
+        <a class="btn btn-primary" href="/docker-compose.yml" download="docker-compose.yml">
+          Descargar docker-compose.yml
+        </a>
+        <a class="btn btn-secondary" href="/docker-mysql-init.sql" download="init.sql">
+          Descargar MySQL init.sql
+        </a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Vista previa: docker-compose.yml</h2>
+      <pre id="compose-code">Cargando...</pre>
+    </div>
+
+    <div class="card">
+      <h2>Vista previa: docker/mysql/init.sql</h2>
+      <pre id="sql-code">Cargando...</pre>
+    </div>
+  </div>
+
+  <script>
+    fetch('/docker-compose.yml').then(r => r.text()).then(t => {
+      document.getElementById('compose-code').textContent = t;
+    });
+    fetch('/docker-mysql-init.sql').then(r => r.text()).then(t => {
+      document.getElementById('sql-code').textContent = t;
+    });
+  </script>
+</body>
+</html>

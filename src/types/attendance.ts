@@ -90,4 +90,13 @@ export interface AdminSystemConfig {
   tamperProtectionActive: boolean;
 }
 
-export type AppScreen = 'landing' | 'overview' | 'projector' | 'scanner' | 'roster' | 'admin' | 'my-attendance';
+export type AppScreen =
+  | 'landing'
+  | 'overview'
+  | 'projector'
+  | 'scanner'
+  | 'roster'
+  | 'admin'
+  | 'my-attendance'
+  | 'student-card'
+  | 'modules';

@@ -4,6 +4,7 @@ import {
   Building2,
   Eye,
   EyeOff,
+  GraduationCap,
   KeyRound,
   Lock,
   Mail,
@@ -14,6 +15,7 @@ import {
   User,
   UserPlus,
 } from 'lucide-react';
+import type { ClassSession } from '../types/attendance';
 
 export interface AuthUserSession {
   id: string;
@@ -22,10 +24,14 @@ export interface AuthUserSession {
   nationalId?: string;
   role: 'APRENDIZ' | 'INSTRUCTOR' | 'ADMIN';
   companyName?: string;
+  programId?: string;
+  programName?: string;
+  campus?: string;
 }
 
 interface AuthPortalScreenProps {
   portalType: 'public' | 'admin';
+  sessions?: ClassSession[];
   onAuthenticated: (user: AuthUserSession) => void;
 }
 
@@ -90,19 +96,48 @@ function saveLockout(key: string, state: LockoutState): void {
   }
 }
 
+function fallbackHash256(input: string): string {
+  // Deterministic 256-bit mixing fallback when crypto.subtle is unavailable (e.g. HTTP LAN)
+  let h1 = 0xdeadbeef;
+  let h2 = 0x41c6ce57;
+  let h3 = 0x9e3779b9;
+  let h4 = 0x85ebca6b;
+  for (let i = 0; i < input.length; i += 1) {
+    const ch = input.charCodeAt(i);
+    h1 = Math.imul(h1 ^ ch, 2654435761);
+    h2 = Math.imul(h2 ^ ch, 1597334677);
+    h3 = Math.imul(h3 ^ (ch << 3), 2246822519);
+    h4 = Math.imul(h4 ^ (ch << 5), 3266489917);
+  }
+  return [h1, h2, h3, h4]
+    .map((v) => (v >>> 0).toString(16).padStart(8, '0'))
+    .join('');
+}
+
 async function hashPasswordClient(plain: string, existingSalt?: string): Promise<string> {
-  const saltBytes = new Uint8Array(16);
-  const salt =
-    existingSalt ??
-    Array.from(crypto.getRandomValues(saltBytes))
+  let salt = existingSalt;
+  if (!salt) {
+    if (typeof crypto !== 'undefined' && typeof crypto.getRandomValues === 'function') {
+      const saltBytes = new Uint8Array(16);
+      salt = Array.from(crypto.getRandomValues(saltBytes))
+        .map((b) => b.toString(16).padStart(2, '0'))
+        .join('');
+    } else {
+      salt = `${Date.now().toString(16)}${Math.random().toString(16).slice(2, 10)}`;
+    }
+  }
+
+  const payload = `${salt}:${plain}`;
+  if (typeof crypto !== 'undefined' && crypto.subtle && typeof crypto.subtle.digest === 'function') {
+    const data = new TextEncoder().encode(payload);
+    const digest = await crypto.subtle.digest('SHA-256', data);
+    const hashHex = Array.from(new Uint8Array(digest))
       .map((b) => b.toString(16).padStart(2, '0'))
       .join('');
-  const data = new TextEncoder().encode(`${salt}:${plain}`);
-  const digest = await crypto.subtle.digest('SHA-256', data);
-  const hashHex = Array.from(new Uint8Array(digest))
-    .map((b) => b.toString(16).padStart(2, '0'))
-    .join('');
-  return `${salt}:${hashHex}`;
+    return `${salt}:${hashHex}`;
+  }
+
+  return `${salt}:${fallbackHash256(payload)}`;
 }
 
 async function verifyStoredPassword(plain: string, account: StoredAccount): Promise<boolean> {
@@ -138,6 +173,7 @@ function maskEmail(email: string): string {
 
 export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
   portalType,
+  sessions = [],
   onAuthenticated,
 }) => {
   const isAdminPortal = portalType === 'admin';
@@ -156,7 +192,14 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [publicRole, setPublicRole] = useState<'APRENDIZ' | 'INSTRUCTOR'>('APRENDIZ');
+  const [selectedProgramId, setSelectedProgramId] = useState<string>(sessions[0]?.id ?? '');
   const [companyName, setCompanyName] = useState(COMPANIES[0]);
+
+  useEffect(() => {
+    if (!selectedProgramId && sessions.length > 0) {
+      setSelectedProgramId(sessions[0].id);
+    }
+  }, [sessions, selectedProgramId]);
 
   // Recovery fields
   const [recoverEmail, setRecoverEmail] = useState('');
@@ -202,90 +245,109 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
     setError(null);
     setNotice(null);
 
-    if (lockSecondsLeft > 0) {
-      setError(`Acceso temporalmente bloqueado. Espera ${lockSecondsLeft}s.`);
-      return;
-    }
-
-    const normalizedEmail = email.trim().toLowerCase();
-    if (!normalizedEmail || !password) {
-      setError('Por favor completa tu correo y contraseña.');
-      return;
-    }
-
-    const accounts = loadAccounts();
-
-    if (!isAdminPortal && mode === 'register') {
-      if (fullName.trim().length < 3) {
-        setError('Ingresa tu nombre completo (mínimo 3 caracteres).');
+    try {
+      if (lockSecondsLeft > 0) {
+        setError(`Acceso temporalmente bloqueado. Espera ${lockSecondsLeft}s.`);
         return;
       }
-      const pwErr = validateStrongPassword(password);
-      if (pwErr) {
-        setError(pwErr);
+
+      const normalizedEmail = email.trim().toLowerCase();
+      if (!normalizedEmail || !password) {
+        setError('Por favor completa tu correo y contraseña.');
         return;
       }
-      if (accounts.some((acc) => acc.email === normalizedEmail)) {
-        setError('No se pudo completar el registro. Si ya tienes cuenta, inicia sesión.');
+
+      const accounts = loadAccounts();
+
+      if (mode === 'register') {
+        if (fullName.trim().length < 3) {
+          setError('Ingresa tu nombre completo (mínimo 3 caracteres).');
+          return;
+        }
+        const pwErr = validateStrongPassword(password);
+        if (pwErr) {
+          setError(pwErr);
+          return;
+        }
+        if (accounts.some((acc) => acc.email === normalizedEmail)) {
+          setError('No se pudo completar el registro. Si ya tienes cuenta, inicia sesión.');
+          return;
+        }
+
+        const chosenSession =
+          sessions.find((s) => s.id === selectedProgramId) ?? sessions[0];
+        const passwordHash = await hashPasswordClient(password);
+        const newAccount: StoredAccount = isAdminPortal
+          ? {
+              id: `adm-${Date.now().toString().slice(-5)}`,
+              name: fullName.trim(),
+              email: normalizedEmail,
+              role: 'ADMIN',
+              companyName,
+              passwordHash,
+            }
+          : {
+              id: `usr-${Date.now().toString().slice(-5)}`,
+              name: fullName.trim(),
+              email: normalizedEmail,
+              nationalId:
+                nationalId.trim() || `CC ${Math.floor(1000000000 + Math.random() * 89999999)}`,
+              role: publicRole,
+              programId: chosenSession?.id,
+              programName: chosenSession?.title,
+              campus: chosenSession?.campus,
+              passwordHash,
+            };
+        saveAccounts([...accounts, newAccount]);
+        saveLockout(portalType, { attempts: 0, lockedUntil: 0 });
+
+        const { passwordHash: _, password: __, ...sessionUser } = newAccount;
+        onAuthenticated(sessionUser);
+        return;
+      }
+
+      // Login flow with anti-enumeration & salted hash verification
+      const existing = accounts.find((acc) => acc.email === normalizedEmail);
+      if (existing) {
+        const valid = await verifyStoredPassword(password, existing);
+        if (!valid || (isAdminPortal && existing.role !== 'ADMIN')) {
+          registerFailedAttempt();
+          return;
+        }
+        saveLockout(portalType, { attempts: 0, lockedUntil: 0 });
+        const { passwordHash: _, password: __, ...sessionUser } = existing;
+        onAuthenticated({
+          ...sessionUser,
+          companyName: isAdminPortal ? companyName : sessionUser.companyName,
+        });
+        return;
+      }
+
+      // First-time credential login requires >= 6 chars to prevent empty/weak probing
+      if (password.length < 6) {
+        registerFailedAttempt();
         return;
       }
 
       const passwordHash = await hashPasswordClient(password);
-      const newAccount: StoredAccount = {
+      const created: StoredAccount = {
         id: `usr-${Date.now().toString().slice(-5)}`,
-        name: fullName.trim(),
+        name: isAdminPortal
+          ? `Admin · ${normalizedEmail.split('@')[0]}`
+          : normalizedEmail.split('@')[0],
         email: normalizedEmail,
-        nationalId: nationalId.trim() || `CC ${Math.floor(1000000000 + Math.random() * 89999999)}`,
-        role: publicRole,
+        role: isAdminPortal ? 'ADMIN' : publicRole,
+        companyName: isAdminPortal ? companyName : undefined,
         passwordHash,
       };
-      saveAccounts([...accounts, newAccount]);
+      saveAccounts([...accounts, created]);
       saveLockout(portalType, { attempts: 0, lockedUntil: 0 });
 
-      const { passwordHash: _, password: __, ...sessionUser } = newAccount;
+      const { passwordHash: _, ...sessionUser } = created;
       onAuthenticated(sessionUser);
-      return;
+    } catch {
+      setError('Ocurrió un error al procesar el acceso. Intenta nuevamente.');
     }
-
-    // Login flow with anti-enumeration & salted hash verification
-    const existing = accounts.find((acc) => acc.email === normalizedEmail);
-    if (existing) {
-      const valid = await verifyStoredPassword(password, existing);
-      if (!valid || (isAdminPortal && existing.role !== 'ADMIN')) {
-        registerFailedAttempt();
-        return;
-      }
-      saveLockout(portalType, { attempts: 0, lockedUntil: 0 });
-      const { passwordHash: _, password: __, ...sessionUser } = existing;
-      onAuthenticated({
-        ...sessionUser,
-        companyName: isAdminPortal ? companyName : sessionUser.companyName,
-      });
-      return;
-    }
-
-    // First-time credential login requires >= 6 chars to prevent empty/weak probing
-    if (password.length < 6) {
-      registerFailedAttempt();
-      return;
-    }
-
-    const passwordHash = await hashPasswordClient(password);
-    const created: StoredAccount = {
-      id: `usr-${Date.now().toString().slice(-5)}`,
-      name: isAdminPortal
-        ? `Admin · ${normalizedEmail.split('@')[0]}`
-        : normalizedEmail.split('@')[0],
-      email: normalizedEmail,
-      role: isAdminPortal ? 'ADMIN' : publicRole,
-      companyName: isAdminPortal ? companyName : undefined,
-      passwordHash,
-    };
-    saveAccounts([...accounts, created]);
-    saveLockout(portalType, { attempts: 0, lockedUntil: 0 });
-
-    const { passwordHash: _, ...sessionUser } = created;
-    onAuthenticated(sessionUser);
   };
 
   const handleRequestOtp = (e: React.FormEvent) => {
@@ -424,20 +486,28 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
       return;
     }
     if (role === 'INSTRUCTOR') {
+      const first = sessions[0];
       onAuthenticated({
         id: 'inst-demo-01',
         name: 'Ing. Mateo Restrepo',
         email: 'm.restrepo@acadeqr.edu',
         role: 'INSTRUCTOR',
+        programId: first?.id,
+        programName: first?.title,
+        campus: first?.campus,
       });
       return;
     }
+    const first = sessions[0];
     onAuthenticated({
       id: 'apr-demo-01',
       name: 'Valeria Gómez Ríos',
       email: 'valeria.gomez@acadeqr.edu',
       nationalId: 'CC 1.098.765.432',
       role: 'APRENDIZ',
+      programId: first?.id,
+      programName: first?.title,
+      campus: first?.campus,
     });
   };
 
@@ -481,8 +551,8 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
           </p>
         </div>
 
-        {/* Mode Switch for Public Portal */}
-        {!isAdminPortal && mode !== 'recover' && (
+        {/* Mode Switch */}
+        {mode !== 'recover' && (
           <div className="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-slate-900/90 border border-slate-800">
             <button
               type="button"
@@ -492,7 +562,9 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
               }}
               className={`h-9 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
                 mode === 'login'
-                  ? 'bg-emerald-500 text-slate-950 font-bold'
+                  ? isAdminPortal
+                    ? 'bg-indigo-500 text-white font-bold'
+                    : 'bg-emerald-500 text-slate-950 font-bold'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -506,7 +578,9 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
               }}
               className={`h-9 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
                 mode === 'register'
-                  ? 'bg-emerald-500 text-slate-950 font-bold'
+                  ? isAdminPortal
+                    ? 'bg-indigo-500 text-white font-bold'
+                    : 'bg-emerald-500 text-slate-950 font-bold'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -726,29 +800,31 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
               </div>
             )}
 
+            {mode === 'register' && (
+              <div className="space-y-1.5">
+                <label htmlFor="auth-fullname" className="block text-xs font-semibold text-slate-300">
+                  {isAdminPortal ? 'Nombre del Administrador' : 'Nombre completo'}
+                </label>
+                <div className="relative">
+                  <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <input
+                    id="auth-fullname"
+                    name="fullname"
+                    type="text"
+                    autoComplete="name"
+                    enterKeyHint="next"
+                    required
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    placeholder={isAdminPortal ? 'Ej. Dr. Hernando Caldas' : 'Ej. Laura Sofía Martínez'}
+                    className="modern-input w-full pl-10 text-sm"
+                  />
+                </div>
+              </div>
+            )}
+
             {!isAdminPortal && mode === 'register' && (
               <>
-                <div className="space-y-1.5">
-                  <label htmlFor="auth-fullname" className="block text-xs font-semibold text-slate-300">
-                    Nombre completo
-                  </label>
-                  <div className="relative">
-                    <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-                    <input
-                      id="auth-fullname"
-                      name="fullname"
-                      type="text"
-                      autoComplete="name"
-                      enterKeyHint="next"
-                      required
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      placeholder="Ej. Laura Sofía Martínez"
-                      className="modern-input w-full pl-10 text-sm"
-                    />
-                  </div>
-                </div>
-
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
                     <label htmlFor="auth-doc" className="block text-xs font-semibold text-slate-300">
@@ -776,10 +852,36 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
                       className="modern-input w-full text-xs font-semibold"
                     >
                       <option value="APRENDIZ">Aprendiz</option>
-                      <option value="INSTRUCTOR">Instructor</option>
+                      <option value="INSTRUCTOR">Instructor / Docente</option>
                     </select>
                   </div>
                 </div>
+
+                {sessions.length > 0 && (
+                  <div className="space-y-1.5">
+                    <label htmlFor="auth-program" className="block text-xs font-semibold text-slate-300">
+                      {publicRole === 'INSTRUCTOR'
+                        ? 'Carrera / Programa que dictas (y Sede)'
+                        : 'Carrera / Programa que vas a estudiar (y Sede)'}
+                    </label>
+                    <div className="relative">
+                      <GraduationCap className="w-4 h-4 text-emerald-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      <select
+                        id="auth-program"
+                        required
+                        value={selectedProgramId}
+                        onChange={(e) => setSelectedProgramId(e.target.value)}
+                        className="modern-input w-full pl-10 text-xs font-medium"
+                      >
+                        {sessions.map((s) => (
+                          <option key={s.id} value={s.id} className="bg-slate-900">
+                            {s.cohortCode} · {s.title} — {s.campus} ({s.room})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                )}
               </>
             )}
 
@@ -865,10 +967,10 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
                   : 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 cursor-pointer'
               }`}
             >
-              {mode === 'register' && !isAdminPortal ? (
+              {mode === 'register' ? (
                 <>
                   <UserPlus className="w-4 h-4" />
-                  <span>Registrarse y Entrar</span>
+                  <span>{isAdminPortal ? 'Registrar Admin y Entrar' : 'Registrarse y Entrar'}</span>
                 </>
               ) : (
                 <span>{isAdminPortal ? 'Ingresar al Monitor Admin' : 'Iniciar Sesión'}</span>

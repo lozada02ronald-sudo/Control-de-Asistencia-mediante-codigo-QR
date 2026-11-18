@@ -1,0 +1,17 @@
+{
+  "name": "AcadeQR — Control de Asistencia QR",
+  "short_name": "AcadeQR",
+  "description": "Registro de asistencia a clases mediante lectura de códigos QR dinámicos, IA y sincronización Firebase.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#060b14",
+  "theme_color": "#10b981",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/images/hero-classroom.webp",
+      "sizes": "512x512",
+      "type": "image/webp"
+    }
+  ]
+}

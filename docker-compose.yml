@@ -1,0 +1,92 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: acadeqr_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-acadeqr_root_2026}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-acadeqr_db}
+      MYSQL_USER: ${MYSQL_USER:-acadeqr_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-acadeqr_pass_2026}
+      TZ: America/Bogota
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-acadeqr_root_2026}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  phpmyadmin:
+    image: phpmyadmin:5
+    container_name: acadeqr_phpmyadmin
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: ${MYSQL_USER:-acadeqr_user}
+      PMA_PASSWORD: ${MYSQL_PASSWORD:-acadeqr_pass_2026}
+    ports:
+      - "8080:80"
+
+  redis:
+    image: redis:7-alpine
+    container_name: acadeqr_redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: acadeqr_backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      CORS_ORIGIN: http://localhost:3000
+      DATABASE_URL: mysql://${MYSQL_USER:-acadeqr_user}:${MYSQL_PASSWORD:-acadeqr_pass_2026}@mysql:3306/${MYSQL_DATABASE:-acadeqr_db}
+      REDIS_URL: redis://redis:6379
+      REDIS_ENABLED: "true"
+      JWT_SECRET: ${JWT_SECRET:-acadeqr_jwt_secret_key_produccion_2026_segura}
+      QR_SECRET: ${QR_SECRET:-acadeqr_qr_hmac_secret_produccion_2026_segura}
+    ports:
+      - "4000:4000"
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: acadeqr_frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+
+volumes:
+  mysql_data:
+  redis_data:

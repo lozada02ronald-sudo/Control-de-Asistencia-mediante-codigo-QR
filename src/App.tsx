@@ -45,6 +45,16 @@ const LearnerAttendanceScreen = lazy(() =>
     default: m.LearnerAttendanceScreen,
   })),
 );
+const StudentIdCardScreen = lazy(() =>
+  import('./components/StudentIdCardScreen').then((m) => ({
+    default: m.StudentIdCardScreen,
+  })),
+);
+const ModulesAndAiScreen = lazy(() =>
+  import('./components/ModulesAndAiScreen').then((m) => ({
+    default: m.ModulesAndAiScreen,
+  })),
+);
 
 const STORAGE_KEY = 'acadeqr_sessions_v3';
 const SCAN_LOGS_STORAGE_KEY = 'acadeqr_scan_logs_v1';
@@ -733,17 +743,46 @@ export default function App() {
     } catch {
       // ignore
     }
+
+    if (user.programId) {
+      setActiveSessionId(user.programId);
+      if (user.role === 'APRENDIZ') {
+        const target = sessions.find((s) => s.id === user.programId);
+        if (target) {
+          handleAddLearner(target.id, {
+            id: user.id,
+            fullName: user.name,
+            nationalId: user.nationalId ?? `CC ${Math.floor(1000000000 + Math.random() * 89999999)}`,
+            program: target.title,
+            avatarColor: '#059669',
+          });
+        }
+      }
+    }
+
     if (portalType === 'admin') {
       if (user.companyName) {
         setAdminConfig((prev) => ({ ...prev, institutionName: user.companyName! }));
       }
       setActiveScreen('admin');
+    } else if (user.role === 'INSTRUCTOR') {
+      setActiveScreen('overview');
     } else {
       setActiveScreen(user.role === 'APRENDIZ' ? 'scanner' : 'landing');
     }
     playFeedbackTone(true);
     showToast(`Bienvenido, ${user.name}`);
   };
+
+  const instructorSessions = useMemo(() => {
+    if (portalType === 'admin' || currentUser?.role !== 'INSTRUCTOR') return sessions;
+    const matched = sessions.filter(
+      (s) =>
+        (currentUser.programId && s.id === currentUser.programId) ||
+        s.instructor.toLowerCase().includes(currentUser.name.trim().toLowerCase())
+    );
+    return matched.length > 0 ? matched : sessions;
+  }, [sessions, currentUser, portalType]);
 
   const handleLogout = () => {
     setCurrentUser(null);
@@ -763,6 +802,7 @@ export default function App() {
         { id: 'admin', label: 'Monitor Admin' },
         { id: 'overview', label: 'Resumen Empresa' },
         { id: 'roster', label: 'Auditoría Listados' },
+        { id: 'modules', label: 'Módulos & IA' },
       ];
     }
     if (currentUser.role === 'APRENDIZ') {
@@ -770,6 +810,7 @@ export default function App() {
         { id: 'landing', label: 'Inicio' },
         { id: 'scanner', label: 'Escáner QR' },
         { id: 'my-attendance', label: 'Mis Asistencias' },
+        { id: 'student-card', label: 'Carné QR' },
       ];
     }
     return [
@@ -778,6 +819,7 @@ export default function App() {
       { id: 'projector', label: 'Proyector QR' },
       { id: 'scanner', label: 'Escáner' },
       { id: 'roster', label: 'Registro' },
+      { id: 'modules', label: 'Módulos & IA' },
     ];
   }, [currentUser, portalType]);
 
@@ -880,6 +922,8 @@ export default function App() {
                   <span className="text-[10px] font-medium text-slate-400 leading-tight">
                     {portalType === 'admin'
                       ? currentUser.companyName ?? adminConfig.institutionName
+                      : currentUser.programName
+                      ? `${currentUser.role} · ${currentUser.programName}`
                       : currentUser.role}
                   </span>
                 </div>
@@ -957,7 +1001,11 @@ export default function App() {
       {/* Main Content */}
       <main className="flex-1 w-full max-w-[1360px] mx-auto px-4 sm:px-8 py-8 sm:py-10 pb-28">
         {!currentUser ? (
-          <AuthPortalScreen portalType={portalType} onAuthenticated={handleAuthenticated} />
+          <AuthPortalScreen
+            portalType={portalType}
+            sessions={sessions}
+            onAuthenticated={handleAuthenticated}
+          />
         ) : (
         <Suspense fallback={<PageSkeleton />}>
           {activeScreen === 'landing' && (
@@ -979,7 +1027,7 @@ export default function App() {
 
           {activeScreen === 'overview' && currentUser.role !== 'APRENDIZ' && (
             <OverviewScreen
-              sessions={sessions}
+              sessions={instructorSessions}
               onSelectSessionForProjector={(id) => {
                 setActiveSessionId(id);
                 setActiveScreen('projector');
@@ -1002,7 +1050,7 @@ export default function App() {
 
           {activeScreen === 'projector' && currentUser.role !== 'APRENDIZ' && (
             <QrProjectorScreen
-              sessions={sessions}
+              sessions={instructorSessions}
               activeSession={activeSession}
               onSelectSession={setActiveSessionId}
               currentToken={currentToken}
@@ -1047,14 +1095,43 @@ export default function App() {
             />
           )}
 
+          {activeScreen === 'student-card' && (
+            <StudentIdCardScreen
+              currentUser={currentUser}
+              sessions={sessions}
+              institutionName={adminConfig.institutionName}
+            />
+          )}
+
           {activeScreen === 'roster' && currentUser.role !== 'APRENDIZ' && (
             <RosterScreen
-              sessions={sessions}
+              sessions={instructorSessions}
               activeSession={activeSession}
               onSelectSession={setActiveSessionId}
               onSetLearnerStatus={handleSetLearnerStatus}
               onAddLearner={handleAddLearner}
               allowManualOverride={adminConfig.allowManualOverride}
+            />
+          )}
+
+          {activeScreen === 'modules' && currentUser.role !== 'APRENDIZ' && (
+            <ModulesAndAiScreen
+              sessions={instructorSessions}
+              scanLogs={scanLogs}
+              currentToken={currentToken}
+              onCreateSession={handleCreateSession}
+              onAddLearner={handleAddLearner}
+              onUpdateSessionStatus={(id, status) => {
+                handleUpdateSessionSettings(id, { status });
+              }}
+              onOpenProjector={(id) => {
+                setActiveSessionId(id);
+                setActiveScreen('projector');
+              }}
+              onOpenRoster={(id) => {
+                setActiveSessionId(id);
+                setActiveScreen('roster');
+              }}
             />
           )}
 
