@@ -10,34 +10,34 @@ export const INITIAL_SESSIONS: ClassSession[] = [
   {
     id: 'ses-2841',
     cohortCode: 'COH-2841',
-    title: 'Industrial Mechatronics & PLC Control',
-    department: 'Mechatronics & Automation',
-    instructor: 'Eng. Mateo Restrepo',
-    room: 'Workshop B-204',
-    campus: 'North Technical Campus',
+    title: 'Mecatrónica Industrial y Control PLC',
+    department: 'Mecatrónica y Automatización',
+    instructor: 'Ing. Mateo Restrepo',
+    room: 'Taller B-204',
+    campus: 'Sede Técnica Norte',
     startTime: '08:00',
     endTime: '12:00',
-    dateLabel: 'Today',
+    dateLabel: 'Hoy',
     status: SessionStatus.LIVE,
     geofenceRadiusMeters: 50,
     gracePeriodMinutes: 10,
     learners: [
-      { id: 'lrn-01', fullName: 'Camila Mendoza Ruiz', nationalId: 'CC 1.094.882.310', program: 'Mechatronics Tech', avatarColor: '#006948' },
-      { id: 'lrn-02', fullName: 'Santiago Vargas Gil', nationalId: 'CC 1.018.490.224', program: 'Mechatronics Tech', avatarColor: '#0051d5' },
-      { id: 'lrn-03', fullName: 'Valentina Herrera Castro', nationalId: 'CC 1.032.774.901', program: 'Mechatronics Tech', avatarColor: '#0f172a' },
-      { id: 'lrn-04', fullName: 'Andrés Felipe Morales', nationalId: 'CC 1.088.341.552', program: 'Mechatronics Tech', avatarColor: '#8d4b00' },
-      { id: 'lrn-05', fullName: 'Lucía Fernanda Díaz', nationalId: 'CC 1.005.619.048', program: 'Mechatronics Tech', avatarColor: '#006948' },
-      { id: 'lrn-06', fullName: 'Daniela Ospina Quintero', nationalId: 'CC 1.112.903.117', program: 'Mechatronics Tech', avatarColor: '#0051d5' },
-      { id: 'lrn-07', fullName: 'Julián Esteban Rojas', nationalId: 'CC 1.020.844.630', program: 'Mechatronics Tech', avatarColor: '#3d4a42' },
-      { id: 'lrn-08', fullName: 'Mariana Gómez Salazar', nationalId: 'CC 1.098.112.405', program: 'Mechatronics Tech', avatarColor: '#006948' },
-      { id: 'lrn-09', fullName: 'Sebastián Cano Arias', nationalId: 'CC 1.045.229.883', program: 'Mechatronics Tech', avatarColor: '#8d4b00' },
-      { id: 'lrn-10', fullName: 'Sofía Pineda Beltrán', nationalId: 'CC 1.077.510.992', program: 'Mechatronics Tech', avatarColor: '#0051d5' },
+      { id: 'lrn-01', fullName: 'Camila Mendoza Ruiz', nationalId: 'CC 1.094.882.310', program: 'Tecnología en Mecatrónica', avatarColor: '#006948' },
+      { id: 'lrn-02', fullName: 'Santiago Vargas Gil', nationalId: 'CC 1.018.490.224', program: 'Tecnología en Mecatrónica', avatarColor: '#0051d5' },
+      { id: 'lrn-03', fullName: 'Valentina Herrera Castro', nationalId: 'CC 1.032.774.901', program: 'Tecnología en Mecatrónica', avatarColor: '#0f172a' },
+      { id: 'lrn-04', fullName: 'Andrés Felipe Morales', nationalId: 'CC 1.088.341.552', program: 'Tecnología en Mecatrónica', avatarColor: '#8d4b00' },
+      { id: 'lrn-05', fullName: 'Lucía Fernanda Díaz', nationalId: 'CC 1.005.619.048', program: 'Tecnología en Mecatrónica', avatarColor: '#006948' },
+      { id: 'lrn-06', fullName: 'Daniela Ospina Quintero', nationalId: 'CC 1.112.903.117', program: 'Tecnología en Mecatrónica', avatarColor: '#0051d5' },
+      { id: 'lrn-07', fullName: 'Julián Esteban Rojas', nationalId: 'CC 1.020.844.630', program: 'Tecnología en Mecatrónica', avatarColor: '#3d4a42' },
+      { id: 'lrn-08', fullName: 'Mariana Gómez Salazar', nationalId: 'CC 1.098.112.405', program: 'Tecnología en Mecatrónica', avatarColor: '#006948' },
+      { id: 'lrn-09', fullName: 'Sebastián Cano Arias', nationalId: 'CC 1.045.229.883', program: 'Tecnología en Mecatrónica', avatarColor: '#8d4b00' },
+      { id: 'lrn-10', fullName: 'Sofía Pineda Beltrán', nationalId: 'CC 1.077.510.992', program: 'Tecnología en Mecatrónica', avatarColor: '#0051d5' },
     ],
     records: [
       { learnerId: 'lrn-01', status: AttendanceStatus.PRESENT, checkedInAt: '07:56:14', method: CheckInMethod.DYNAMIC_QR, distanceMeters: 18, tokenSignature: 'SIG-9A4F2C' },
       { learnerId: 'lrn-02', status: AttendanceStatus.PRESENT, checkedInAt: '07:58:02', method: CheckInMethod.DYNAMIC_QR, distanceMeters: 24, tokenSignature: 'SIG-9A4F2C' },
       { learnerId: 'lrn-03', status: AttendanceStatus.PRESENT, checkedInAt: '08:01:45', method: CheckInMethod.DYNAMIC_QR, distanceMeters: 12, tokenSignature: 'SIG-3B8E10' },
-      { learnerId: 'lrn-04', status: AttendanceStatus.LATE, checkedInAt: '08:14:29', method: CheckInMethod.DYNAMIC_QR, distanceMeters: 31, tokenSignature: 'SIG-7D1C44', note: 'Checked in 14m after start' },
+      { learnerId: 'lrn-04', status: AttendanceStatus.LATE, checkedInAt: '08:14:29', method: CheckInMethod.DYNAMIC_QR, distanceMeters: 31, tokenSignature: 'SIG-7D1C44', note: 'Registro 14 min después del inicio' },
       { learnerId: 'lrn-05', status: AttendanceStatus.PRESENT, checkedInAt: '07:54:51', method: CheckInMethod.DYNAMIC_QR, distanceMeters: 9, tokenSignature: 'SIG-4E2A9B' },
       { learnerId: 'lrn-06', status: AttendanceStatus.PRESENT, checkedInAt: '08:03:12', method: CheckInMethod.MANUAL_TOKEN, distanceMeters: 27, tokenSignature: 'SIG-3B8E10' },
       { learnerId: 'lrn-07', status: AttendanceStatus.ABSENT, checkedInAt: null, method: CheckInMethod.NONE, distanceMeters: null, tokenSignature: null },
@@ -49,53 +49,53 @@ export const INITIAL_SESSIONS: ClassSession[] = [
   {
     id: 'ses-3109',
     cohortCode: 'COH-3109',
-    title: 'CNC Precision Milling & Metrology',
-    department: 'Mechanical Fabrication',
+    title: 'Fresado de Precisión CNC y Metrología',
+    department: 'Fabricación Mecánica',
     instructor: 'Inst. Carolina Suárez',
-    room: 'CNC Bay C-102',
-    campus: 'North Technical Campus',
+    room: 'Bahía CNC C-102',
+    campus: 'Sede Técnica Norte',
     startTime: '08:30',
     endTime: '12:30',
-    dateLabel: 'Today',
+    dateLabel: 'Hoy',
     status: SessionStatus.LIVE,
     geofenceRadiusMeters: 40,
     gracePeriodMinutes: 10,
     learners: [
-      { id: 'lrn-11', fullName: 'Juan Pablo Torres León', nationalId: 'CC 1.036.412.780', program: 'CNC Machining', avatarColor: '#006948' },
-      { id: 'lrn-12', fullName: 'Isabella Cardona Mejía', nationalId: 'CC 1.017.882.104', program: 'CNC Machining', avatarColor: '#0051d5' },
-      { id: 'lrn-13', fullName: 'Nicolás Ramírez Zapata', nationalId: 'CC 1.053.991.440', program: 'CNC Machining', avatarColor: '#0f172a' },
-      { id: 'lrn-14', fullName: 'Gabriela Navarro Peña', nationalId: 'CC 1.082.304.611', program: 'CNC Machining', avatarColor: '#006948' },
-      { id: 'lrn-15', fullName: 'Tomás Echeverri Vélez', nationalId: 'CC 1.040.775.209', program: 'CNC Machining', avatarColor: '#8d4b00' },
-      { id: 'lrn-16', fullName: 'Laura Juliana Cortés', nationalId: 'CC 1.090.118.932', program: 'CNC Machining', avatarColor: '#0051d5' },
+      { id: 'lrn-11', fullName: 'Juan Pablo Torres León', nationalId: 'CC 1.036.412.780', program: 'Mecanizado CNC', avatarColor: '#006948' },
+      { id: 'lrn-12', fullName: 'Isabella Cardona Mejía', nationalId: 'CC 1.017.882.104', program: 'Mecanizado CNC', avatarColor: '#0051d5' },
+      { id: 'lrn-13', fullName: 'Nicolás Ramírez Zapata', nationalId: 'CC 1.053.991.440', program: 'Mecanizado CNC', avatarColor: '#0f172a' },
+      { id: 'lrn-14', fullName: 'Gabriela Navarro Peña', nationalId: 'CC 1.082.304.611', program: 'Mecanizado CNC', avatarColor: '#006948' },
+      { id: 'lrn-15', fullName: 'Tomás Echeverri Vélez', nationalId: 'CC 1.040.775.209', program: 'Mecanizado CNC', avatarColor: '#8d4b00' },
+      { id: 'lrn-16', fullName: 'Laura Juliana Cortés', nationalId: 'CC 1.090.118.932', program: 'Mecanizado CNC', avatarColor: '#0051d5' },
     ],
     records: [
       { learnerId: 'lrn-11', status: AttendanceStatus.PRESENT, checkedInAt: '08:25:10', method: CheckInMethod.DYNAMIC_QR, distanceMeters: 14, tokenSignature: 'SIG-1C8D55' },
       { learnerId: 'lrn-12', status: AttendanceStatus.PRESENT, checkedInAt: '08:27:44', method: CheckInMethod.DYNAMIC_QR, distanceMeters: 19, tokenSignature: 'SIG-1C8D55' },
       { learnerId: 'lrn-13', status: AttendanceStatus.PRESENT, checkedInAt: '08:29:03', method: CheckInMethod.DYNAMIC_QR, distanceMeters: 8, tokenSignature: 'SIG-1C8D55' },
       { learnerId: 'lrn-14', status: AttendanceStatus.PRESENT, checkedInAt: '08:31:20', method: CheckInMethod.DYNAMIC_QR, distanceMeters: 21, tokenSignature: 'SIG-5E0B12' },
-      { learnerId: 'lrn-15', status: AttendanceStatus.LATE, checkedInAt: '08:42:18', method: CheckInMethod.DYNAMIC_QR, distanceMeters: 33, tokenSignature: 'SIG-8A9C71', note: 'Grace period exceeded' },
-      { learnerId: 'lrn-16', status: AttendanceStatus.PRESENT, checkedInAt: '08:28:55', method: CheckInMethod.INSTRUCTOR_OVERRIDE, distanceMeters: null, tokenSignature: null, note: 'Badge verified at bench' },
+      { learnerId: 'lrn-15', status: AttendanceStatus.LATE, checkedInAt: '08:42:18', method: CheckInMethod.DYNAMIC_QR, distanceMeters: 33, tokenSignature: 'SIG-8A9C71', note: 'Margen de gracia superado' },
+      { learnerId: 'lrn-16', status: AttendanceStatus.PRESENT, checkedInAt: '08:28:55', method: CheckInMethod.INSTRUCTOR_OVERRIDE, distanceMeters: null, tokenSignature: null, note: 'Carnet verificado en banco' },
     ],
   },
   {
     id: 'ses-4022',
     cohortCode: 'COH-4022',
-    title: 'High-Voltage Industrial Installations',
-    department: 'Electrical Systems',
-    instructor: 'Eng. Ricardo Mendoza',
-    room: 'Power Lab A-108',
-    campus: 'Central Polytechnic',
+    title: 'Instalaciones Industriales de Alta Tensión',
+    department: 'Sistemas Eléctricos',
+    instructor: 'Ing. Ricardo Mendoza',
+    room: 'Laboratorio de Potencia A-108',
+    campus: 'Politécnico Central',
     startTime: '14:00',
     endTime: '18:00',
-    dateLabel: 'Today',
+    dateLabel: 'Hoy',
     status: SessionStatus.SCHEDULED,
     geofenceRadiusMeters: 60,
     gracePeriodMinutes: 15,
     learners: [
-      { id: 'lrn-17', fullName: 'Mateo Silva Domínguez', nationalId: 'CC 1.061.554.210', program: 'Electrical Tech', avatarColor: '#0051d5' },
-      { id: 'lrn-18', fullName: 'Paula Andrea Rincón', nationalId: 'CC 1.073.208.490', program: 'Electrical Tech', avatarColor: '#006948' },
-      { id: 'lrn-19', fullName: 'Cristian David Hoyos', nationalId: 'CC 1.022.619.831', program: 'Electrical Tech', avatarColor: '#0f172a' },
-      { id: 'lrn-20', fullName: 'Natalia Franco Oviedo', nationalId: 'CC 1.085.441.720', program: 'Electrical Tech', avatarColor: '#8d4b00' },
+      { id: 'lrn-17', fullName: 'Mateo Silva Domínguez', nationalId: 'CC 1.061.554.210', program: 'Tecnología Eléctrica', avatarColor: '#0051d5' },
+      { id: 'lrn-18', fullName: 'Paula Andrea Rincón', nationalId: 'CC 1.073.208.490', program: 'Tecnología Eléctrica', avatarColor: '#006948' },
+      { id: 'lrn-19', fullName: 'Cristian David Hoyos', nationalId: 'CC 1.022.619.831', program: 'Tecnología Eléctrica', avatarColor: '#0f172a' },
+      { id: 'lrn-20', fullName: 'Natalia Franco Oviedo', nationalId: 'CC 1.085.441.720', program: 'Tecnología Eléctrica', avatarColor: '#8d4b00' },
     ],
     records: [
       { learnerId: 'lrn-17', status: AttendanceStatus.ABSENT, checkedInAt: null, method: CheckInMethod.NONE, distanceMeters: null, tokenSignature: null },
@@ -107,23 +107,23 @@ export const INITIAL_SESSIONS: ClassSession[] = [
   {
     id: 'ses-1985',
     cohortCode: 'COH-1985',
-    title: 'Enterprise Network & Fiber Cabling',
-    department: 'Telecommunications',
+    title: 'Redes Empresariales y Cableado de Fibra',
+    department: 'Telecomunicaciones',
     instructor: 'Inst. Diana Marcela Pardo',
-    room: 'Telecom Lab D-301',
-    campus: 'North Technical Campus',
+    room: 'Laboratorio Telecom D-301',
+    campus: 'Sede Técnica Norte',
     startTime: '06:00',
     endTime: '08:00',
-    dateLabel: 'Today',
+    dateLabel: 'Hoy',
     status: SessionStatus.COMPLETED,
     geofenceRadiusMeters: 50,
     gracePeriodMinutes: 10,
     learners: [
-      { id: 'lrn-21', fullName: 'Esteban Quiroga Parra', nationalId: 'CC 1.019.334.812', program: 'Telecom Systems', avatarColor: '#006948' },
-      { id: 'lrn-22', fullName: 'Sara Lucía Bedoya', nationalId: 'CC 1.096.220.415', program: 'Telecom Systems', avatarColor: '#0051d5' },
-      { id: 'lrn-23', fullName: 'Felipe Agudelo Restrepo', nationalId: 'CC 1.037.801.662', program: 'Telecom Systems', avatarColor: '#0f172a' },
-      { id: 'lrn-24', fullName: 'Manuela Montoya Vélez', nationalId: 'CC 1.044.918.203', program: 'Telecom Systems', avatarColor: '#006948' },
-      { id: 'lrn-25', fullName: 'Brayan Alexander Cruz', nationalId: 'CC 1.071.502.319', program: 'Telecom Systems', avatarColor: '#8d4b00' },
+      { id: 'lrn-21', fullName: 'Esteban Quiroga Parra', nationalId: 'CC 1.019.334.812', program: 'Sistemas Telecom', avatarColor: '#006948' },
+      { id: 'lrn-22', fullName: 'Sara Lucía Bedoya', nationalId: 'CC 1.096.220.415', program: 'Sistemas Telecom', avatarColor: '#0051d5' },
+      { id: 'lrn-23', fullName: 'Felipe Agudelo Restrepo', nationalId: 'CC 1.037.801.662', program: 'Sistemas Telecom', avatarColor: '#0f172a' },
+      { id: 'lrn-24', fullName: 'Manuela Montoya Vélez', nationalId: 'CC 1.044.918.203', program: 'Sistemas Telecom', avatarColor: '#006948' },
+      { id: 'lrn-25', fullName: 'Brayan Alexander Cruz', nationalId: 'CC 1.071.502.319', program: 'Sistemas Telecom', avatarColor: '#8d4b00' },
     ],
     records: [
       { learnerId: 'lrn-21', status: AttendanceStatus.PRESENT, checkedInAt: '05:57:12', method: CheckInMethod.DYNAMIC_QR, distanceMeters: 16, tokenSignature: 'SIG-0F4A88' },
@@ -142,7 +142,7 @@ export const INITIAL_SCAN_LOGS: ScanEventLog[] = [
     learnerName: 'Andrés Felipe Morales',
     nationalId: 'CC 1.088.341.552',
     outcome: 'LATE',
-    reason: 'Checked in 14 min after session start (10m grace period)',
+    reason: 'Registrado 14 min después del inicio (margen de 10 min)',
     timestamp: '08:14:29',
     distanceMeters: 31,
     tokenUsed: 'ACQR-2841-7D1C44',
@@ -153,7 +153,7 @@ export const INITIAL_SCAN_LOGS: ScanEventLog[] = [
     learnerName: 'Sebastián Cano Arias',
     nationalId: 'CC 1.045.229.883',
     outcome: 'VERIFIED',
-    reason: 'Dynamic QR verified within Workshop B-204 geofence',
+    reason: 'QR dinámico verificado dentro de la geocerca de Taller B-204',
     timestamp: '08:04:05',
     distanceMeters: 22,
     tokenUsed: 'ACQR-2841-3B8E10',
@@ -164,7 +164,7 @@ export const INITIAL_SCAN_LOGS: ScanEventLog[] = [
     learnerName: 'Daniela Ospina Quintero',
     nationalId: 'CC 1.112.903.117',
     outcome: 'VERIFIED',
-    reason: 'Manual token code verified within campus boundary',
+    reason: 'Código manual de token verificado dentro de la sede',
     timestamp: '08:03:12',
     distanceMeters: 27,
     tokenUsed: 'ACQR-2841-3B8E10',
@@ -183,33 +183,52 @@ export function formatTimeNow(): string {
   return now.toTimeString().slice(0, 8);
 }
 
+export function formatDateNow(): string {
+  const now = new Date();
+  const day = String(now.getDate()).padStart(2, '0');
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const year = now.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
 export function getInitials(name: string): string {
   const parts = name.trim().split(/\s+/);
   if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
   return (parts[0][0] + parts[1][0]).toUpperCase();
 }
 
+/**
+ * Genera y descarga un archivo CSV estructurado con codificación UTF-8 y BOM
+ * para compatibilidad total con Microsoft Excel y hojas de cálculo en español.
+ */
 export function downloadAttendanceCsv(session: ClassSession): void {
   const headers = [
-    'Cohort Code',
-    'Session Title',
-    'National ID',
-    'Learner Name',
-    'Status',
-    'Check-In Time',
-    'Verification Method',
-    'GPS Distance (m)',
-    'Token Signature',
+    'Código Cohorte',
+    'Título de Asignatura',
+    'Documento Identidad',
+    'Nombre del Aprendiz',
+    'Estado Asistencia',
+    'Hora de Registro',
+    'Método Verificación',
+    'Distancia GPS (m)',
+    'Firma Criptográfica',
   ];
 
   const rows = session.learners.map((learner) => {
     const rec = session.records.find((r) => r.learnerId === learner.id);
+    const statusLabel =
+      rec?.status === AttendanceStatus.PRESENT
+        ? 'PRESENTE'
+        : rec?.status === AttendanceStatus.LATE
+        ? 'TARDANZA'
+        : 'AUSENTE';
+
     return [
       session.cohortCode,
       `"${session.title.replace(/"/g, '""')}"`,
       learner.nationalId,
       `"${learner.fullName.replace(/"/g, '""')}"`,
-      rec?.status ?? AttendanceStatus.ABSENT,
+      statusLabel,
       rec?.checkedInAt ?? '—',
       rec?.method ?? CheckInMethod.NONE,
       rec?.distanceMeters !== null && rec?.distanceMeters !== undefined ? String(rec.distanceMeters) : '—',
@@ -217,14 +236,65 @@ export function downloadAttendanceCsv(session: ClassSession): void {
     ].join(',');
   });
 
-  const csvContent = [headers.join(','), ...rows].join('\n');
+  // UTF-8 BOM (\uFEFF) para visualización correcta de tildes y caracteres latinos en Excel
+  const csvContent = '\uFEFF' + [headers.join(','), ...rows].join('\n');
   const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
-  link.setAttribute('download', `attendance_${session.cohortCode.toLowerCase()}.csv`);
+  link.setAttribute('download', `asistencia_${session.cohortCode.toLowerCase()}.csv`);
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
+}
+
+/**
+ * Emite un tono de confirmación auditivo sintetizado mediante Web Audio API
+ * sin dependencias externas y con vibración háptica en dispositivos móviles.
+ */
+export function playFeedbackTone(success: boolean = true): void {
+  if (typeof window === 'undefined') return;
+
+  // Haptic feedback
+  try {
+    if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+      navigator.vibrate(success ? [40, 25, 50] : [120, 60, 120]);
+    }
+  } catch {
+    // Vibration blocked or unsupported
+  }
+
+  // Audio synthesis
+  try {
+    const AudioCtx =
+      window.AudioContext ||
+      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    if (success) {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(587.33, ctx.currentTime); // D5
+      osc.frequency.setValueAtTime(880, ctx.currentTime + 0.08); // A5
+      gain.gain.setValueAtTime(0.09, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.28);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.28);
+    } else {
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(220, ctx.currentTime); // A3
+      gain.gain.setValueAtTime(0.12, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.3);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.3);
+    }
+  } catch {
+    // Audio context prevented by policy
+  }
 }

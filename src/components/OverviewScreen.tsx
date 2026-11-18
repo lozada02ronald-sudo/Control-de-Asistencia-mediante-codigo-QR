@@ -8,7 +8,7 @@ import {
   MapPin,
   Clock,
   X,
-  CheckCircle2,
+  RotateCcw,
 } from 'lucide-react';
 import {
   AttendanceStatus,
@@ -17,6 +17,7 @@ import {
   SessionStatus,
 } from '../types/attendance';
 import { SessionStatusBadge } from './StatusBadge';
+import { useDebouncedValue } from '../hooks/useDebouncedValue';
 
 interface OverviewScreenProps {
   sessions: ClassSession[];
@@ -24,6 +25,8 @@ interface OverviewScreenProps {
   onSelectSessionForScanner: (sessionId: string) => void;
   onSelectSessionForRoster: (sessionId: string) => void;
   onCreateSession: (newSession: ClassSession) => void;
+  onUpdateSessionStatus?: (sessionId: string, status: SessionStatus) => void;
+  onResetDemoData?: () => void;
 }
 
 export const OverviewScreen: React.FC<OverviewScreenProps> = ({
@@ -32,17 +35,20 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
   onSelectSessionForScanner,
   onSelectSessionForRoster,
   onCreateSession,
+  onUpdateSessionStatus,
+  onResetDemoData,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
+  const debouncedSearch = useDebouncedValue(searchQuery, 250);
   const [statusFilter, setStatusFilter] = useState<'ALL' | SessionStatus>('ALL');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [cohortCode, setCohortCode] = useState('COH-5120');
   const [title, setTitle] = useState('');
-  const [department, setDepartment] = useState('Industrial Automation');
+  const [department, setDepartment] = useState('Automatización Industrial');
   const [instructor, setInstructor] = useState('');
   const [room, setRoom] = useState('');
-  const [campus, setCampus] = useState('North Technical Campus');
+  const [campus] = useState('Sede Técnica Norte');
   const [startTime, setStartTime] = useState('14:00');
   const [endTime, setEndTime] = useState('18:00');
   const [geofenceRadius, setGeofenceRadius] = useState(50);
@@ -78,7 +84,7 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
   const filteredSessions = useMemo(() => {
     return sessions.filter((s) => {
       const matchesStatus = statusFilter === 'ALL' || s.status === statusFilter;
-      const q = searchQuery.trim().toLowerCase();
+      const q = debouncedSearch.trim().toLowerCase();
       const matchesQuery =
         !q ||
         s.title.toLowerCase().includes(q) ||
@@ -87,7 +93,7 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
         s.room.toLowerCase().includes(q);
       return matchesStatus && matchesQuery;
     });
-  }, [sessions, statusFilter, searchQuery]);
+  }, [sessions, statusFilter, debouncedSearch]);
 
   const handleCreateSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -95,10 +101,10 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
 
     const id = `ses-${Date.now().toString().slice(-4)}`;
     const defaultLearners = [
-      { id: `${id}-l1`, fullName: 'Alejandro Torres Vega', nationalId: 'CC 1.049.210.334', program: department, avatarColor: '#006948' },
-      { id: `${id}-l2`, fullName: 'Valeria Gómez Pardo', nationalId: 'CC 1.028.774.129', program: department, avatarColor: '#0051d5' },
-      { id: `${id}-l3`, fullName: 'Samuel Ortiz Muñoz', nationalId: 'CC 1.091.452.880', program: department, avatarColor: '#0f172a' },
-      { id: `${id}-l4`, fullName: 'Melissa Castro Rivera', nationalId: 'CC 1.076.118.540', program: department, avatarColor: '#8d4b00' },
+      { id: `${id}-l1`, fullName: 'Alejandro Torres Vega', nationalId: 'CC 1.049.210.334', program: department, avatarColor: '#10b981' },
+      { id: `${id}-l2`, fullName: 'Valeria Gómez Pardo', nationalId: 'CC 1.028.774.129', program: department, avatarColor: '#06b6d4' },
+      { id: `${id}-l3`, fullName: 'Samuel Ortiz Muñoz', nationalId: 'CC 1.091.452.880', program: department, avatarColor: '#6366f1' },
+      { id: `${id}-l4`, fullName: 'Melissa Castro Rivera', nationalId: 'CC 1.076.118.540', program: department, avatarColor: '#f59e0b' },
     ];
 
     const newSession: ClassSession = {
@@ -111,7 +117,7 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
       campus: campus.trim(),
       startTime,
       endTime,
-      dateLabel: 'Today',
+      dateLabel: 'Hoy',
       status: SessionStatus.LIVE,
       geofenceRadiusMeters: geofenceRadius,
       gracePeriodMinutes: 10,
@@ -134,109 +140,111 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
   };
 
   return (
-    <div className="space-y-6">
-      {/* Page Title & Quick Action */}
-      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <p className="text-xs font-semibold text-[#006948] tracking-wide mb-1">
-            Vocational &amp; Technical Academy · Daily Attendance Monitor
+          <p className="text-xs font-semibold text-emerald-400 uppercase tracking-wider mb-1">
+            Panel de Control · Cohortes y Asistencia
           </p>
-          <h1 className="text-[26px] sm:text-[32px] font-bold tracking-[-0.02em] text-[#131b2e] leading-tight text-balance">
-            Institutional Attendance Overview
+          <h1 className="text-2xl sm:text-4xl font-extrabold text-white">
+            Resumen Institucional
           </h1>
         </div>
-        <button
-          type="button"
-          onClick={() => setIsModalOpen(true)}
-          className="inline-flex items-center justify-center gap-2 h-12 px-5 rounded-2xl bg-[#059669] hover:bg-[#006948] active:scale-[0.98] text-white text-sm font-semibold transition-all cursor-pointer whitespace-nowrap shrink-0"
-        >
-          <Plus className="w-4 h-4" />
-          <span>New Class Session</span>
-        </button>
+
+        <div className="flex flex-wrap items-center gap-2.5">
+          {onResetDemoData && (
+            <button
+              type="button"
+              onClick={onResetDemoData}
+              className="h-11 px-4 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs font-semibold inline-flex items-center gap-2 transition-colors cursor-pointer"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span>Restablecer Demo</span>
+            </button>
+          )}
+
+          <button
+            type="button"
+            onClick={() => setIsModalOpen(true)}
+            className="h-11 px-5 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-bold text-sm inline-flex items-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-[0.98] transition-all cursor-pointer"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Nueva Sesión</span>
+          </button>
+        </div>
       </div>
 
-      {/* Institutional Summary Metrics Strip */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <div className="surface-level-1 rounded-2xl p-4 sm:p-5">
-          <div className="text-xs font-semibold text-[#3d4a42] mb-2">Total Attendance</div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-bold text-[#006948] tabular-nums-strict tracking-tight">
-              {summary.rate}%
-            </span>
-            <span className="text-xs font-medium text-[#3d4a42]">Asistencia Total</span>
+      {/* Metrics Strip */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="glass-panel rounded-2xl p-5 space-y-1.5">
+          <div className="text-xs font-semibold text-slate-400">Tasa de Asistencia</div>
+          <div className="text-3xl sm:text-4xl font-extrabold text-white font-mono-tabular">
+            {summary.rate}%
           </div>
-          <div className="mt-3 h-1.5 w-full rounded-full bg-[#e2e7ff] overflow-hidden">
-            <div
-              className="h-full rounded-full bg-[#059669] transition-all duration-300"
-              style={{ width: `${Math.min(100, summary.rate)}%` }}
-            />
-          </div>
-        </div>
-
-        <div className="surface-level-1 rounded-2xl p-4 sm:p-5">
-          <div className="text-xs font-semibold text-[#3d4a42] mb-2">Verified Learners</div>
-          <div className="flex items-baseline gap-1.5">
-            <span className="text-3xl font-bold text-[#131b2e] tabular-nums-strict tracking-tight">
-              {summary.verifiedTotal}
-            </span>
-            <span className="text-sm font-medium text-[#6d7a72] tabular-nums-strict">
-              / {summary.totalLearners}
-            </span>
-          </div>
-          <p className="mt-2.5 text-xs text-[#3d4a42] tabular-nums-strict">
-            {summary.presentCount} on-time · {summary.lateCount} late grace
+          <p className="text-xs text-slate-400">
+            {summary.verifiedTotal} de {summary.totalLearners} aprendices
           </p>
         </div>
 
-        <div className="surface-level-1 rounded-2xl p-4 sm:p-5">
-          <div className="text-xs font-semibold text-[#3d4a42] mb-2">Live QR Sessions</div>
+        <div className="glass-panel rounded-2xl p-5 space-y-1.5">
+          <div className="text-xs font-semibold text-slate-400">Puntualidad</div>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-bold text-[#0051d5] tabular-nums-strict tracking-tight">
+            <span className="text-3xl sm:text-4xl font-extrabold text-emerald-400 font-mono-tabular">
+              {summary.presentCount}
+            </span>
+            <span className="text-xs text-slate-400">a tiempo</span>
+          </div>
+          <p className="text-xs text-slate-400">{summary.lateCount} con tardanza</p>
+        </div>
+
+        <div className="glass-panel rounded-2xl p-5 space-y-1.5">
+          <div className="text-xs font-semibold text-slate-400 flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span>Sesiones en Vivo</span>
+          </div>
+          <div className="flex items-baseline gap-2">
+            <span className="text-3xl sm:text-4xl font-extrabold text-cyan-400 font-mono-tabular">
               {summary.liveCount}
             </span>
-            <span className="text-xs font-medium text-[#3d4a42]">active now</span>
+            <span className="text-xs text-slate-400">activas</span>
           </div>
-          <p className="mt-2.5 text-xs text-[#3d4a42]">
-            Rotating 20s cryptographic tokens
-          </p>
+          <p className="text-xs text-slate-400">Rotación continua de tokens</p>
         </div>
 
-        <div className="surface-level-1 rounded-2xl p-4 sm:p-5">
-          <div className="text-xs font-semibold text-[#3d4a42] mb-2">Geofence Enforcement</div>
+        <div className="glass-panel rounded-2xl p-5 space-y-1.5">
+          <div className="text-xs font-semibold text-slate-400">Geocerca Máxima</div>
           <div className="flex items-baseline gap-1.5">
-            <span className="text-3xl font-bold text-[#131b2e] tabular-nums-strict tracking-tight">
-              50m
+            <span className="text-3xl sm:text-4xl font-extrabold text-indigo-400 font-mono-tabular">
+              50
             </span>
-            <span className="text-xs font-medium text-[#3d4a42]">max radius</span>
+            <span className="text-xs text-slate-400">metros</span>
           </div>
-          <p className="mt-2.5 text-xs text-[#3d4a42] flex items-center gap-1">
-            <CheckCircle2 className="w-3.5 h-3.5 text-[#059669] shrink-0" />
-            <span>Campus perimeter verified</span>
-          </p>
+          <p className="text-xs text-slate-400">Perímetro de aula verificado</p>
         </div>
       </div>
 
       {/* Filter & Search Toolbar */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="relative flex-1 max-w-md">
-          <Search className="w-4 h-4 text-[#6d7a72] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search cohort, course, instructor, or room..."
-            aria-label="Search class sessions"
-            className="institutional-input w-full pl-10 text-sm text-[#131b2e] placeholder:text-[#6d7a72]"
+            placeholder="Buscar ficha, asignatura, aula o instructor..."
+            aria-label="Buscar sesiones de clase"
+            className="modern-input w-full pl-10 text-sm"
           />
         </div>
 
-        <div className="flex items-center gap-1.5 p-1 bg-[#eaedff] rounded-xl overflow-x-auto">
+        <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-900/90 border border-slate-800 overflow-x-auto">
           {(
             [
-              { key: 'ALL', label: 'All Sessions' },
-              { key: SessionStatus.LIVE, label: 'Live' },
-              { key: SessionStatus.SCHEDULED, label: 'Scheduled' },
-              { key: SessionStatus.COMPLETED, label: 'Completed' },
+              { key: 'ALL', label: 'Todas' },
+              { key: SessionStatus.LIVE, label: 'En Vivo' },
+              { key: SessionStatus.SCHEDULED, label: 'Programadas' },
+              { key: SessionStatus.COMPLETED, label: 'Finalizadas' },
             ] as const
           ).map((tab) => {
             const active = statusFilter === tab.key;
@@ -245,10 +253,10 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
                 key={tab.key}
                 type="button"
                 onClick={() => setStatusFilter(tab.key)}
-                className={`min-h-[40px] px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer ${
                   active
-                    ? 'bg-white text-[#131b2e] shadow-sm'
-                    : 'text-[#3d4a42] hover:text-[#131b2e]'
+                    ? 'bg-emerald-500 text-slate-950 font-bold'
+                    : 'text-slate-400 hover:text-white'
                 }`}
               >
                 {tab.label}
@@ -260,12 +268,10 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
 
       {/* Sessions Grid */}
       {filteredSessions.length === 0 ? (
-        <div className="surface-level-1 rounded-2xl p-10 text-center">
-          <p className="text-base font-semibold text-[#131b2e] mb-1">
-            No matching classroom sessions
-          </p>
-          <p className="text-sm text-[#3d4a42] mb-4">
-            Try clearing your search query or switching the session status filter.
+        <div className="glass-panel rounded-2xl p-12 text-center space-y-3">
+          <p className="text-xl font-bold text-white">No se encontraron sesiones coincidentes</p>
+          <p className="text-sm text-slate-400">
+            Ajusta los términos de búsqueda o cambia el filtro seleccionado.
           </p>
           <button
             type="button"
@@ -273,13 +279,13 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
               setSearchQuery('');
               setStatusFilter('ALL');
             }}
-            className="inline-flex items-center justify-center h-11 px-5 rounded-xl bg-[#eff6ff] border border-[#bfdbfe] text-[#1d4999] text-sm font-semibold hover:bg-[#dbeafe] transition-colors cursor-pointer"
+            className="h-10 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold cursor-pointer"
           >
-            Reset Filters
+            Restablecer Filtros
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
           {filteredSessions.map((session) => {
             const total = session.learners.length;
             const present = session.records.filter(
@@ -294,59 +300,73 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
             return (
               <article
                 key={session.id}
-                className="surface-level-1 rounded-2xl p-5 flex flex-col justify-between gap-4 transition-shadow hover:shadow-md"
+                className="glass-panel rounded-2xl p-6 flex flex-col justify-between gap-5 hover:border-emerald-400/35 transition-colors"
               >
-                <div>
-                  <div className="flex items-start justify-between gap-3">
+                <div className="space-y-4">
+                  <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
-                      <div className="flex items-center flex-wrap gap-2 text-xs text-[#3d4a42] mb-1">
-                        <span className="font-mono-tabular font-semibold text-[#0051d5]">
-                          {session.cohortCode}
-                        </span>
-                        <span aria-hidden="true">·</span>
-                        <span>{session.department}</span>
+                      <div className="text-xs font-semibold text-cyan-400 mb-1 flex items-center gap-2">
+                        <span className="font-mono-tabular">{session.cohortCode}</span>
+                        <span>·</span>
+                        <span className="text-slate-400 truncate">{session.department}</span>
                       </div>
-                      <h2 className="text-lg font-semibold text-[#131b2e] leading-snug">
+                      <h2 className="text-xl font-bold text-white leading-snug">
                         {session.title}
                       </h2>
                     </div>
-                    <SessionStatusBadge status={session.status} />
+
+                    <div className="flex flex-col items-end gap-2 shrink-0">
+                      <SessionStatusBadge status={session.status} />
+                      {onUpdateSessionStatus && (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            onUpdateSessionStatus(
+                              session.id,
+                              session.status === SessionStatus.LIVE
+                                ? SessionStatus.COMPLETED
+                                : SessionStatus.LIVE
+                            )
+                          }
+                          className="text-[11px] font-semibold text-slate-400 hover:text-white underline cursor-pointer"
+                        >
+                          {session.status === SessionStatus.LIVE ? 'Finalizar sesión' : 'Activar en vivo'}
+                        </button>
+                      )}
+                    </div>
                   </div>
 
-                  <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-[#3d4a42]">
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-slate-300 border-y border-slate-800/80 py-2.5">
                     <span className="inline-flex items-center gap-1.5">
-                      <MapPin className="w-3.5 h-3.5 text-[#6d7a72]" />
-                      {session.room} ({session.geofenceRadiusMeters}m radius)
+                      <MapPin className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>{session.room} ({session.geofenceRadiusMeters}m)</span>
                     </span>
                     <span className="inline-flex items-center gap-1.5 font-mono-tabular">
-                      <Clock className="w-3.5 h-3.5 text-[#6d7a72]" />
-                      {session.startTime}–{session.endTime}
+                      <Clock className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>{session.startTime}–{session.endTime}</span>
                     </span>
                     <span className="inline-flex items-center gap-1.5">
-                      <Users className="w-3.5 h-3.5 text-[#6d7a72]" />
-                      {session.instructor}
+                      <Users className="w-3.5 h-3.5 text-indigo-400" />
+                      <span>{session.instructor}</span>
                     </span>
                   </div>
 
-                  {/* Attendance Progress */}
-                  <div className="mt-4 pt-3.5 border-t border-slate-100">
-                    <div className="flex items-center justify-between text-xs mb-1.5">
-                      <span className="font-semibold text-[#131b2e]">
-                        Cohort Check-In Progress
-                      </span>
-                      <span className="font-mono-tabular font-semibold text-[#131b2e]">
-                        {checkedIn}/{total} learners ({pct}%)
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between text-xs font-semibold text-slate-300">
+                      <span>Asistencia Verificada</span>
+                      <span className="font-mono-tabular">
+                        {checkedIn}/{total} ({pct}%)
                       </span>
                     </div>
-                    <div className="h-2 w-full rounded-full bg-[#f1f5f9] overflow-hidden flex">
+                    <div className="h-2 w-full rounded-full bg-slate-800 overflow-hidden flex">
                       {total > 0 && (
                         <>
                           <div
-                            className="h-full bg-[#059669] transition-all duration-300"
+                            className="h-full bg-emerald-500 transition-all duration-300"
                             style={{ width: `${(present / total) * 100}%` }}
                           />
                           <div
-                            className="h-full bg-[#d97706] transition-all duration-300"
+                            className="h-full bg-amber-400 transition-all duration-300"
                             style={{ width: `${(late / total) * 100}%` }}
                           />
                         </>
@@ -355,35 +375,33 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
                   </div>
                 </div>
 
-                {/* Card Actions */}
+                {/* Actions */}
                 <div className="flex flex-wrap items-center gap-2 pt-1">
                   <button
                     type="button"
                     onClick={() => onSelectSessionForProjector(session.id)}
-                    className="flex-1 min-w-[130px] inline-flex items-center justify-center gap-1.5 h-11 px-4 rounded-xl bg-[#059669] hover:bg-[#006948] active:scale-[0.98] text-white text-xs font-semibold transition-all cursor-pointer whitespace-nowrap"
+                    className="flex-1 min-w-[140px] h-10 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-bold text-xs inline-flex items-center justify-center gap-2 transition-all cursor-pointer"
                   >
                     <QrCode className="w-4 h-4 shrink-0" />
-                    <span>
-                      {session.status === SessionStatus.LIVE ? 'Project Live QR' : 'Open QR Screen'}
-                    </span>
+                    <span>{session.status === SessionStatus.LIVE ? 'Proyectar QR' : 'Abrir Proyector'}</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => onSelectSessionForScanner(session.id)}
-                    className="inline-flex items-center justify-center gap-1.5 h-11 px-4 rounded-xl bg-[#eff6ff] border border-[#bfdbfe] text-[#1d4999] hover:bg-[#dbeafe] text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap"
+                    className="h-10 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white text-xs font-semibold inline-flex items-center gap-1.5 transition-colors cursor-pointer"
                   >
-                    <ScanLine className="w-4 h-4 shrink-0" />
-                    <span>Scanner</span>
+                    <ScanLine className="w-4 h-4 text-cyan-400" />
+                    <span>Escáner</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => onSelectSessionForRoster(session.id)}
-                    className="inline-flex items-center justify-center gap-1.5 h-11 px-4 rounded-xl text-[#334155] hover:bg-[#f1f5f9] text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap"
+                    className="h-10 px-4 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white text-xs font-semibold inline-flex items-center gap-1.5 transition-colors cursor-pointer"
                   >
-                    <Users className="w-4 h-4 shrink-0" />
-                    <span>Roster</span>
+                    <Users className="w-4 h-4" />
+                    <span>Registro</span>
                   </button>
                 </div>
               </article>
@@ -395,156 +413,155 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
       {/* Create Session Modal */}
       {isModalOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md"
           role="dialog"
           aria-modal="true"
           aria-labelledby="create-session-title"
         >
-          <div className="surface-level-2 rounded-3xl w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-5">
+          <div className="glass-panel-elevated rounded-3xl w-full max-w-lg p-6 sm:p-8 max-h-[90vh] overflow-y-auto space-y-5">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-4">
               <div>
-                <h2 id="create-session-title" className="text-xl font-bold text-[#131b2e]">
-                  Launch New Class Session
+                <h2 id="create-session-title" className="text-xl font-bold text-white">
+                  Nueva Sesión de Clase
                 </h2>
-                <p className="text-xs text-[#3d4a42] mt-0.5">
-                  Configure geofence radius and generate live rotating QR tokens
+                <p className="text-xs text-slate-400 mt-0.5">
+                  Configura los parámetros del aula y la geocerca
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                aria-label="Close modal"
-                className="w-11 h-11 rounded-xl flex items-center justify-center text-[#334155] hover:bg-[#f1f5f9] cursor-pointer"
+                aria-label="Cerrar ventana"
+                className="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-300 cursor-pointer"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
             <form onSubmit={handleCreateSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div>
-                  <label className="block text-xs font-semibold text-[#131b2e] mb-1.5">
-                    Cohort Code
+                  <label className="block text-xs font-semibold text-slate-400 mb-1.5">
+                    Código de Cohorte
                   </label>
                   <input
                     type="text"
                     required
                     value={cohortCode}
                     onChange={(e) => setCohortCode(e.target.value)}
-                    placeholder="e.g. COH-5120"
-                    className="institutional-input w-full text-sm font-mono-tabular"
+                    placeholder="Ej. COH-5120"
+                    className="modern-input w-full text-sm font-mono-tabular"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-[#131b2e] mb-1.5">
-                    Department / Program
+                  <label className="block text-xs font-semibold text-slate-400 mb-1.5">
+                    Programa / Área
                   </label>
                   <input
                     type="text"
                     required
                     value={department}
                     onChange={(e) => setDepartment(e.target.value)}
-                    placeholder="Industrial Automation"
-                    className="institutional-input w-full text-sm"
+                    className="modern-input w-full text-sm"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#131b2e] mb-1.5">
-                  Session / Course Title
+                <label className="block text-xs font-semibold text-slate-400 mb-1.5">
+                  Título de la Asignatura
                 </label>
                 <input
                   type="text"
                   required
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  placeholder="e.g. Pneumatic Circuits & Hydraulic Actuators"
-                  className="institutional-input w-full text-sm"
+                  placeholder="Ej. Circuitos Neumáticos y Actuadores"
+                  className="modern-input w-full text-sm"
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div>
-                  <label className="block text-xs font-semibold text-[#131b2e] mb-1.5">
-                    Lead Instructor
+                  <label className="block text-xs font-semibold text-slate-400 mb-1.5">
+                    Instructor
                   </label>
                   <input
                     type="text"
                     required
                     value={instructor}
                     onChange={(e) => setInstructor(e.target.value)}
-                    placeholder="e.g. Eng. Sofía Navarro"
-                    className="institutional-input w-full text-sm"
+                    placeholder="Ej. Ing. Sofía Navarro"
+                    className="modern-input w-full text-sm"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-[#131b2e] mb-1.5">
-                    Classroom / Workshop
+                  <label className="block text-xs font-semibold text-slate-400 mb-1.5">
+                    Aula / Taller
                   </label>
                   <input
                     type="text"
                     required
                     value={room}
                     onChange={(e) => setRoom(e.target.value)}
-                    placeholder="e.g. Lab E-104"
-                    className="institutional-input w-full text-sm"
+                    placeholder="Ej. Lab E-104"
+                    className="modern-input w-full text-sm"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-[#131b2e] mb-1.5">
-                    Start Time
+                  <label className="block text-xs font-semibold text-slate-400 mb-1.5">
+                    Inicio
                   </label>
                   <input
                     type="time"
                     value={startTime}
                     onChange={(e) => setStartTime(e.target.value)}
-                    className="institutional-input w-full text-sm font-mono-tabular"
+                    className="modern-input w-full text-sm font-mono-tabular"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-[#131b2e] mb-1.5">
-                    End Time
+                  <label className="block text-xs font-semibold text-slate-400 mb-1.5">
+                    Fin
                   </label>
                   <input
                     type="time"
                     value={endTime}
                     onChange={(e) => setEndTime(e.target.value)}
-                    className="institutional-input w-full text-sm font-mono-tabular"
+                    className="modern-input w-full text-sm font-mono-tabular"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-[#131b2e] mb-1.5">
-                    Geofence (m)
+                  <label className="block text-xs font-semibold text-slate-400 mb-1.5">
+                    Geocerca
                   </label>
                   <select
                     value={geofenceRadius}
                     onChange={(e) => setGeofenceRadius(Number(e.target.value))}
-                    className="institutional-input w-full text-sm font-mono-tabular"
+                    className="modern-input w-full text-sm font-mono-tabular"
                   >
-                    <option value={25}>25m</option>
-                    <option value={50}>50m</option>
-                    <option value={100}>100m</option>
+                    <option value={25} className="bg-slate-900">25m</option>
+                    <option value={50} className="bg-slate-900">50m</option>
+                    <option value={100} className="bg-slate-900">100m</option>
                   </select>
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="h-11 px-4 rounded-xl text-sm font-semibold text-[#334155] hover:bg-[#f1f5f9] cursor-pointer"
+                  className="h-10 px-4 rounded-xl text-sm font-semibold text-slate-400 hover:text-white cursor-pointer"
                 >
-                  Cancel
+                  Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="h-12 px-5 rounded-xl bg-[#059669] hover:bg-[#006948] text-white text-sm font-semibold cursor-pointer"
+                  className="h-10 px-5 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950 font-bold text-sm cursor-pointer"
                 >
-                  Activate Session
+                  Activar Sesión
                 </button>
               </div>
             </form>

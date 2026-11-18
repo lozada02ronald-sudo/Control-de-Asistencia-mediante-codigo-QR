@@ -29,6 +29,7 @@ export interface AttendanceRecord {
   learnerId: string;
   status: AttendanceStatus;
   checkedInAt: string | null;
+  checkedInDate?: string | null;
   method: CheckInMethod;
   distanceMeters: number | null;
   tokenSignature: string | null;
@@ -61,6 +62,7 @@ export interface ScanEventLog {
   outcome: 'VERIFIED' | 'LATE' | 'DENIED';
   reason: string;
   timestamp: string;
+  dateLabel?: string;
   distanceMeters: number;
   tokenUsed: string;
 }
@@ -77,4 +79,15 @@ export interface VerificationResult {
   signature?: string;
 }
 
-export type AppScreen = 'overview' | 'projector' | 'scanner' | 'roster';
+export interface AdminSystemConfig {
+  institutionName: string;
+  cryptoAlgorithm: string;
+  defaultTtlSeconds: number;
+  maxGeofenceMeters: number;
+  strictGeofenceEnforced: boolean;
+  hmacSecretKeyMasked: string;
+  allowManualOverride: boolean;
+  tamperProtectionActive: boolean;
+}
+
+export type AppScreen = 'landing' | 'overview' | 'projector' | 'scanner' | 'roster' | 'admin' | 'my-attendance';

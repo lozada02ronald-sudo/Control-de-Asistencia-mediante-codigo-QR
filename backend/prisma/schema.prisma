@@ -1,0 +1,86 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Rol {
+  ADMIN
+  INSTRUCTOR
+  APRENDIZ
+}
+
+enum EstadoAsistencia {
+  PRESENTE
+  TARDANZA
+  AUSENTE
+  EXCUSA
+}
+
+model Usuario {
+  id            String       @id @default(uuid())
+  nombre        String
+  email         String       @unique
+  passwordHash  String       @map("password_hash")
+  rol           Rol          @default(APRENDIZ)
+  activo        Boolean      @default(true)
+  creadoEn      DateTime     @default(now()) @map("creado_en")
+  actualizadoEn DateTime     @updatedAt @map("actualizado_en")
+
+  sesionesDictadas Sesion[]     @relation("InstructorSesiones")
+  asistencias      Asistencia[] @relation("AprendizAsistencias")
+
+  @@index([rol, activo])
+  @@map("usuarios")
+}
+
+model Sesion {
+  id            String       @id @default(uuid())
+  instructorId  String       @map("instructor_id")
+  nombre        String
+  fecha         DateTime     @default(now())
+  activa        Boolean      @default(true)
+  creadoEn      DateTime     @default(now()) @map("creado_en")
+  actualizadoEn DateTime     @updatedAt @map("actualizado_en")
+
+  instructor    Usuario      @relation("InstructorSesiones", fields: [instructorId], references: [id], onDelete: Restrict)
+  qrs           CodigoQR[]
+  asistencias   Asistencia[]
+
+  @@index([instructorId, activa])
+  @@index([fecha])
+  @@map("sesiones")
+}
+
+model CodigoQR {
+  id         String   @id @default(uuid())
+  sesionId   String   @map("sesion_id")
+  token      String   @unique
+  expiraEn   DateTime @map("expira_en")
+  revocado   Boolean  @default(false)
+  creadoEn   DateTime @default(now()) @map("creado_en")
+
+  sesion     Sesion   @relation(fields: [sesionId], references: [id], onDelete: Cascade)
+
+  @@index([sesionId, expiraEn, revocado])
+  @@map("codigos_qr")
+}
+
+model Asistencia {
+  id           String           @id @default(uuid())
+  sesionId     String           @map("sesion_id")
+  aprendizId   String           @map("aprendiz_id")
+  estado       EstadoAsistencia @default(PRESENTE)
+  registradoEn DateTime         @default(now()) @map("registrado_en")
+
+  sesion       Sesion           @relation(fields: [sesionId], references: [id], onDelete: Restrict)
+  aprendiz     Usuario          @relation("AprendizAsistencias", fields: [aprendizId], references: [id], onDelete: Restrict)
+
+  @@unique([sesionId, aprendizId])
+  @@index([aprendizId, registradoEn])
+  @@map("asistencias")
+}
+

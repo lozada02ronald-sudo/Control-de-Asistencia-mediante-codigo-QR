@@ -17,6 +17,7 @@ import {
   getInitials,
 } from '../data/mockInstitution';
 import { AttendanceStatusBadge } from './StatusBadge';
+import { useDebouncedValue } from '../hooks/useDebouncedValue';
 
 interface RosterScreenProps {
   sessions: ClassSession[];
@@ -28,6 +29,7 @@ interface RosterScreenProps {
     status: AttendanceStatus
   ) => void;
   onAddLearner: (sessionId: string, learner: Learner) => void;
+  allowManualOverride?: boolean;
 }
 
 export const RosterScreen: React.FC<RosterScreenProps> = ({
@@ -36,8 +38,10 @@ export const RosterScreen: React.FC<RosterScreenProps> = ({
   onSelectSession,
   onSetLearnerStatus,
   onAddLearner,
+  allowManualOverride = true,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
+  const debouncedSearch = useDebouncedValue(searchQuery, 250);
   const [statusFilter, setStatusFilter] = useState<'ALL' | AttendanceStatus>('ALL');
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [newName, setNewName] = useState('');
@@ -61,7 +65,7 @@ export const RosterScreen: React.FC<RosterScreenProps> = ({
   }, [activeSession]);
 
   const filteredRows = useMemo(() => {
-    const q = searchQuery.trim().toLowerCase();
+    const q = debouncedSearch.trim().toLowerCase();
     return activeSession.learners
       .map((learner) => {
         const record = activeSession.records.find((r) => r.learnerId === learner.id);
@@ -79,12 +83,12 @@ export const RosterScreen: React.FC<RosterScreenProps> = ({
           learner.nationalId.toLowerCase().includes(q);
         return matchesStatus && matchesQuery;
       });
-  }, [activeSession, searchQuery, statusFilter]);
+  }, [activeSession, debouncedSearch, statusFilter]);
 
   const handleAddSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newName.trim() || !newNationalId.trim()) return;
-    const colors = ['#006948', '#0051d5', '#0f172a', '#8d4b00'];
+    const colors = ['#10b981', '#06b6d4', '#6366f1', '#f59e0b'];
     const learner: Learner = {
       id: `lrn-${Date.now().toString().slice(-5)}`,
       fullName: newName.trim(),
@@ -103,23 +107,23 @@ export const RosterScreen: React.FC<RosterScreenProps> = ({
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
-          <p className="text-xs font-semibold text-[#006948] tracking-wide mb-1">
-            Cohort Verification &amp; Audit Ledger
+          <p className="text-xs font-semibold text-emerald-400 uppercase tracking-wider mb-1">
+            Registro Oficial de Asistencia por Cohorte
           </p>
-          <h1 className="text-[26px] sm:text-[32px] font-bold tracking-[-0.02em] text-[#131b2e] leading-tight">
-            Cohort Attendance Roster
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-white">
+            Listado de Asistencia
           </h1>
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5">
           <select
-            aria-label="Select cohort roster"
+            aria-label="Seleccionar listado de cohorte"
             value={activeSession.id}
             onChange={(e) => onSelectSession(e.target.value)}
-            className="institutional-input text-sm font-semibold text-[#131b2e] min-w-[240px]"
+            className="modern-input text-sm font-semibold min-w-[240px]"
           >
             {sessions.map((s) => (
-              <option key={s.id} value={s.id}>
+              <option key={s.id} value={s.id} className="bg-slate-900">
                 {s.cohortCode} — {s.title}
               </option>
             ))}
@@ -128,50 +132,48 @@ export const RosterScreen: React.FC<RosterScreenProps> = ({
           <button
             type="button"
             onClick={() => setIsAddOpen(true)}
-            className="inline-flex items-center justify-center gap-1.5 h-11 px-4 rounded-xl bg-[#eff6ff] border border-[#bfdbfe] text-[#1d4999] hover:bg-[#dbeafe] text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap"
+            className="h-11 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white text-xs font-semibold inline-flex items-center gap-1.5 transition-colors cursor-pointer"
           >
-            <UserPlus className="w-4 h-4" />
-            <span>Enroll Learner</span>
+            <UserPlus className="w-4 h-4 text-cyan-400" />
+            <span>Inscribir Aprendiz</span>
           </button>
 
           <button
             type="button"
             onClick={() => downloadAttendanceCsv(activeSession)}
-            className="inline-flex items-center justify-center gap-1.5 h-11 px-4 rounded-xl bg-[#059669] hover:bg-[#006948] text-white text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap"
+            className="h-11 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-bold text-xs inline-flex items-center gap-1.5 transition-all cursor-pointer"
           >
             <Download className="w-4 h-4" />
-            <span>Export CSV</span>
+            <span>Exportar CSV</span>
           </button>
         </div>
       </div>
 
       {/* Cohort Summary Strip */}
-      <div className="surface-level-1 rounded-2xl p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="glass-panel rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="text-xs font-semibold text-[#3d4a42]">
+          <div className="text-xs font-semibold text-cyan-400">
             {activeSession.cohortCode} · {activeSession.room} · {activeSession.instructor}
           </div>
-          <div className="text-lg font-bold text-[#131b2e] mt-0.5">
-            {activeSession.title}
-          </div>
+          <div className="text-lg font-bold text-white mt-0.5">{activeSession.title}</div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-sm tabular-nums-strict">
+        <div className="flex flex-wrap items-center gap-6 text-sm font-mono-tabular">
           <div>
-            <span className="text-xs text-[#6d7a72] block">Present</span>
-            <span className="font-bold text-[#006948] text-lg">{counts.present}</span>
+            <span className="text-[11px] text-slate-400 block">Presentes</span>
+            <span className="font-bold text-emerald-400 text-xl">{counts.present}</span>
           </div>
           <div>
-            <span className="text-xs text-[#6d7a72] block">Late Grace</span>
-            <span className="font-bold text-[#8d4b00] text-lg">{counts.late}</span>
+            <span className="text-[11px] text-slate-400 block">Tardanzas</span>
+            <span className="font-bold text-amber-400 text-xl">{counts.late}</span>
           </div>
           <div>
-            <span className="text-xs text-[#6d7a72] block">Absent</span>
-            <span className="font-bold text-[#ba1a1a] text-lg">{counts.absent}</span>
+            <span className="text-[11px] text-slate-400 block">Ausentes</span>
+            <span className="font-bold text-rose-400 text-xl">{counts.absent}</span>
           </div>
           <div>
-            <span className="text-xs text-[#6d7a72] block">Enrolled</span>
-            <span className="font-bold text-[#131b2e] text-lg">{counts.total}</span>
+            <span className="text-[11px] text-slate-400 block">Inscritos</span>
+            <span className="font-bold text-white text-xl">{counts.total}</span>
           </div>
         </div>
       </div>
@@ -179,34 +181,34 @@ export const RosterScreen: React.FC<RosterScreenProps> = ({
       {/* Search & Status Filter */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
         <div className="relative flex-1 max-w-md">
-          <Search className="w-4 h-4 text-[#6d7a72] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Filter by learner name or National ID..."
-            aria-label="Filter learners"
-            className="institutional-input w-full pl-10 text-sm"
+            placeholder="Filtrar por nombre o documento..."
+            aria-label="Filtrar aprendices"
+            className="modern-input w-full pl-10 text-sm"
           />
         </div>
 
-        <div className="flex items-center gap-1 p-1 bg-[#eaedff] rounded-xl overflow-x-auto">
+        <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-900/90 border border-slate-800 overflow-x-auto">
           {(
             [
-              { key: 'ALL', label: `All (${counts.total})` },
-              { key: AttendanceStatus.PRESENT, label: `Present (${counts.present})` },
-              { key: AttendanceStatus.LATE, label: `Late (${counts.late})` },
-              { key: AttendanceStatus.ABSENT, label: `Absent (${counts.absent})` },
+              { key: 'ALL', label: `Todos (${counts.total})` },
+              { key: AttendanceStatus.PRESENT, label: `Presentes (${counts.present})` },
+              { key: AttendanceStatus.LATE, label: `Tardanzas (${counts.late})` },
+              { key: AttendanceStatus.ABSENT, label: `Ausentes (${counts.absent})` },
             ] as const
           ).map((tab) => (
             <button
               key={tab.key}
               type="button"
               onClick={() => setStatusFilter(tab.key)}
-              className={`min-h-[40px] px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap cursor-pointer transition-all ${
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap cursor-pointer transition-colors ${
                 statusFilter === tab.key
-                  ? 'bg-white text-[#131b2e] shadow-sm'
-                  : 'text-[#3d4a42] hover:text-[#131b2e]'
+                  ? 'bg-emerald-500 text-slate-950 font-bold'
+                  : 'text-slate-400 hover:text-white'
               }`}
             >
               {tab.label}
@@ -215,12 +217,12 @@ export const RosterScreen: React.FC<RosterScreenProps> = ({
         </div>
       </div>
 
-      {/* Separated Card-Row List */}
+      {/* Learner Rows */}
       {filteredRows.length === 0 ? (
-        <div className="surface-level-1 rounded-2xl p-10 text-center">
-          <p className="text-base font-semibold text-[#131b2e]">No learners match this filter</p>
-          <p className="text-sm text-[#3d4a42] mt-1">
-            Adjust the search term or select a different status tab.
+        <div className="glass-panel rounded-2xl p-10 text-center">
+          <p className="text-base font-bold text-white">No hay aprendices que coincidan</p>
+          <p className="text-sm text-slate-400 mt-1">
+            Ajusta el término de búsqueda o selecciona otra pestaña.
           </p>
         </div>
       ) : (
@@ -228,33 +230,32 @@ export const RosterScreen: React.FC<RosterScreenProps> = ({
           {filteredRows.map(({ learner, status, record }) => (
             <div
               key={learner.id}
-              className="surface-level-1 rounded-xl px-4 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+              className="glass-panel rounded-2xl px-4 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:border-slate-700 transition-colors"
             >
-              {/* Left: Initials Avatar + Learner Name & National ID */}
               <div className="flex items-center gap-3.5 min-w-0">
                 <div
-                  className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
-                  style={{ backgroundColor: learner.avatarColor }}
+                  className="w-10 h-10 rounded-xl flex items-center justify-center text-white text-xs font-bold shrink-0 shadow-inner"
+                  style={{ backgroundColor: learner.avatarColor || '#059669' }}
                   aria-hidden="true"
                 >
                   {getInitials(learner.fullName)}
                 </div>
 
                 <div className="min-w-0">
-                  <div className="text-sm font-semibold text-[#131b2e] truncate">
+                  <div className="text-sm font-bold text-white truncate">
                     {learner.fullName}
                   </div>
-                  <div className="flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-xs text-[#3d4a42] mt-0.5">
-                    <span className="font-mono-tabular font-medium text-[#131b2e]">
+                  <div className="flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-xs text-slate-400 mt-0.5">
+                    <span className="font-mono-tabular font-semibold text-slate-300">
                       {learner.nationalId}
                     </span>
                     <span aria-hidden="true">·</span>
-                    <span>{record?.method ?? 'Not Checked In'}</span>
+                    <span>{record?.method ?? 'Sin registro'}</span>
                     {record?.distanceMeters !== null && record?.distanceMeters !== undefined && (
                       <>
                         <span aria-hidden="true">·</span>
-                        <span className="inline-flex items-center gap-1 font-mono-tabular">
-                          <MapPin className="w-3 h-3 text-[#059669]" />
+                        <span className="inline-flex items-center gap-1 font-mono-tabular text-emerald-400">
+                          <MapPin className="w-3 h-3" />
                           {record.distanceMeters}m
                         </span>
                       </>
@@ -263,48 +264,52 @@ export const RosterScreen: React.FC<RosterScreenProps> = ({
                 </div>
               </div>
 
-              {/* Right: Timestamp + Status Pill + Instant Toggle */}
               <div className="flex flex-wrap items-center justify-between sm:justify-end gap-3">
                 <div className="flex items-center gap-2.5">
                   {record?.checkedInAt && (
-                    <span className="inline-flex items-center gap-1 text-xs font-mono-tabular font-semibold text-[#3d4a42]">
-                      <Clock className="w-3.5 h-3.5 text-[#6d7a72]" />
+                    <span className="inline-flex items-center gap-1 text-xs font-mono-tabular text-slate-300">
+                      <Clock className="w-3.5 h-3.5 text-slate-400" />
                       {record.checkedInAt}
                     </span>
                   )}
                   <AttendanceStatusBadge status={status} />
                 </div>
 
-                {/* Instant Instructor Status Toggle */}
                 <div
-                  className="inline-flex items-center p-0.5 rounded-lg bg-[#f1f5f9] border border-slate-200/80"
+                  className={`inline-flex items-center p-0.5 rounded-xl bg-slate-900 border border-slate-800 ${
+                    !allowManualOverride ? 'opacity-50' : ''
+                  }`}
                   role="group"
-                  aria-label={`Set attendance status for ${learner.fullName}`}
+                  aria-label={`Definir estado de asistencia para ${learner.fullName}`}
+                  title={!allowManualOverride ? 'Override manual deshabilitado en Administración' : undefined}
                 >
                   {(
                     [
-                      { key: AttendanceStatus.PRESENT, label: 'P', title: 'Mark Present' },
-                      { key: AttendanceStatus.LATE, label: 'L', title: 'Mark Late' },
-                      { key: AttendanceStatus.ABSENT, label: 'A', title: 'Mark Absent' },
+                      { key: AttendanceStatus.PRESENT, label: 'P', title: 'Presente' },
+                      { key: AttendanceStatus.LATE, label: 'T', title: 'Tardanza' },
+                      { key: AttendanceStatus.ABSENT, label: 'A', title: 'Ausente' },
                     ] as const
                   ).map((opt) => {
                     const isActive = status === opt.key;
                     let activeStyle = '';
                     if (isActive && opt.key === AttendanceStatus.PRESENT) {
-                      activeStyle = 'bg-[#059669] text-white';
+                      activeStyle = 'bg-emerald-500 text-slate-950 font-bold';
                     } else if (isActive && opt.key === AttendanceStatus.LATE) {
-                      activeStyle = 'bg-[#d97706] text-white';
+                      activeStyle = 'bg-amber-400 text-slate-950 font-bold';
                     } else if (isActive && opt.key === AttendanceStatus.ABSENT) {
-                      activeStyle = 'bg-[#e11d48] text-white';
+                      activeStyle = 'bg-rose-500 text-white font-bold';
                     }
                     return (
                       <button
                         key={opt.key}
                         type="button"
-                        title={opt.title}
+                        disabled={!allowManualOverride}
+                        title={allowManualOverride ? opt.title : 'Override manual deshabilitado por Admin'}
                         onClick={() => onSetLearnerStatus(activeSession.id, learner.id, opt.key)}
-                        className={`w-9 h-9 rounded-md text-xs font-bold transition-colors cursor-pointer ${
-                          isActive ? activeStyle : 'text-[#334155] hover:bg-white'
+                        className={`w-8 h-8 rounded-lg text-xs font-mono-tabular transition-colors ${
+                          allowManualOverride ? 'cursor-pointer' : 'cursor-not-allowed'
+                        } ${
+                          isActive ? activeStyle : 'text-slate-400 hover:text-white'
                         }`}
                       >
                         {opt.label}
@@ -321,52 +326,52 @@ export const RosterScreen: React.FC<RosterScreenProps> = ({
       {/* Enroll Learner Modal */}
       {isAddOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md"
           role="dialog"
           aria-modal="true"
           aria-labelledby="enroll-learner-title"
         >
-          <div className="surface-level-2 rounded-3xl w-full max-w-md p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 id="enroll-learner-title" className="text-lg font-bold text-[#131b2e]">
-                Enroll Learner to {activeSession.cohortCode}
+          <div className="glass-panel-elevated rounded-3xl w-full max-w-md p-6">
+            <div className="flex items-center justify-between mb-4 border-b border-slate-800 pb-3">
+              <h2 id="enroll-learner-title" className="text-lg font-bold text-white">
+                Inscribir Aprendiz en {activeSession.cohortCode}
               </h2>
               <button
                 type="button"
                 onClick={() => setIsAddOpen(false)}
-                aria-label="Close modal"
-                className="w-10 h-10 rounded-xl flex items-center justify-center text-[#334155] hover:bg-[#f1f5f9] cursor-pointer"
+                aria-label="Cerrar ventana"
+                className="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-300 cursor-pointer"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
             <form onSubmit={handleAddSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-[#131b2e] mb-1.5">
-                  Full Legal Name
+                <label className="block text-xs font-semibold text-slate-400 mb-1.5">
+                  Nombre Completo
                 </label>
                 <input
                   type="text"
                   required
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
-                  placeholder="e.g. Natalia Ortiz Castaño"
-                  className="institutional-input w-full text-sm"
+                  placeholder="Ej. Natalia Ortiz Castaño"
+                  className="modern-input w-full text-sm"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#131b2e] mb-1.5">
-                  National ID Document
+                <label className="block text-xs font-semibold text-slate-400 mb-1.5">
+                  Documento de Identidad
                 </label>
                 <input
                   type="text"
                   required
                   value={newNationalId}
                   onChange={(e) => setNewNationalId(e.target.value)}
-                  placeholder="e.g. CC 1.095.442.190"
-                  className="institutional-input w-full text-sm font-mono-tabular"
+                  placeholder="Ej. CC 1.095.442.190"
+                  className="modern-input w-full text-sm font-mono-tabular"
                 />
               </div>
 
@@ -374,15 +379,15 @@ export const RosterScreen: React.FC<RosterScreenProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsAddOpen(false)}
-                  className="h-11 px-4 rounded-xl text-sm font-semibold text-[#334155] hover:bg-[#f1f5f9] cursor-pointer"
+                  className="h-10 px-4 rounded-xl text-sm font-semibold text-slate-400 hover:text-white cursor-pointer"
                 >
-                  Cancel
+                  Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="h-11 px-5 rounded-xl bg-[#059669] hover:bg-[#006948] text-white text-sm font-semibold cursor-pointer"
+                  className="h-10 px-5 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950 font-bold text-sm cursor-pointer"
                 >
-                  Add to Roster
+                  Agregar al Listado
                 </button>
               </div>
             </form>
