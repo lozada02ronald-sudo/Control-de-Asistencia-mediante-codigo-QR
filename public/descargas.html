@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Centro de Descargas — AcadeQR</title>
+  <style>
+    :root {
+      --bg: #060b14;
+      --card: #0f172a;
+      --border: #1e293b;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --emerald: #10b981;
+      --cyan: #06b6d4;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 2rem 1rem;
+      line-height: 1.5;
+    }
+    .wrap { max-width: 900px; margin: 0 auto; }
+    .hero {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    h1 { margin: 0 0 0.35rem; font-size: 1.5rem; }
+    p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+    .btn-zip {
+      background: var(--emerald);
+      color: #020617;
+      padding: 0.75rem 1.25rem;
+      border-radius: 0.75rem;
+      font-weight: 800;
+      font-size: 0.875rem;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+    .card h2 { margin: 0; font-size: 1rem; color: var(--cyan); }
+    .card ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.5rem; }
+    .card a {
+      display: block;
+      padding: 0.55rem 0.75rem;
+      background: #020617;
+      border: 1px solid #1e293b;
+      border-radius: 0.55rem;
+      color: #e2e8f0;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .card a:hover { border-color: var(--emerald); color: #6ee7b7; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <div>
+        <h1>Centro de Descargas — AcadeQR</h1>
+        <p>Descarga todos los documentos, configuraciones Docker, scripts y plantillas del proyecto.</p>
+      </div>
+      <a class="btn-zip" href="/downloads/AcadeQR-Paquete-Completo.zip" download="AcadeQR-Paquete-Completo.zip">
+        Descargar Todo (.ZIP)
+      </a>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>Documentación (IEEE 830)</h2>
+        <ul>
+          <li><a href="/srs.html" target="_blank">Ver SRS Completo + PDF (con UML)</a></li>
+          <li><a href="/downloads/01-srs-ieee830.md" download>01-srs-ieee830.md</a></li>
+          <li><a href="/downloads/02-diccionario-datos.md" download>02-diccionario-datos.md</a></li>
+          <li><a href="/downloads/03-api-contract.md" download>03-api-contract.md</a></li>
+          <li><a href="/downloads/04-casos-prueba.md" download>04-casos-prueba.md</a></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>Docker y Base de Datos MySQL</h2>
+        <ul>
+          <li><a href="/docker.html" target="_blank">Ver Visor Docker + MySQL</a></li>
+          <li><a href="/downloads/docker-compose.yml" download>docker-compose.yml (MySQL + Redis)</a></li>
+          <li><a href="/downloads/init.sql" download>init.sql (Esquema MySQL 8.4)</a></li>
+          <li><a href="/downloads/Dockerfile" download>Dockerfile (Frontend)</a></li>
+          <li><a href="/downloads/backend.Dockerfile" download="Dockerfile">backend/Dockerfile (Backend)</a></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>Variables de Entorno y GitHub</h2>
+        <ul>
+          <li><a href="/downloads/frontend.env.example" download=".env.example">.env.example (Frontend)</a></li>
+          <li><a href="/downloads/backend.env.example" download=".env.example">backend/.env.example (Backend + Redis)</a></li>
+          <li><a href="/downloads/auto-sync-github.ps1" download>auto-sync-github.ps1 (Auto-Guardado GitHub)</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

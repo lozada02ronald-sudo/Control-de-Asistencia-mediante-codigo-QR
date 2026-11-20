@@ -1,148 +1,63 @@
-# Contrato de API REST (API Contract)
+# Contrato de API REST (`AcadeQR`)
 
-> **Base URL (desarrollo):** `http://localhost:4000`  
-> **Formato de intercambio:** `application/json; charset=utf-8`
+> **Base URL Local:** `http://localhost:4000`  
+> **Documentación Interactiva (Swagger UI):** `GET /api/docs`  
+> **Especificación OpenAPI 3.0 (JSON):** `GET /api/docs.json`  
+> **Autenticación:** `Authorization: Bearer <JWT>`
 
 ---
 
-## 1. Headers Requeridos y Convenciones
-
-### Headers HTTP
-| Header | Obligatorio | Valor / Formato | Uso |
+## 1. Sistema y Salud
+| Método | Endpoint | Acceso | Descripción |
 | :--- | :--- | :--- | :--- |
-| `Content-Type` | Sí (en `POST`/`PATCH`) | `application/json` | Indica cuerpo JSON válido. |
-| `Authorization` | Sí (rutas protegidas) | `Bearer <JWT_TOKEN>` | Autenticación y extracción de `sub` y `rol`. |
-
-### Formato Estandarizado de Respuesta Exitosa
-```json
-{
-  "success": true,
-  "message": "Descripción de la operación",
-  "data": {}
-}
-```
-
-### Formato Estandarizado de Error
-```json
-{
-  "success": false,
-  "error": {
-    "code": "ERROR_CODE",
-    "message": "Descripción legible del error",
-    "details": {}
-  }
-}
-```
+| `GET` | `/health` | Público | Verifica estado del servidor y conexión Redis (`connected` / `fallback`). |
+| `GET` | `/api/docs` | Público | Interfaz interactiva Swagger UI. |
+| `GET` | `/api/docs.json` | Público | Esquema OpenAPI 3.0 en formato JSON. |
 
 ---
 
-## 2. Endpoints Implementados
+## 2. Autenticación y Recuperación (`/api/auth`)
+Todos los endpoints de autenticación están protegidos con *Rate Limiting* en Redis (`429 Too Many Requests`), validación **Zod**, hashing `crypto.scrypt` con *salt* aleatorio y comparación `timingSafeEqual`.
 
-### 2.1 Verificación de Estado (`GET /health`)
-- **Acceso:** Público.
-- **Respuesta `200 OK`:**
-```json
-{
-  "success": true,
-  "status": "ok"
-}
-```
-
----
-
-### 2.2 Crear Sesión y QR Inicial (`POST /api/sesiones`)
-- **Acceso:** `INSTRUCTOR`, `ADMIN` (requiere `Authorization: Bearer <token>`).
-- **Esquema Zod del Body (`crearSesionRequestSchema`):**
-
-| Campo | Tipo | Reglas Zod | Default |
+| Método | Endpoint | Body | Respuesta |
 | :--- | :--- | :--- | :--- |
-| `nombreClase` | `string` | `.trim().min(3).max(120)` | Requerido |
-| `ttlSegundos` | `number` | `.int().min(10).max(7200)` | `60` |
-
-- **Ejemplo de Request:**
-```json
-{
-  "nombreClase": "Arquitectura de Software - Ficha 2841",
-  "ttlSegundos": 60
-}
-```
-
-- **Respuesta `201 Created`:**
-```json
-{
-  "success": true,
-  "message": "Sesión y código QR creados correctamente",
-  "data": {
-    "sesion": {
-      "id": "550e8400-e29b-41d4-a716-446655440000",
-      "instructorId": "9a1f8c20-1122-4455-8899-aabbccddeeff",
-      "nombre": "Arquitectura de Software - Ficha 2841",
-      "fecha": "2026-11-13T14:10:00.000Z",
-      "activa": true
-    },
-    "qr": {
-      "id": "7b2e1100-3344-4555-9999-112233445566",
-      "sesionId": "550e8400-e29b-41d4-a716-446655440000",
-      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-      "expiraEn": "2026-11-13T14:11:00.000Z",
-      "revocado": false,
-      "creadoEn": "2026-11-13T14:10:00.000Z"
-    }
-  }
-}
-```
+| `POST` | `/api/auth/register` | `{ nombre, email, password, rol }` | `201` `{ token, user }` |
+| `POST` | `/api/auth/login` | `{ email, password }` | `200` `{ token, user }` / `401` |
+| `POST` | `/api/auth/recover-account` | `{ nombre }` | `200` `{ found, maskedEmail, rol }` |
+| `POST` | `/api/auth/forgot-password` | `{ email }` | `200` `{ ttlSeconds: 300 }` (OTP en Redis) |
+| `POST` | `/api/auth/reset-password` | `{ email, otp, newPassword }` | `200` Contraseña actualizada |
 
 ---
 
-### 2.3 Rotar Código QR Dinámico (`POST /api/sesiones/:sesionId/qr`)
-- **Acceso:** `INSTRUCTOR` (propietario de la sesión) o `ADMIN`.
-- **Parámetros de Ruta (`params`):**
-  - `sesionId`: `string` (UUID válido).
-- **Esquema Zod del Body (`rotarQRRequestSchema`):**
-
-| Campo | Tipo | Reglas Zod | Default |
+## 3. CRUD de Usuarios (`/api/usuarios`)
+| Método | Endpoint | Roles Permitidos | Descripción |
 | :--- | :--- | :--- | :--- |
-| `ttlSegundos` | `number` | `.int().min(10).max(7200)` | `60` |
-
-- **Respuesta `201 Created`:**
-```json
-{
-  "success": true,
-  "message": "Nuevo código QR generado correctamente",
-  "data": {
-    "id": "8c3f2200-4455-4666-8888-223344556677",
-    "sesionId": "550e8400-e29b-41d4-a716-446655440000",
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "expiraEn": "2026-11-13T14:12:00.000Z",
-    "revocado": false,
-    "creadoEn": "2026-11-13T14:11:00.000Z"
-  }
-}
-```
+| `GET` | `/api/usuarios/me` | Todos (autenticado) | Perfil del usuario actual (con caché Redis). |
+| `GET` | `/api/usuarios?rol=&activo=` | `ADMIN`, `INSTRUCTOR` | Listar usuarios y aprendices filtrados. |
+| `POST` | `/api/usuarios` | `ADMIN`, `INSTRUCTOR` | Crear usuario (`INSTRUCTOR` solo crea `APRENDIZ`). |
+| `PATCH` | `/api/usuarios/:id` | `ADMIN` | Actualizar `nombre`, `rol` o `activo`. |
+| `DELETE` | `/api/usuarios/:id` | `ADMIN` | Desactivar usuario (`activo = false`). |
 
 ---
 
-## 3. Catálogo de Respuestas de Error (`4xx` / `5xx`)
-
-| Código HTTP | `error.code` | Cuándo ocurre | Ejemplo de Respuesta |
+## 4. CRUD de Sesiones y QR Dinámico (`/api/sesiones`)
+| Método | Endpoint | Roles Permitidos | Descripción |
 | :--- | :--- | :--- | :--- |
-| `400 Bad Request` | `VALIDATION_ERROR` | Falla validación Zod en `body`, `params` o `query`. | `{"success":false,"error":{"code":"VALIDATION_ERROR","message":"Error de validación en los datos enviados","details":{"nombreClase":["El nombre de la clase debe tener al menos 3 caracteres"]}}}` |
-| `401 Unauthorized` | `UNAUTHORIZED` | Falta header `Authorization` o el JWT es inválido/expirado. | `{"success":false,"error":{"code":"UNAUTHORIZED","message":"Token inválido o expirado"}}` |
-| `403 Forbidden` | `FORBIDDEN` | Usuario con rol `APRENDIZ` o instructor distinto al propietario. | `{"success":false,"error":{"code":"FORBIDDEN","message":"No tienes permisos para este recurso"}}` |
-| `404 Not Found` | `NOT_FOUND` | El `sesionId` no existe en base de datos. | `{"success":false,"error":{"code":"NOT_FOUND","message":"Sesión no encontrada"}}` |
-| `409 Conflict` | `CONFLICT` / `DUPLICATE_RECORD` | Sesión cerrada al rotar QR, o registro único duplicado (`P2002`). | `{"success":false,"error":{"code":"CONFLICT","message":"No se puede generar un QR para una sesión cerrada"}}` |
-| `500 Internal Server Error` | `INTERNAL_SERVER_ERROR` | Excepción no controlada o fallo de conexión a PostgreSQL. | `{"success":false,"error":{"code":"INTERNAL_SERVER_ERROR","message":"Error interno del servidor"}}` |
+| `GET` | `/api/sesiones?page=1&limit=10` | `INSTRUCTOR`, `ADMIN` | Listar sesiones paginadas. |
+| `GET` | `/api/sesiones/:sesionId` | `INSTRUCTOR`, `ADMIN` | Obtener detalle de sesión + último QR. |
+| `POST` | `/api/sesiones` | `INSTRUCTOR`, `ADMIN` | Crear sesión atómica + QR inicial (`ttlSegundos` 10–7200). |
+| `PATCH` | `/api/sesiones/:sesionId` | `INSTRUCTOR`, `ADMIN` | Actualizar `nombre` o `activa`. |
+| `PATCH` | `/api/sesiones/:sesionId/cerrar` | `INSTRUCTOR`, `ADMIN` | Cerrar sesión y revocar QRs activos. |
+| `DELETE` | `/api/sesiones/:sesionId` | `INSTRUCTOR`, `ADMIN` | Eliminar sesión y registros asociados. |
+| `POST` | `/api/sesiones/:sesionId/qr` | `INSTRUCTOR`, `ADMIN` | Rotar token QR dinámico (cacheado en Redis). |
 
 ---
 
-## 4. Endpoints Proyectados (Siguiente Iteración)
-
-> Estos endpoints forman parte del alcance del SRS, pero **aún no están implementados** en `backend/src/`:
-
-| Método y Ruta | Rol Permitido | Descripción |
-| :--- | :--- | :--- |
-| `POST /api/auth/login` | Público | Autentica credenciales y devuelve JWT (`sub`, `rol`). |
-| `POST /api/asistencias/escanear` | `APRENDIZ` | Recibe `{ tokenQR }`, valida firma/TTL/no-revocación y crea registro en `asistencias`. |
-| `GET /api/sesiones/:sesionId/asistencias` | `INSTRUCTOR`, `ADMIN` | Lista los registros de asistencia de la sesión. |
-| `PATCH /api/sesiones/:sesionId/cerrar` | `INSTRUCTOR`, `ADMIN` | Marca `activa = false` en la sesión. |
-
+## 5. CRUD de Asistencias y Escaneo QR (`/api/asistencias`)
+| Método | Endpoint | Roles Permitidos | Descripción |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/api/asistencias/escanear` | `APRENDIZ`, `INSTRUCTOR`, `ADMIN` | Valida firma QR, vigencia, sesión activa y unicidad (`409` si duplicado). |
+| `GET` | `/api/asistencias/mias` | Todos (autenticado) | Historial personal de asistencias del usuario. |
+| `GET` | `/api/asistencias/sesion/:sesionId` | `INSTRUCTOR`, `ADMIN` | Listado completo (Roster) de la sesión. |
+| `PATCH` | `/api/asistencias/:id` | `INSTRUCTOR`, `ADMIN` | Ajuste manual de `estado` (`PRESENTE`, `TARDANZA`, `AUSENTE`, `EXCUSA`). |
+| `DELETE` | `/api/asistencias/:id` | `ADMIN` | Eliminar registro de asistencia. |
