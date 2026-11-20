@@ -180,20 +180,20 @@ export const QrProjectorScreen: React.FC<QrProjectorScreenProps> = ({
 
   if (isFullscreen) {
     return (
-      <div className="fixed inset-0 z-50 bg-[#060b14] text-white flex flex-col items-center justify-between p-6 sm:p-10">
+      <div className="fixed inset-0 z-50 bg-canvas text-slate-100 flex flex-col items-center justify-between p-6 sm:p-10">
         <div className="w-full max-w-4xl flex items-center justify-between border-b border-slate-800 pb-5">
           <div>
             <p className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">
               {activeSession.cohortCode} · {activeSession.room} · {activeSession.instructor}
             </p>
-            <h2 className="text-2xl sm:text-3xl font-bold text-white mt-1">
+            <h2 className="text-2xl sm:text-3xl font-bold text-slate-100 mt-1">
               {activeSession.title}
             </h2>
           </div>
           <button
             type="button"
             onClick={() => setIsFullscreen(false)}
-            className="h-11 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white text-sm font-semibold inline-flex items-center gap-2 transition-colors cursor-pointer"
+            className="h-11 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-100 text-sm font-semibold inline-flex items-center gap-2 transition-colors cursor-pointer"
           >
             <Minimize2 className="w-4 h-4" aria-hidden="true" />
             <span>Salir de Pantalla Completa</span>
@@ -213,7 +213,7 @@ export const QrProjectorScreen: React.FC<QrProjectorScreenProps> = ({
             )}
           </div>
           <div className="mt-6 flex items-center gap-4">
-            <span className="font-mono-tabular text-2xl font-bold tracking-wider text-white">
+            <span className="font-mono-tabular text-2xl font-bold tracking-wider text-slate-100">
               {currentToken}
             </span>
             <span className="rounded-full bg-emerald-500/15 border border-emerald-400/30 px-3.5 py-1 text-xs font-mono-tabular font-bold text-emerald-300">
@@ -237,7 +237,7 @@ export const QrProjectorScreen: React.FC<QrProjectorScreenProps> = ({
           <p className="text-xs font-semibold text-emerald-400 uppercase tracking-wider mb-1">
             Estudio Python QR (qrcode + Pillow) & Proyección
           </p>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-100">
             Proyector y Generador QR Personalizado
           </h1>
         </div>
@@ -250,7 +250,7 @@ export const QrProjectorScreen: React.FC<QrProjectorScreenProps> = ({
             className="modern-input text-sm font-semibold min-w-[260px]"
           >
             {sessions.map((s) => (
-              <option key={s.id} value={s.id} className="bg-slate-900 text-white">
+              <option key={s.id} value={s.id} className="bg-slate-900 text-slate-100">
                 {s.cohortCode} — {s.title}
               </option>
             ))}
@@ -262,7 +262,7 @@ export const QrProjectorScreen: React.FC<QrProjectorScreenProps> = ({
               onClick={() =>
                 onUpdateSessionSettings(activeSession.id, { status: SessionStatus.LIVE })
               }
-              className="h-11 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950 font-bold text-sm inline-flex items-center justify-center gap-2 cursor-pointer"
+              className="h-11 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold text-sm inline-flex items-center justify-center gap-2 cursor-pointer"
             >
               <Radio className="w-4 h-4 animate-pulse" aria-hidden="true" />
               <span>Activar en Vivo</span>
@@ -284,7 +284,7 @@ export const QrProjectorScreen: React.FC<QrProjectorScreenProps> = ({
                 <span aria-hidden="true">·</span>
                 <span>{activeSession.instructor}</span>
               </div>
-              <h2 className="text-xl font-bold text-white">{activeSession.title}</h2>
+              <h2 className="text-xl font-bold text-slate-100">{activeSession.title}</h2>
             </div>
 
             <div className="flex items-center gap-2.5">
@@ -294,7 +294,7 @@ export const QrProjectorScreen: React.FC<QrProjectorScreenProps> = ({
                 onClick={() => setIsFullscreen(true)}
                 title="Pantalla completa"
                 aria-label="Pantalla completa en aula"
-                className="w-10 h-10 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-white flex items-center justify-center transition-colors cursor-pointer"
+                className="w-10 h-10 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-slate-100 flex items-center justify-center transition-colors cursor-pointer"
               >
                 <Maximize2 className="w-4 h-4" aria-hidden="true" />
               </button>
@@ -311,8 +311,8 @@ export const QrProjectorScreen: React.FC<QrProjectorScreenProps> = ({
                   onClick={() => setPayloadMode('URL')}
                   className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer ${
                     payloadMode === 'URL'
-                      ? 'bg-emerald-500 text-slate-950 font-bold'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold'
+                      : 'text-slate-400 hover:text-slate-100'
                   }`}
                 >
                   <Globe className="w-3.5 h-3.5" />
@@ -323,8 +323,8 @@ export const QrProjectorScreen: React.FC<QrProjectorScreenProps> = ({
                   onClick={() => setPayloadMode('JSON')}
                   className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer ${
                     payloadMode === 'JSON'
-                      ? 'bg-emerald-500 text-slate-950 font-bold'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold'
+                      : 'text-slate-400 hover:text-slate-100'
                   }`}
                 >
                   <FileCode2 className="w-3.5 h-3.5" />
@@ -374,7 +374,7 @@ export const QrProjectorScreen: React.FC<QrProjectorScreenProps> = ({
                     type="button"
                     onClick={handleCopyToken}
                     aria-label="Copiar token activo"
-                    className="w-8 h-8 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer shrink-0"
+                    className="w-8 h-8 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-slate-100 flex items-center justify-center transition-colors cursor-pointer shrink-0"
                   >
                     {copied ? (
                       <Check className="w-4 h-4 text-emerald-400" aria-hidden="true" />
@@ -408,7 +408,7 @@ export const QrProjectorScreen: React.FC<QrProjectorScreenProps> = ({
                     className="transition-all duration-300"
                   />
                 </svg>
-                <span className="absolute font-mono-tabular text-xs font-bold text-white">
+                <span className="absolute font-mono-tabular text-xs font-bold text-slate-100">
                   {secondsRemaining}s
                 </span>
               </div>
@@ -424,8 +424,8 @@ export const QrProjectorScreen: React.FC<QrProjectorScreenProps> = ({
                     onClick={() => onChangeInterval(sec)}
                     className={`px-3 py-1.5 rounded-lg text-xs font-mono-tabular font-semibold cursor-pointer transition-colors ${
                       rotationInterval === sec
-                        ? 'bg-emerald-500 text-slate-950 font-bold'
-                        : 'text-slate-400 hover:text-white'
+                        ? 'bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold'
+                        : 'text-slate-400 hover:text-slate-100'
                     }`}
                   >
                     {sec}s
@@ -475,7 +475,7 @@ export const QrProjectorScreen: React.FC<QrProjectorScreenProps> = ({
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <div className="flex items-center gap-2">
                 <Palette className="w-4 h-4 text-emerald-400" />
-                <h3 className="text-sm font-bold text-white">
+                <h3 className="text-sm font-bold text-slate-100">
                   Personalización QR con Python (Pillow)
                 </h3>
               </div>
@@ -501,7 +501,7 @@ export const QrProjectorScreen: React.FC<QrProjectorScreenProps> = ({
                     className={`h-9 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
                       qrStyle === st.id
                         ? 'bg-emerald-500/20 border-emerald-400 text-emerald-300'
-                        : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:text-white'
+                        : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:text-slate-100'
                     }`}
                   >
                     {st.label}
@@ -527,8 +527,8 @@ export const QrProjectorScreen: React.FC<QrProjectorScreenProps> = ({
                       }}
                       className={`h-9 px-2.5 rounded-xl text-xs font-semibold border flex items-center gap-2 transition-all cursor-pointer ${
                         active
-                          ? 'bg-slate-800 border-emerald-400 text-white'
-                          : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:text-white'
+                          ? 'bg-slate-800 border-emerald-400 text-slate-100'
+                          : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:text-slate-100'
                       }`}
                     >
                       <span
@@ -579,7 +579,7 @@ export const QrProjectorScreen: React.FC<QrProjectorScreenProps> = ({
 
           {/* Geofence & Scanner Link */}
           <div className="glass-panel rounded-2xl p-5 space-y-4">
-            <h3 className="text-sm font-bold text-white">
+            <h3 className="text-sm font-bold text-slate-100">
               Reglas de Verificación en Aula
             </h3>
 
@@ -629,7 +629,7 @@ export const QrProjectorScreen: React.FC<QrProjectorScreenProps> = ({
             <button
               type="button"
               onClick={onOpenScanner}
-              className="w-full h-11 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-bold text-xs inline-flex items-center justify-center gap-2 transition-all cursor-pointer"
+              className="w-full h-11 rounded-xl bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold text-xs inline-flex items-center justify-center gap-2 transition-all cursor-pointer"
             >
               <ScanLine className="w-4 h-4" />
               <span>Prender Cámara y Probar Escaneo</span>
@@ -639,7 +639,7 @@ export const QrProjectorScreen: React.FC<QrProjectorScreenProps> = ({
           {/* Live Check-In Feed */}
           <div className="glass-panel rounded-2xl p-5">
             <div className="flex items-center justify-between gap-2 mb-3">
-              <h3 className="text-sm font-bold text-white">Registro en Tiempo Real</h3>
+              <h3 className="text-sm font-bold text-slate-100">Registro en Tiempo Real</h3>
               <span className="text-xs font-mono-tabular text-slate-400">
                 {sessionLogs.length} eventos
               </span>
@@ -691,7 +691,7 @@ export const QrProjectorScreen: React.FC<QrProjectorScreenProps> = ({
                         <XCircle className="w-4 h-4 text-rose-400 mt-0.5 shrink-0" />
                       )}
                       <div className="min-w-0">
-                        <div className="text-xs font-bold text-white truncate">
+                        <div className="text-xs font-bold text-slate-100 truncate">
                           {log.learnerName}
                         </div>
                         <div className="text-[11px] text-slate-400 truncate">{log.reason}</div>

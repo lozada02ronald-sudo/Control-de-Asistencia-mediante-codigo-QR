@@ -162,7 +162,7 @@ export const StudentIdCardScreen: React.FC<StudentIdCardScreenProps> = ({
           <p className="text-xs font-semibold text-emerald-400 uppercase tracking-wider mb-1">
             Identificación Institucional Digital
           </p>
-          <h1 className="text-2xl sm:text-4xl font-extrabold text-white">
+          <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-100">
             Carné Estudiantil con QR
           </h1>
           <p className="text-xs sm:text-sm text-slate-400 mt-1">
@@ -174,7 +174,7 @@ export const StudentIdCardScreen: React.FC<StudentIdCardScreenProps> = ({
           <button
             type="button"
             onClick={() => window.print()}
-            className="h-10 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white text-xs font-semibold inline-flex items-center gap-2 cursor-pointer"
+            className="h-10 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-100 text-xs font-semibold inline-flex items-center gap-2 cursor-pointer"
           >
             <Printer className="w-4 h-4 text-cyan-400" />
             <span>Imprimir / PDF</span>
@@ -184,7 +184,7 @@ export const StudentIdCardScreen: React.FC<StudentIdCardScreenProps> = ({
             type="button"
             onClick={handleDownloadPng}
             disabled={downloading}
-            className="h-10 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs inline-flex items-center gap-2 cursor-pointer"
+            className="h-10 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold text-xs inline-flex items-center gap-2 cursor-pointer"
           >
             <Download className="w-4 h-4" />
             <span>{downloading ? 'Generando...' : 'Descargar Carné (PNG)'}</span>
@@ -196,13 +196,13 @@ export const StudentIdCardScreen: React.FC<StudentIdCardScreenProps> = ({
       <div className="max-w-3xl mx-auto">
         <div className="glass-panel-elevated rounded-3xl overflow-hidden border border-emerald-500/35 shadow-2xl">
           {/* Top Institutional Strip */}
-          <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 px-6 py-4 flex items-center justify-between gap-4">
+          <div className="bg-brand-700 text-white px-6 py-4 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-slate-950/30 backdrop-blur flex items-center justify-center text-white">
+              <div className="w-10 h-10 rounded-xl bg-white/15 backdrop-blur flex items-center justify-center text-white">
                 <IdCard className="w-5 h-5" />
               </div>
               <div>
-                <div className="text-xs font-bold uppercase tracking-widest text-emerald-100">
+                <div className="text-xs font-bold uppercase tracking-widest text-brand-100">
                   Carné Estudiantil Oficial
                 </div>
                 <div className="text-sm font-extrabold text-white leading-tight">
@@ -211,8 +211,8 @@ export const StudentIdCardScreen: React.FC<StudentIdCardScreenProps> = ({
               </div>
             </div>
 
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-950/40 text-emerald-100 text-xs font-bold border border-white/20">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-300" />
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 text-white text-xs font-bold border border-white/20">
+              <CheckCircle2 className="w-3.5 h-3.5 text-brand-100" />
               ACTIVO {currentYear}
             </span>
           </div>
@@ -222,14 +222,14 @@ export const StudentIdCardScreen: React.FC<StudentIdCardScreenProps> = ({
             {/* Left: Student Info */}
             <div className="md:col-span-7 space-y-5">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center text-slate-950 text-xl font-extrabold shadow-lg shrink-0">
+                <div className="w-16 h-16 rounded-2xl bg-brand-600 flex items-center justify-center text-slate-950 text-xl font-extrabold shadow-lg shrink-0">
                   {getInitials(currentUser.name)}
                 </div>
                 <div className="min-w-0">
                   <div className="text-xs font-bold uppercase tracking-wider text-emerald-400">
                     Aprendiz Matriculado
                   </div>
-                  <h2 className="text-xl sm:text-2xl font-extrabold text-white truncate">
+                  <h2 className="text-xl sm:text-2xl font-extrabold text-slate-100 truncate">
                     {currentUser.name}
                   </h2>
                   <p className="text-xs font-mono-tabular text-cyan-300 font-semibold mt-0.5">
@@ -244,7 +244,7 @@ export const StudentIdCardScreen: React.FC<StudentIdCardScreenProps> = ({
                     <GraduationCap className="w-3.5 h-3.5 text-emerald-400" />
                     <span>Programa / Carrera</span>
                   </div>
-                  <div className="text-white font-bold leading-snug">{programName}</div>
+                  <div className="text-slate-100 font-bold leading-snug">{programName}</div>
                   <div className="text-[11px] font-mono-tabular text-cyan-300">
                     Ficha: {cohortCode}
                   </div>
@@ -255,7 +255,7 @@ export const StudentIdCardScreen: React.FC<StudentIdCardScreenProps> = ({
                     <MapPin className="w-3.5 h-3.5 text-cyan-400" />
                     <span>Sede / Campus</span>
                   </div>
-                  <div className="text-white font-bold leading-snug">{campusName}</div>
+                  <div className="text-slate-100 font-bold leading-snug">{campusName}</div>
                   <div className="text-[11px] text-slate-400 flex items-center gap-1">
                     <Building2 className="w-3 h-3" />
                     <span>{enrolledSession?.room ?? 'Aula asignada'}</span>

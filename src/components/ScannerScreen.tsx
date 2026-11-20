@@ -400,7 +400,7 @@ export const ScannerScreen: React.FC<ScannerScreenProps> = ({
           <p className="text-xs font-semibold text-cyan-400 uppercase tracking-wider mb-1">
             Lectura Óptica en Vivo & Registro Automático
           </p>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-100">
             Escáner de Asistencia QR
           </h1>
         </div>
@@ -412,7 +412,7 @@ export const ScannerScreen: React.FC<ScannerScreenProps> = ({
           className="modern-input text-sm font-semibold min-w-[250px]"
         >
           {sessions.map((s) => (
-            <option key={s.id} value={s.id} className="bg-slate-900 text-white">
+            <option key={s.id} value={s.id} className="bg-slate-900 text-slate-100">
               {s.cohortCode} — {s.room}
             </option>
           ))}
@@ -471,7 +471,7 @@ export const ScannerScreen: React.FC<ScannerScreenProps> = ({
                 className={`h-9 px-3.5 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 transition-all cursor-pointer ${
                   cameraActive
                     ? 'bg-rose-500/20 border border-rose-400/40 text-rose-300 hover:bg-rose-500/30'
-                    : 'bg-emerald-500 text-slate-950 hover:bg-emerald-400'
+                    : 'bg-brand-600 hover:bg-brand-700 text-slate-950'
                 }`}
               >
                 {cameraActive ? (
@@ -503,7 +503,7 @@ export const ScannerScreen: React.FC<ScannerScreenProps> = ({
               <span className="absolute bottom-0 left-0 w-9 h-9 border-b-[3px] border-l-[3px] border-emerald-400 rounded-bl-2xl" />
               <span className="absolute bottom-0 right-0 w-9 h-9 border-b-[3px] border-r-[3px] border-emerald-400 rounded-br-2xl" />
 
-              <div className="absolute top-0 left-3 right-3 h-0.5 bg-gradient-to-r from-transparent via-emerald-400 to-transparent shadow-[0_0_12px_#10b981] animate-scan-beam" />
+              <div className="absolute top-0 left-3 right-3 h-0.5 bg-gradient-to-r from-transparent via-emerald-400 to-transparent shadow-[0_0_12px_#317252] animate-scan-beam" />
 
               <div className="text-center px-4">
                 <p className="text-xs font-bold text-emerald-300">
@@ -541,7 +541,7 @@ export const ScannerScreen: React.FC<ScannerScreenProps> = ({
                 <div className="text-[11px] font-semibold text-slate-400">
                   Aprendiz Seleccionado
                 </div>
-                <div className="text-sm font-bold text-white truncate">
+                <div className="text-sm font-bold text-slate-100 truncate">
                   {selectedLearner?.fullName ?? 'Seleccionar Aprendiz'}
                 </div>
               </div>
@@ -553,7 +553,7 @@ export const ScannerScreen: React.FC<ScannerScreenProps> = ({
             <button
               type="button"
               onClick={handleOpticalScan}
-              className="w-full h-12 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-bold text-sm inline-flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-[0.99] transition-all cursor-pointer"
+              className="w-full h-12 rounded-xl bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold text-sm inline-flex items-center justify-center gap-2 shadow-lg shadow-brand-500/20 active:scale-[0.99] transition-all cursor-pointer"
             >
               <ScanLine className="w-4 h-4" />
               <span>Registrar Escaneo Ahora ({currentToken})</span>
@@ -587,7 +587,7 @@ export const ScannerScreen: React.FC<ScannerScreenProps> = ({
                 )}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
-                    <h2 className="text-base font-bold text-white">{lastResult.title}</h2>
+                    <h2 className="text-base font-bold text-slate-100">{lastResult.title}</h2>
                     <span className="text-xs font-mono-tabular font-semibold opacity-80">
                       {lastResult.timestamp}
                     </span>
@@ -605,7 +605,7 @@ export const ScannerScreen: React.FC<ScannerScreenProps> = ({
                     <button
                       type="button"
                       onClick={onGoToRoster}
-                      className="mt-4 w-full h-10 rounded-xl bg-white text-slate-950 hover:bg-emerald-300 font-bold text-xs inline-flex items-center justify-center gap-2 transition-colors cursor-pointer"
+                      className="mt-4 w-full h-10 rounded-xl bg-white text-slate-100 hover:bg-brand-50 font-bold text-xs inline-flex items-center justify-center gap-2 transition-colors cursor-pointer"
                     >
                       <ClipboardList className="w-4 h-4" />
                       <span>Ir al Registro de Asistencia (Ver Listado)</span>
@@ -620,7 +620,7 @@ export const ScannerScreen: React.FC<ScannerScreenProps> = ({
           {/* Parameters */}
           <div className="glass-panel rounded-2xl p-5 space-y-4">
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-              <h3 className="text-sm font-bold text-white">
+              <h3 className="text-sm font-bold text-slate-100">
                 Identidad y Verificación de Ubicación
               </h3>
               <button
@@ -703,7 +703,7 @@ export const ScannerScreen: React.FC<ScannerScreenProps> = ({
           <form onSubmit={handleManualSubmit} className="glass-panel rounded-2xl p-5 space-y-3">
             <div className="flex items-center gap-2">
               <KeyRound className="w-4 h-4 text-cyan-400" />
-              <h3 className="text-sm font-bold text-white">Ingreso Manual de Token</h3>
+              <h3 className="text-sm font-bold text-slate-100">Ingreso Manual de Token</h3>
             </div>
             <p className="text-xs text-slate-400">
               Si la cámara no enfoca, escribe el código rotativo mostrado debajo del QR.
@@ -732,7 +732,7 @@ export const ScannerScreen: React.FC<ScannerScreenProps> = ({
               <div className="flex items-center justify-between gap-2 border-b border-slate-800 pb-3">
                 <div className="flex items-center gap-2">
                   <GraduationCap className="w-4 h-4 text-emerald-400" />
-                  <h3 className="text-sm font-bold text-white">
+                  <h3 className="text-sm font-bold text-slate-100">
                     Inscripción y Seguimiento de Estudio
                   </h3>
                 </div>
@@ -852,7 +852,7 @@ export const ScannerScreen: React.FC<ScannerScreenProps> = ({
 
                   <button
                     type="submit"
-                    className="w-full h-10 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs transition-colors cursor-pointer"
+                    className="w-full h-10 rounded-xl bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold text-xs transition-colors cursor-pointer"
                   >
                     Confirmar Inscripción y Activar QR
                   </button>
@@ -890,7 +890,7 @@ export const ScannerScreen: React.FC<ScannerScreenProps> = ({
                             className="flex items-center justify-between gap-3 rounded-xl bg-slate-900/70 border border-slate-800 px-3.5 py-2.5 text-xs"
                           >
                             <div className="min-w-0">
-                              <div className="font-semibold text-white truncate">
+                              <div className="font-semibold text-slate-100 truncate">
                                 {ses.cohortCode} · {ses.title}
                               </div>
                               <div className="text-[11px] text-slate-400 flex items-center gap-1.5">

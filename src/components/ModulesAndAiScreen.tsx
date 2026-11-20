@@ -302,7 +302,7 @@ export const ModulesAndAiScreen: React.FC<ModulesAndAiScreenProps> = ({
           <p className="text-xs font-semibold text-cyan-400 uppercase tracking-wider mb-1">
             Arquitectura Modular · Motor IA · Android / Firebase
           </p>
-          <h1 className="text-2xl sm:text-4xl font-extrabold text-white">
+          <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-100">
             Módulos, IA y Sincronización
           </h1>
         </div>
@@ -322,8 +322,8 @@ export const ModulesAndAiScreen: React.FC<ModulesAndAiScreenProps> = ({
                 onClick={() => setActiveTab(tab.key as typeof activeTab)}
                 className={`h-9 px-3.5 rounded-xl text-xs font-semibold inline-flex items-center gap-1.5 transition-colors cursor-pointer ${
                   active
-                    ? 'bg-emerald-500 text-slate-950 font-bold'
-                    : 'text-slate-400 hover:text-white'
+                    ? 'bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold'
+                    : 'text-slate-400 hover:text-slate-100'
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -367,7 +367,7 @@ export const ModulesAndAiScreen: React.FC<ModulesAndAiScreenProps> = ({
                 >
                   <div className="flex items-center justify-between">
                     <Icon className={`w-4 h-4 ${active ? 'text-emerald-400' : 'text-slate-400'}`} />
-                    <span className="text-lg font-extrabold font-mono-tabular text-white">
+                    <span className="text-lg font-extrabold font-mono-tabular text-slate-100">
                       {m.count}
                     </span>
                   </div>
@@ -380,7 +380,7 @@ export const ModulesAndAiScreen: React.FC<ModulesAndAiScreenProps> = ({
           {moduleSubTab === 'GRUPOS' && (
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
               <form onSubmit={handleCreateGroup} className="lg:col-span-5 glass-panel rounded-2xl p-5 space-y-3.5">
-                <h2 className="text-sm font-bold text-white flex items-center gap-2">
+                <h2 className="text-sm font-bold text-slate-100 flex items-center gap-2">
                   <Plus className="w-4 h-4 text-emerald-400" />
                   <span>Crear Nuevo Grupo / Ficha</span>
                 </h2>
@@ -425,7 +425,7 @@ export const ModulesAndAiScreen: React.FC<ModulesAndAiScreenProps> = ({
                 />
                 <button
                   type="submit"
-                  className="w-full h-10 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs cursor-pointer"
+                  className="w-full h-10 rounded-xl bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold text-xs cursor-pointer"
                 >
                   Guardar Grupo y Abrir Proyector QR
                 </button>
@@ -441,7 +441,7 @@ export const ModulesAndAiScreen: React.FC<ModulesAndAiScreenProps> = ({
                       <div className="text-xs font-mono-tabular font-bold text-cyan-300">
                         {s.cohortCode} · {s.campus} ({s.room})
                       </div>
-                      <div className="text-sm font-bold text-white">{s.title}</div>
+                      <div className="text-sm font-bold text-slate-100">{s.title}</div>
                       <div className="text-xs text-slate-400">
                         {s.instructor} · {s.learners.length} aprendices
                       </div>
@@ -457,7 +457,7 @@ export const ModulesAndAiScreen: React.FC<ModulesAndAiScreenProps> = ({
                       <button
                         type="button"
                         onClick={() => onOpenRoster(s.id)}
-                        className="h-9 px-3 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs font-semibold cursor-pointer"
+                        className="h-9 px-3 rounded-xl bg-slate-800 border border-slate-700 text-slate-100 text-xs font-semibold cursor-pointer"
                       >
                         Listado
                       </button>
@@ -471,7 +471,7 @@ export const ModulesAndAiScreen: React.FC<ModulesAndAiScreenProps> = ({
           {moduleSubTab === 'APRENDICES' && (
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
               <form onSubmit={handleEnrollSubmit} className="lg:col-span-4 glass-panel rounded-2xl p-5 space-y-3.5">
-                <h2 className="text-sm font-bold text-white">Inscribir Aprendiz a Grupo</h2>
+                <h2 className="text-sm font-bold text-slate-100">Inscribir Aprendiz a Grupo</h2>
                 <select
                   value={targetSessionId}
                   onChange={(e) => setTargetSessionId(e.target.value)}
@@ -501,7 +501,7 @@ export const ModulesAndAiScreen: React.FC<ModulesAndAiScreenProps> = ({
                 />
                 <button
                   type="submit"
-                  className="w-full h-10 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs cursor-pointer"
+                  className="w-full h-10 rounded-xl bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold text-xs cursor-pointer"
                 >
                   Registrar Aprendiz
                 </button>
@@ -514,7 +514,7 @@ export const ModulesAndAiScreen: React.FC<ModulesAndAiScreenProps> = ({
                     className="flex items-center justify-between gap-3 rounded-xl bg-slate-900/80 border border-slate-800 px-3.5 py-2.5 text-xs"
                   >
                     <div>
-                      <div className="font-bold text-white">{learner.fullName}</div>
+                      <div className="font-bold text-slate-100">{learner.fullName}</div>
                       <div className="text-slate-400 font-mono-tabular">
                         {learner.nationalId} · {session.cohortCode} ({session.campus})
                       </div>
@@ -537,7 +537,7 @@ export const ModulesAndAiScreen: React.FC<ModulesAndAiScreenProps> = ({
                     <div className="text-xs font-mono-tabular text-cyan-300 font-bold">
                       {s.cohortCode} · {s.startTime} - {s.endTime} · {s.dateLabel}
                     </div>
-                    <div className="text-sm font-bold text-white">{s.title}</div>
+                    <div className="text-sm font-bold text-slate-100">{s.title}</div>
                   </div>
                   <div className="flex flex-wrap items-center gap-2">
                     {[SessionStatus.LIVE, SessionStatus.SCHEDULED, SessionStatus.COMPLETED].map(
@@ -548,7 +548,7 @@ export const ModulesAndAiScreen: React.FC<ModulesAndAiScreenProps> = ({
                           onClick={() => onUpdateSessionStatus(s.id, st)}
                           className={`h-8 px-3 rounded-lg text-xs font-semibold cursor-pointer ${
                             s.status === st
-                              ? 'bg-emerald-500 text-slate-950 font-bold'
+                              ? 'bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold'
                               : 'bg-slate-900 border border-slate-800 text-slate-300'
                           }`}
                         >
@@ -577,12 +577,12 @@ export const ModulesAndAiScreen: React.FC<ModulesAndAiScreenProps> = ({
                     <div className="flex items-center justify-between">
                       <div>
                         <div className="text-xs font-mono-tabular text-cyan-300">{s.cohortCode}</div>
-                        <div className="text-sm font-bold text-white">{s.title}</div>
+                        <div className="text-sm font-bold text-slate-100">{s.title}</div>
                       </div>
                       <button
                         type="button"
                         onClick={() => onOpenRoster(s.id)}
-                        className="h-8 px-3 rounded-lg bg-slate-800 text-xs font-semibold text-white cursor-pointer"
+                        className="h-8 px-3 rounded-lg bg-slate-800 text-xs font-semibold text-slate-100 cursor-pointer"
                       >
                         Abrir Calendario
                       </button>
@@ -616,7 +616,7 @@ export const ModulesAndAiScreen: React.FC<ModulesAndAiScreenProps> = ({
           <div className="lg:col-span-5 glass-panel rounded-2xl p-5 space-y-4">
             <div className="flex items-center gap-2">
               <QrCode className="w-4 h-4 text-emerald-400" />
-              <h2 className="text-sm font-bold text-white">Generación Inteligente de Código QR</h2>
+              <h2 className="text-sm font-bold text-slate-100">Generación Inteligente de Código QR</h2>
             </div>
 
             <div className="space-y-2.5">
@@ -659,7 +659,7 @@ export const ModulesAndAiScreen: React.FC<ModulesAndAiScreenProps> = ({
             <button
               type="button"
               onClick={() => setAiSequence((s) => s + 1)}
-              className="w-full h-10 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs inline-flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full h-10 rounded-xl bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold text-xs inline-flex items-center justify-center gap-2 cursor-pointer"
             >
               <RefreshCw className="w-3.5 h-3.5" />
               <span>Regenerar Token QR con IA</span>
@@ -671,7 +671,7 @@ export const ModulesAndAiScreen: React.FC<ModulesAndAiScreenProps> = ({
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
               <div className="flex items-center gap-2">
                 <FlaskConical className="w-4 h-4 text-cyan-400" />
-                <h2 className="text-sm font-bold text-white">
+                <h2 className="text-sm font-bold text-slate-100">
                   Validaciones y Pruebas Automatizadas (IA)
                 </h2>
               </div>
@@ -701,7 +701,7 @@ export const ModulesAndAiScreen: React.FC<ModulesAndAiScreenProps> = ({
                     className="rounded-xl bg-slate-900/80 border border-slate-800 p-3.5 flex items-start justify-between gap-3 text-xs"
                   >
                     <div className="space-y-0.5">
-                      <div className="font-bold text-white flex items-center gap-2">
+                      <div className="font-bold text-slate-100 flex items-center gap-2">
                         {r.passed ? (
                           <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
                         ) : (
@@ -737,7 +737,7 @@ export const ModulesAndAiScreen: React.FC<ModulesAndAiScreenProps> = ({
           <div className="lg:col-span-7 glass-panel rounded-2xl p-5 space-y-4">
             <div className="flex items-center gap-2">
               <Cloud className="w-4 h-4 text-amber-400" />
-              <h2 className="text-sm font-bold text-white">
+              <h2 className="text-sm font-bold text-slate-100">
                 Sincronización Firebase Realtime Database
               </h2>
             </div>
@@ -793,7 +793,7 @@ export const ModulesAndAiScreen: React.FC<ModulesAndAiScreenProps> = ({
           <div className="lg:col-span-5 glass-panel rounded-2xl p-5 space-y-4">
             <div className="flex items-center gap-2">
               <Smartphone className="w-4 h-4 text-emerald-400" />
-              <h2 className="text-sm font-bold text-white">App Android (PWA Instalable)</h2>
+              <h2 className="text-sm font-bold text-slate-100">App Android (PWA Instalable)</h2>
             </div>
             <p className="text-xs text-slate-300 leading-relaxed">
               AcadeQR incluye <code>manifest.webmanifest</code> y diseño móvil para ejecutarse como
@@ -803,15 +803,15 @@ export const ModulesAndAiScreen: React.FC<ModulesAndAiScreenProps> = ({
               <button
                 type="button"
                 onClick={handleInstallAndroidPwa}
-                className="w-full h-10 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs cursor-pointer"
+                className="w-full h-10 rounded-xl bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold text-xs cursor-pointer"
               >
                 Instalar AcadeQR en Android
               </button>
             ) : (
               <div className="rounded-xl bg-slate-900 border border-slate-800 p-3.5 text-xs text-slate-400">
                 En Android Chrome: abre el menú <strong>⋮</strong> y selecciona{' '}
-                <strong className="text-white">Instalar aplicación</strong> o{' '}
-                <strong className="text-white">Agregar a pantalla principal</strong>.
+                <strong className="text-slate-100">Instalar aplicación</strong> o{' '}
+                <strong className="text-slate-100">Agregar a pantalla principal</strong>.
               </div>
             )}
           </div>

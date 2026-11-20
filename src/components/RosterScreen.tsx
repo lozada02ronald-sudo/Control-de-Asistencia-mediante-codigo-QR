@@ -215,7 +215,7 @@ export const RosterScreen: React.FC<RosterScreenProps> = ({
           <p className="text-xs font-semibold text-emerald-400 uppercase tracking-wider mb-1">
             Registro Oficial de Asistencia por Cohorte
           </p>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-100">
             Listado de Asistencia
           </h1>
         </div>
@@ -237,7 +237,7 @@ export const RosterScreen: React.FC<RosterScreenProps> = ({
           <button
             type="button"
             onClick={() => setIsAddOpen(true)}
-            className="h-11 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white text-xs font-semibold inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+            className="h-11 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-100 text-xs font-semibold inline-flex items-center gap-1.5 transition-colors cursor-pointer"
           >
             <UserPlus className="w-4 h-4 text-cyan-400" />
             <span>Inscribir Aprendiz</span>
@@ -246,7 +246,7 @@ export const RosterScreen: React.FC<RosterScreenProps> = ({
           <button
             type="button"
             onClick={() => downloadAttendanceCsv(activeSession)}
-            className="h-11 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-bold text-xs inline-flex items-center gap-1.5 transition-all cursor-pointer"
+            className="h-11 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold text-xs inline-flex items-center gap-1.5 transition-all cursor-pointer"
           >
             <Download className="w-4 h-4" />
             <span>Exportar CSV</span>
@@ -260,7 +260,7 @@ export const RosterScreen: React.FC<RosterScreenProps> = ({
           <div className="text-xs font-semibold text-cyan-400">
             {activeSession.cohortCode} · {activeSession.room} · {activeSession.instructor}
           </div>
-          <div className="text-lg font-bold text-white mt-0.5">{activeSession.title}</div>
+          <div className="text-lg font-bold text-slate-100 mt-0.5">{activeSession.title}</div>
         </div>
 
         <div className="flex flex-wrap items-center gap-6 text-sm font-mono-tabular">
@@ -278,7 +278,7 @@ export const RosterScreen: React.FC<RosterScreenProps> = ({
           </div>
           <div>
             <span className="text-[11px] text-slate-400 block">Inscritos</span>
-            <span className="font-bold text-white text-xl">{counts.total}</span>
+            <span className="font-bold text-slate-100 text-xl">{counts.total}</span>
           </div>
         </div>
       </div>
@@ -291,7 +291,7 @@ export const RosterScreen: React.FC<RosterScreenProps> = ({
               <Calendar className="w-4 h-4" />
             </div>
             <div>
-              <div className="text-xs font-bold text-white flex items-center gap-2">
+              <div className="text-xs font-bold text-slate-100 flex items-center gap-2">
                 <span>Calendario de Asistencia</span>
                 {isToday ? (
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
@@ -356,7 +356,7 @@ export const RosterScreen: React.FC<RosterScreenProps> = ({
               className={`h-9 px-3 rounded-xl border text-xs font-semibold cursor-pointer transition-colors ${
                 calendarView === 'year'
                   ? 'bg-emerald-500 border-emerald-400 text-slate-950 font-bold'
-                  : 'bg-slate-800 hover:bg-slate-700 border-slate-700 text-white'
+                  : 'bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-100'
               }`}
             >
               {calendarView === 'year' ? 'Ocultar 12 Meses' : 'Calendario Anual (12 Meses)'}
@@ -370,7 +370,7 @@ export const RosterScreen: React.FC<RosterScreenProps> = ({
               className={`h-9 px-3 rounded-xl border text-xs font-semibold cursor-pointer transition-colors ${
                 calendarView === 'month'
                   ? 'bg-cyan-500 border-cyan-400 text-slate-950 font-bold'
-                  : 'bg-slate-800 hover:bg-slate-700 border-slate-700 text-white'
+                  : 'bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-100'
               }`}
             >
               {calendarView === 'month' ? 'Ocultar Mes' : 'Ver Mes'}
@@ -456,11 +456,11 @@ export const RosterScreen: React.FC<RosterScreenProps> = ({
                           compact ? 'h-9 text-[11px]' : 'h-12 text-xs'
                         } rounded-lg font-mono-tabular flex flex-col items-center justify-center leading-tight transition-colors cursor-pointer relative ${
                           selected
-                            ? 'bg-emerald-500 text-slate-950 font-bold'
+                            ? 'bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold'
                             : iso === todayIso
                             ? 'bg-slate-800 border border-emerald-500/40 text-emerald-300 hover:bg-slate-700'
                             : hasData
-                            ? 'bg-slate-900 border border-slate-700 text-white hover:border-cyan-400'
+                            ? 'bg-slate-900 border border-slate-700 text-slate-100 hover:border-cyan-400'
                             : 'bg-slate-950/60 border border-slate-800/80 text-slate-300 hover:border-slate-600'
                         }`}
                       >
@@ -580,8 +580,8 @@ export const RosterScreen: React.FC<RosterScreenProps> = ({
               onClick={() => setStatusFilter(tab.key)}
               className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap cursor-pointer transition-colors ${
                 statusFilter === tab.key
-                  ? 'bg-emerald-500 text-slate-950 font-bold'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold'
+                  : 'text-slate-400 hover:text-slate-100'
               }`}
             >
               {tab.label}
@@ -593,7 +593,7 @@ export const RosterScreen: React.FC<RosterScreenProps> = ({
       {/* Learner Rows */}
       {filteredRows.length === 0 ? (
         <div className="glass-panel rounded-2xl p-10 text-center">
-          <p className="text-base font-bold text-white">No hay aprendices que coincidan</p>
+          <p className="text-base font-bold text-slate-100">No hay aprendices que coincidan</p>
           <p className="text-sm text-slate-400 mt-1">
             Ajusta el término de búsqueda o selecciona otra pestaña.
           </p>
@@ -607,7 +607,7 @@ export const RosterScreen: React.FC<RosterScreenProps> = ({
             >
               <div className="flex items-center gap-3.5 min-w-0">
                 <div
-                  className="w-10 h-10 rounded-xl flex items-center justify-center text-white text-xs font-bold shrink-0 shadow-inner"
+                  className="w-10 h-10 rounded-xl flex items-center justify-center text-slate-100 text-xs font-bold shrink-0 shadow-inner"
                   style={{ backgroundColor: learner.avatarColor || '#059669' }}
                   aria-hidden="true"
                 >
@@ -615,7 +615,7 @@ export const RosterScreen: React.FC<RosterScreenProps> = ({
                 </div>
 
                 <div className="min-w-0">
-                  <div className="text-sm font-bold text-white truncate">
+                  <div className="text-sm font-bold text-slate-100 truncate">
                     {learner.fullName}
                   </div>
                   <div className="flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-xs text-slate-400 mt-0.5">
@@ -670,7 +670,7 @@ export const RosterScreen: React.FC<RosterScreenProps> = ({
                     const isActive = status === opt.key;
                     let activeStyle = '';
                     if (isActive && opt.key === AttendanceStatus.PRESENT) {
-                      activeStyle = 'bg-emerald-500 text-slate-950 font-bold';
+                      activeStyle = 'bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold';
                     } else if (isActive && opt.key === AttendanceStatus.LATE) {
                       activeStyle = 'bg-amber-400 text-slate-950 font-bold';
                     } else if (isActive && opt.key === AttendanceStatus.ABSENT) {
@@ -686,7 +686,7 @@ export const RosterScreen: React.FC<RosterScreenProps> = ({
                         className={`w-8 h-8 rounded-lg text-xs font-mono-tabular transition-colors ${
                           allowManualOverride ? 'cursor-pointer' : 'cursor-not-allowed'
                         } ${
-                          isActive ? activeStyle : 'text-slate-400 hover:text-white'
+                          isActive ? activeStyle : 'text-slate-400 hover:text-slate-100'
                         }`}
                       >
                         {opt.label}
@@ -703,14 +703,14 @@ export const RosterScreen: React.FC<RosterScreenProps> = ({
       {/* Enroll Learner Modal */}
       {isAddOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-espresso/50 backdrop-blur-md"
           role="dialog"
           aria-modal="true"
           aria-labelledby="enroll-learner-title"
         >
           <div className="glass-panel-elevated rounded-3xl w-full max-w-md p-6">
             <div className="flex items-center justify-between mb-4 border-b border-slate-800 pb-3">
-              <h2 id="enroll-learner-title" className="text-lg font-bold text-white">
+              <h2 id="enroll-learner-title" className="text-lg font-bold text-slate-100">
                 Inscribir Aprendiz en {activeSession.cohortCode}
               </h2>
               <button
@@ -756,13 +756,13 @@ export const RosterScreen: React.FC<RosterScreenProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsAddOpen(false)}
-                  className="h-10 px-4 rounded-xl text-sm font-semibold text-slate-400 hover:text-white cursor-pointer"
+                  className="h-10 px-4 rounded-xl text-sm font-semibold text-slate-400 hover:text-slate-100 cursor-pointer"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="h-10 px-5 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950 font-bold text-sm cursor-pointer"
+                  className="h-10 px-5 rounded-xl bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold text-sm cursor-pointer"
                 >
                   Agregar al Listado
                 </button>

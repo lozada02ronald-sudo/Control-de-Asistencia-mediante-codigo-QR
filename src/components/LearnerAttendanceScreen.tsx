@@ -270,11 +270,11 @@ export const LearnerAttendanceScreen: React.FC<LearnerAttendanceScreenProps> = (
           <p className="text-xs font-semibold text-emerald-400 uppercase tracking-wider mb-1">
             Registro Personal Verificado
           </p>
-          <h1 className="text-2xl sm:text-4xl font-extrabold text-white">
+          <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-100">
             Mis Asistencias y Fallas
           </h1>
           <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            Aprendiz: <strong className="text-white">{currentUser.name}</strong>
+            Aprendiz: <strong className="text-slate-100">{currentUser.name}</strong>
             {currentUser.nationalId ? ` · ${currentUser.nationalId}` : ''}
           </p>
         </div>
@@ -282,7 +282,7 @@ export const LearnerAttendanceScreen: React.FC<LearnerAttendanceScreenProps> = (
         <button
           type="button"
           onClick={onGoToScanner}
-          className="h-10 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs inline-flex items-center gap-2 transition-colors cursor-pointer self-start sm:self-auto"
+          className="h-10 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold text-xs inline-flex items-center gap-2 transition-colors cursor-pointer self-start sm:self-auto"
         >
           <span>Ir a Escanear QR</span>
         </button>
@@ -316,7 +316,7 @@ export const LearnerAttendanceScreen: React.FC<LearnerAttendanceScreenProps> = (
 
         <div className="glass-panel rounded-2xl p-5 space-y-1">
           <div className="text-xs font-semibold text-slate-400">Cumplimiento</div>
-          <div className="text-3xl font-extrabold text-white font-mono-tabular">
+          <div className="text-3xl font-extrabold text-slate-100 font-mono-tabular">
             {counts.rate}%
           </div>
           <p className="text-[11px] text-slate-500">{counts.total} registro(s) totales</p>
@@ -329,7 +329,7 @@ export const LearnerAttendanceScreen: React.FC<LearnerAttendanceScreenProps> = (
           <div className="flex items-center gap-2.5">
             <Calendar className="w-5 h-5 text-cyan-400 shrink-0" />
             <div>
-              <h2 className="text-sm font-bold text-white">
+              <h2 className="text-sm font-bold text-slate-100">
                 Mi Calendario de Asistencias, Retardos y Fallas
               </h2>
               <div className="flex flex-wrap items-center gap-3 text-[11px] text-slate-300 mt-1">
@@ -381,7 +381,7 @@ export const LearnerAttendanceScreen: React.FC<LearnerAttendanceScreenProps> = (
             <button
               type="button"
               onClick={() => setCalendarMode((m) => (m === 'month' ? 'year' : 'month'))}
-              className="h-9 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white text-xs font-semibold cursor-pointer"
+              className="h-9 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-100 text-xs font-semibold cursor-pointer"
             >
               {calendarMode === 'month' ? 'Ver 12 Meses' : 'Ver 1 Mes'}
             </button>
@@ -427,8 +427,8 @@ export const LearnerAttendanceScreen: React.FC<LearnerAttendanceScreenProps> = (
               onClick={() => setFilter(item.key)}
               className={`h-9 px-3.5 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${
                 active
-                  ? 'bg-emerald-500 text-slate-950 font-bold'
-                  : 'bg-slate-900 border border-slate-800 text-slate-300 hover:text-white'
+                  ? 'bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold'
+                  : 'bg-slate-900 border border-slate-800 text-slate-300 hover:text-slate-100'
               }`}
             >
               {item.label}
@@ -449,7 +449,7 @@ export const LearnerAttendanceScreen: React.FC<LearnerAttendanceScreenProps> = (
             <button
               type="button"
               onClick={onGoToScanner}
-              className="h-10 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs cursor-pointer"
+              className="h-10 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold text-xs cursor-pointer"
             >
               Inscribirme en una Sede / Programa
             </button>
@@ -467,7 +467,7 @@ export const LearnerAttendanceScreen: React.FC<LearnerAttendanceScreenProps> = (
                   <span className="text-xs font-mono-tabular font-bold text-cyan-300 bg-cyan-500/10 border border-cyan-500/25 px-2 py-0.5 rounded-lg">
                     {session.cohortCode}
                   </span>
-                  <h2 className="text-base font-bold text-white truncate">{session.title}</h2>
+                  <h2 className="text-base font-bold text-slate-100 truncate">{session.title}</h2>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-400">
@@ -535,7 +535,7 @@ export const LearnerAttendanceScreen: React.FC<LearnerAttendanceScreenProps> = (
       {/* Personal Scan Audit History */}
       {myLogs.length > 0 && (
         <div className="glass-panel rounded-2xl p-5 space-y-3">
-          <h3 className="text-sm font-bold text-white">
+          <h3 className="text-sm font-bold text-slate-100">
             Historial Cronológico de Mis Escaneos
           </h3>
           <div className="space-y-2 max-h-64 overflow-y-auto pr-1">

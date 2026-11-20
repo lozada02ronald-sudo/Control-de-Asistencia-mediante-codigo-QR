@@ -152,7 +152,7 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
           <p className="text-xs font-semibold text-indigo-400 uppercase tracking-wider mb-1">
             Consola de Auditoría y Control RBAC
           </p>
-          <h1 className="text-2xl sm:text-4xl font-extrabold text-white">
+          <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-100">
             Administración Institucional
           </h1>
         </div>
@@ -170,7 +170,7 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
           <button
             type="button"
             onClick={onExportFullBackup}
-            className="h-10 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white text-xs font-semibold inline-flex items-center gap-2 transition-colors cursor-pointer"
+            className="h-10 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-100 text-xs font-semibold inline-flex items-center gap-2 transition-colors cursor-pointer"
           >
             <Download className="w-4 h-4 text-cyan-400" />
             <span>Backup JSON</span>
@@ -194,7 +194,7 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
             <ShieldCheck className="w-4 h-4 text-emerald-400" />
             <span>Verificaciones Válidas</span>
           </div>
-          <div className="text-3xl font-extrabold text-white font-mono-tabular">{totalVerified}</div>
+          <div className="text-3xl font-extrabold text-slate-100 font-mono-tabular">{totalVerified}</div>
           <p className="text-xs text-slate-400">Presencia confirmada</p>
         </div>
 
@@ -221,7 +221,7 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
             <Database className="w-4 h-4 text-indigo-400" />
             <span>Sesiones Activas</span>
           </div>
-          <div className="text-3xl font-extrabold text-white font-mono-tabular">{sessions.length}</div>
+          <div className="text-3xl font-extrabold text-slate-100 font-mono-tabular">{sessions.length}</div>
           <p className="text-xs text-slate-400">Cohortes registradas</p>
         </div>
       </div>
@@ -243,8 +243,8 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
               onClick={() => setActiveTab(tab.key as typeof activeTab)}
               className={`h-10 px-4 rounded-xl text-xs font-semibold flex items-center gap-2 whitespace-nowrap cursor-pointer transition-colors ${
                 active
-                  ? 'bg-emerald-500 text-slate-950 font-bold'
-                  : 'text-slate-400 hover:text-white hover:bg-white/5'
+                  ? 'bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold'
+                  : 'text-slate-400 hover:text-slate-100 hover:bg-white/5'
               }`}
             >
               <Icon className="w-4 h-4 shrink-0" />
@@ -259,7 +259,7 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
         <div className="space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h2 className="text-lg font-bold text-white">Registro Forense de Escaneos</h2>
+              <h2 className="text-lg font-bold text-slate-100">Registro Forense de Escaneos</h2>
               <p className="text-xs text-slate-400">Trazabilidad de lecturas QR y alertas de ubicación</p>
             </div>
 
@@ -272,7 +272,7 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
                   className={`px-3 py-1.5 rounded-lg font-semibold border transition-colors cursor-pointer ${
                     logFilter === filter
                       ? 'bg-emerald-500/20 border-emerald-400 text-emerald-300'
-                      : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white'
+                      : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-100'
                   }`}
                 >
                   {filter === 'ALL' ? 'Todos' : filter === 'DENIED' ? 'Denegados' : filter === 'LATE' ? 'Tardanzas' : 'Válidos'}
@@ -312,7 +312,7 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
                     />
                     <div className="min-w-0">
                       <div className="flex items-center gap-2.5">
-                        <span className="text-sm font-bold text-white truncate">
+                        <span className="text-sm font-bold text-slate-100 truncate">
                           {log.learnerName}
                         </span>
                         <span className="font-mono-tabular text-xs text-slate-400">
@@ -352,7 +352,7 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="glass-panel rounded-2xl p-6 space-y-5">
             <div className="border-b border-slate-800 pb-3">
-              <h2 className="text-lg font-bold text-white">Motor de Firma Criptográfica</h2>
+              <h2 className="text-lg font-bold text-slate-100">Motor de Firma Criptográfica</h2>
               <p className="text-xs text-slate-400 mt-0.5">
                 Generación y validación de tokens rotativos dinámicos.
               </p>
@@ -433,7 +433,7 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
 
           <div className="glass-panel rounded-2xl p-6 space-y-4">
             <div className="border-b border-slate-800 pb-3">
-              <h2 className="text-lg font-bold text-white">Directivas de Integridad</h2>
+              <h2 className="text-lg font-bold text-slate-100">Directivas de Integridad</h2>
               <p className="text-xs text-slate-400 mt-0.5">
                 Políticas de acceso institucional y control anti-fraude.
               </p>
@@ -449,7 +449,7 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
                 className="w-4 h-4 rounded accent-emerald-500 mt-0.5"
               />
               <div>
-                <div className="text-sm font-bold text-white">Modo Estricto de Geocerca GPS</div>
+                <div className="text-sm font-bold text-slate-100">Modo Estricto de Geocerca GPS</div>
                 <p className="text-xs text-slate-400 mt-0.5">
                   Bloquea registros fuera del radio autorizado del aula.
                 </p>
@@ -466,7 +466,7 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
                 className="w-4 h-4 rounded accent-emerald-500 mt-0.5"
               />
               <div>
-                <div className="text-sm font-bold text-white">Anulación Manual por Instructor</div>
+                <div className="text-sm font-bold text-slate-100">Anulación Manual por Instructor</div>
                 <p className="text-xs text-slate-400 mt-0.5">
                   Permite marcar asistencia con verificación física en aula.
                 </p>
@@ -483,7 +483,7 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
                 className="w-4 h-4 rounded accent-emerald-500 mt-0.5"
               />
               <div>
-                <div className="text-sm font-bold text-white">Protección Anti-Captura</div>
+                <div className="text-sm font-bold text-slate-100">Protección Anti-Captura</div>
                 <p className="text-xs text-slate-400 mt-0.5">
                   Invalida tokens compartidos fuera del aula tras expirar su TTL.
                 </p>
@@ -498,13 +498,13 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
         <div className="space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h2 className="text-lg font-bold text-white">Plantel de Instructores y Roles</h2>
+              <h2 className="text-lg font-bold text-slate-100">Plantel de Instructores y Roles</h2>
               <p className="text-xs text-slate-400">Credenciales y permisos RBAC</p>
             </div>
             <button
               type="button"
               onClick={() => setIsAddStaffOpen(true)}
-              className="h-10 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950 font-bold text-xs inline-flex items-center gap-1.5 cursor-pointer"
+              className="h-10 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold text-xs inline-flex items-center gap-1.5 cursor-pointer"
             >
               <Plus className="w-4 h-4" />
               <span>Registrar Docente</span>
@@ -522,7 +522,7 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
                     {inst.name.slice(0, 2).toUpperCase()}
                   </div>
                   <div className="min-w-0">
-                    <div className="text-sm font-bold text-white truncate">{inst.name}</div>
+                    <div className="text-sm font-bold text-slate-100 truncate">{inst.name}</div>
                     <div className="text-xs font-mono-tabular text-slate-400 truncate">
                       {inst.email} · {inst.department}
                     </div>
@@ -557,9 +557,9 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <div className="text-xs font-semibold text-cyan-400">{venue.campus}</div>
-                  <h3 className="text-lg font-bold text-white mt-0.5">{venue.name}</h3>
+                  <h3 className="text-lg font-bold text-slate-100 mt-0.5">{venue.name}</h3>
                 </div>
-                <span className="rounded-lg bg-slate-800 border border-slate-700 px-2.5 py-1 text-xs font-mono-tabular text-white">
+                <span className="rounded-lg bg-slate-800 border border-slate-700 px-2.5 py-1 text-xs font-mono-tabular text-slate-100">
                   {venue.roomCode}
                 </span>
               </div>
@@ -576,12 +576,12 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
       {/* Add Staff Modal */}
       {isAddStaffOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-espresso/50 backdrop-blur-md"
           role="dialog"
           aria-modal="true"
         >
           <div className="glass-panel-elevated rounded-3xl w-full max-w-md p-6 space-y-4">
-            <h2 className="text-lg font-bold text-white border-b border-slate-800 pb-3">
+            <h2 className="text-lg font-bold text-slate-100 border-b border-slate-800 pb-3">
               Acreditar Nuevo Docente
             </h2>
 
@@ -646,13 +646,13 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsAddStaffOpen(false)}
-                  className="h-10 px-4 rounded-xl text-sm font-semibold text-slate-400 hover:text-white cursor-pointer"
+                  className="h-10 px-4 rounded-xl text-sm font-semibold text-slate-400 hover:text-slate-100 cursor-pointer"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="h-10 px-5 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950 font-bold text-sm cursor-pointer"
+                  className="h-10 px-5 rounded-xl bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold text-sm cursor-pointer"
                 >
                   Guardar Docente
                 </button>

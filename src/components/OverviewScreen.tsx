@@ -147,7 +147,7 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
           <p className="text-xs font-semibold text-emerald-400 uppercase tracking-wider mb-1">
             Panel de Control · Cohortes y Asistencia
           </p>
-          <h1 className="text-2xl sm:text-4xl font-extrabold text-white">
+          <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-100">
             Resumen Institucional
           </h1>
         </div>
@@ -167,7 +167,7 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
           <button
             type="button"
             onClick={() => setIsModalOpen(true)}
-            className="h-11 px-5 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-bold text-sm inline-flex items-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-[0.98] transition-all cursor-pointer"
+            className="h-11 px-5 rounded-xl bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold text-sm inline-flex items-center gap-2 shadow-lg shadow-brand-500/20 active:scale-[0.98] transition-all cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             <span>Nueva Sesión</span>
@@ -179,7 +179,7 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="glass-panel rounded-2xl p-5 space-y-1.5">
           <div className="text-xs font-semibold text-slate-400">Tasa de Asistencia</div>
-          <div className="text-3xl sm:text-4xl font-extrabold text-white font-mono-tabular">
+          <div className="text-3xl sm:text-4xl font-extrabold text-slate-100 font-mono-tabular">
             {summary.rate}%
           </div>
           <p className="text-xs text-slate-400">
@@ -255,8 +255,8 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
                 onClick={() => setStatusFilter(tab.key)}
                 className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer ${
                   active
-                    ? 'bg-emerald-500 text-slate-950 font-bold'
-                    : 'text-slate-400 hover:text-white'
+                    ? 'bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold'
+                    : 'text-slate-400 hover:text-slate-100'
                 }`}
               >
                 {tab.label}
@@ -269,7 +269,7 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
       {/* Sessions Grid */}
       {filteredSessions.length === 0 ? (
         <div className="glass-panel rounded-2xl p-12 text-center space-y-3">
-          <p className="text-xl font-bold text-white">No se encontraron sesiones coincidentes</p>
+          <p className="text-xl font-bold text-slate-100">No se encontraron sesiones coincidentes</p>
           <p className="text-sm text-slate-400">
             Ajusta los términos de búsqueda o cambia el filtro seleccionado.
           </p>
@@ -279,7 +279,7 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
               setSearchQuery('');
               setStatusFilter('ALL');
             }}
-            className="h-10 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold cursor-pointer"
+            className="h-10 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 text-xs font-semibold cursor-pointer"
           >
             Restablecer Filtros
           </button>
@@ -310,7 +310,7 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
                         <span>·</span>
                         <span className="text-slate-400 truncate">{session.department}</span>
                       </div>
-                      <h2 className="text-xl font-bold text-white leading-snug">
+                      <h2 className="text-xl font-bold text-slate-100 leading-snug">
                         {session.title}
                       </h2>
                     </div>
@@ -328,7 +328,7 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
                                 : SessionStatus.LIVE
                             )
                           }
-                          className="text-[11px] font-semibold text-slate-400 hover:text-white underline cursor-pointer"
+                          className="text-[11px] font-semibold text-slate-400 hover:text-slate-100 underline cursor-pointer"
                         >
                           {session.status === SessionStatus.LIVE ? 'Finalizar sesión' : 'Activar en vivo'}
                         </button>
@@ -380,7 +380,7 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
                   <button
                     type="button"
                     onClick={() => onSelectSessionForProjector(session.id)}
-                    className="flex-1 min-w-[140px] h-10 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-bold text-xs inline-flex items-center justify-center gap-2 transition-all cursor-pointer"
+                    className="flex-1 min-w-[140px] h-10 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold text-xs inline-flex items-center justify-center gap-2 transition-all cursor-pointer"
                   >
                     <QrCode className="w-4 h-4 shrink-0" />
                     <span>{session.status === SessionStatus.LIVE ? 'Proyectar QR' : 'Abrir Proyector'}</span>
@@ -389,7 +389,7 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
                   <button
                     type="button"
                     onClick={() => onSelectSessionForScanner(session.id)}
-                    className="h-10 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white text-xs font-semibold inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+                    className="h-10 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-100 text-xs font-semibold inline-flex items-center gap-1.5 transition-colors cursor-pointer"
                   >
                     <ScanLine className="w-4 h-4 text-cyan-400" />
                     <span>Escáner</span>
@@ -398,7 +398,7 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
                   <button
                     type="button"
                     onClick={() => onSelectSessionForRoster(session.id)}
-                    className="h-10 px-4 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white text-xs font-semibold inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+                    className="h-10 px-4 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-slate-100 text-xs font-semibold inline-flex items-center gap-1.5 transition-colors cursor-pointer"
                   >
                     <Users className="w-4 h-4" />
                     <span>Registro</span>
@@ -413,7 +413,7 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
       {/* Create Session Modal */}
       {isModalOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-espresso/50 backdrop-blur-md"
           role="dialog"
           aria-modal="true"
           aria-labelledby="create-session-title"
@@ -421,7 +421,7 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
           <div className="glass-panel-elevated rounded-3xl w-full max-w-lg p-6 sm:p-8 max-h-[90vh] overflow-y-auto space-y-5">
             <div className="flex items-center justify-between border-b border-slate-800 pb-4">
               <div>
-                <h2 id="create-session-title" className="text-xl font-bold text-white">
+                <h2 id="create-session-title" className="text-xl font-bold text-slate-100">
                   Nueva Sesión de Clase
                 </h2>
                 <p className="text-xs text-slate-400 mt-0.5">
@@ -553,13 +553,13 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="h-10 px-4 rounded-xl text-sm font-semibold text-slate-400 hover:text-white cursor-pointer"
+                  className="h-10 px-4 rounded-xl text-sm font-semibold text-slate-400 hover:text-slate-100 cursor-pointer"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="h-10 px-5 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950 font-bold text-sm cursor-pointer"
+                  className="h-10 px-5 rounded-xl bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold text-sm cursor-pointer"
                 >
                   Activar Sesión
                 </button>

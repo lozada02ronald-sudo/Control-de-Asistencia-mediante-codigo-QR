@@ -21,7 +21,6 @@ import {
 } from './data/mockInstitution';
 import { LandingPage } from './components/LandingPage';
 import { PageSkeleton } from './components/PageSkeleton';
-import { ThreeBackground } from './components/ThreeBackground';
 import { AuthPortalScreen, AuthUserSession } from './components/AuthPortalScreen';
 import { Building2, Download, LogOut, Menu, QrCode, X } from 'lucide-react';
 
@@ -153,12 +152,12 @@ export default function App() {
     () => sessions[0]?.id ?? 'ses-2841'
   );
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [activeScreen]);
   const [toast, setToast] = useState<ToastNotice | null>(null);
   const [pythonOnline, setPythonOnline] = useState(false);
-  const [bgPaused] = useState<boolean>(() => {
-    if (typeof window === 'undefined') return false;
-    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  });
 
   // Dynamic QR Rotation Engine
   const [rotationInterval, setRotationInterval] = useState<number>(adminConfig.defaultTtlSeconds);
@@ -799,9 +798,9 @@ export default function App() {
     if (!currentUser) return [];
     if (portalType === 'admin') {
       return [
-        { id: 'admin', label: 'Monitor Admin' },
-        { id: 'overview', label: 'Resumen Empresa' },
-        { id: 'roster', label: 'Auditoría Listados' },
+        { id: 'admin', label: 'Administración' },
+        { id: 'overview', label: 'Resumen' },
+        { id: 'roster', label: 'Registro' },
         { id: 'modules', label: 'Módulos & IA' },
       ];
     }
@@ -809,7 +808,7 @@ export default function App() {
       return [
         { id: 'landing', label: 'Inicio' },
         { id: 'scanner', label: 'Escáner QR' },
-        { id: 'my-attendance', label: 'Mis Asistencias' },
+        { id: 'my-attendance', label: 'Mis asistencias' },
         { id: 'student-card', label: 'Carné QR' },
       ];
     }
@@ -824,9 +823,7 @@ export default function App() {
   }, [currentUser, portalType]);
 
   return (
-    <div className="min-h-screen flex flex-col text-slate-100 relative">
-      {/* Global Three.js Interactive 3D Background */}
-      <ThreeBackground intensity={activeScreen === 'landing' ? 'hero' : 'subtle'} paused={bgPaused} />
+    <div className="min-h-screen flex flex-col bg-canvas text-espresso">
 
       {/* Toast Banner */}
       {toast && (
@@ -850,44 +847,40 @@ export default function App() {
       )}
 
       {/* Top Navigation Bar */}
-      <header className="sticky top-0 z-40 bg-[#060b14]/80 backdrop-blur-xl border-b border-slate-800/80">
-        <div className="w-full max-w-[1360px] mx-auto px-4 sm:px-8 h-16 flex items-center justify-between gap-4">
-          {/* Logo */}
-          <button
-            type="button"
-            onClick={() => setActiveScreen(portalType === 'admin' ? 'admin' : 'landing')}
-            className="flex items-center gap-2.5 cursor-pointer group"
+      <a href="#contenido" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-lg focus:bg-white focus:px-4 focus:py-2">Saltar al contenido</a>
+      <header className="sticky top-0 z-40 border-b border-slate-800 bg-canvas/95 backdrop-blur-xl">
+        <div className="w-full max-w-[1360px] mx-auto px-4 sm:px-8 min-h-[4.65rem] flex items-center justify-between gap-4">
+          <a
+            href={portalType === 'admin' ? '/admin' : '/'}
+            onClick={(event) => {
+              if (!currentUser || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+              event.preventDefault();
+              setActiveScreen(portalType === 'admin' ? 'admin' : 'landing');
+              setMobileMenuOpen(false);
+            }}
+            className="flex shrink-0 items-center gap-2.5 text-espresso"
           >
-            <div
-              className={`w-9 h-9 rounded-xl flex items-center justify-center shadow-lg ${
-                portalType === 'admin'
-                  ? 'bg-gradient-to-br from-indigo-500 to-cyan-500 text-white shadow-indigo-500/20'
-                  : 'bg-gradient-to-br from-emerald-500 to-cyan-500 text-slate-950 shadow-emerald-500/20'
-              }`}
-            >
-              {portalType === 'admin' ? <Building2 className="w-5 h-5" /> : <QrCode className="w-5 h-5" />}
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="font-display font-extrabold text-xl tracking-tight text-white group-hover:text-emerald-300 transition-colors">
-                Acade<span className={portalType === 'admin' ? 'text-indigo-400' : 'text-emerald-400'}>QR</span>
+            <span className="flex size-10 items-center justify-center rounded-xl bg-brand-600 text-white">
+              {portalType === 'admin' ? <Building2 className="size-5" /> : <QrCode className="size-5" />}
+            </span>
+            <span className="flex flex-col leading-none">
+              <span className="font-display text-xl font-extrabold tracking-tight">
+                Acade<span className="text-brand-600">QR</span>
               </span>
-              <span
-                className={`hidden sm:inline-flex text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${
-                  portalType === 'admin'
-                    ? 'bg-indigo-500/15 text-indigo-300 border-indigo-500/30'
-                    : 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
-                }`}
-              >
-                {portalType === 'admin' ? 'Admin Empresa' : 'Portal Usuarios'}
-              </span>
-            </div>
-          </button>
+              {!currentUser && (
+                <span className="mt-1 text-xs font-medium text-slate-400">
+                  Asistencia universitaria
+                </span>
+              )}
+            </span>
+          </a>
+
 
           {/* Desktop Navigation */}
           {currentUser && (
             <nav
               aria-label="Navegación principal"
-              className="hidden md:flex items-center gap-1 p-1 rounded-xl bg-slate-900/80 border border-slate-800"
+              className="hidden min-[1100px]:flex items-center gap-1 rounded-xl border border-slate-800 bg-white p-1"
             >
               {navItems.map((item) => {
                 const active = activeScreen === item.id;
@@ -896,12 +889,13 @@ export default function App() {
                     key={item.id}
                     type="button"
                     onClick={() => setActiveScreen(item.id)}
-                    className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                    aria-current={active ? 'page' : undefined}
+                    className={`whitespace-nowrap rounded-lg px-3 py-2 text-xs font-semibold transition-colors cursor-pointer ${
                       active
                         ? portalType === 'admin'
                           ? 'bg-indigo-500 text-white font-bold shadow-sm'
-                          : 'bg-emerald-500 text-slate-950 font-bold shadow-sm'
-                        : 'text-slate-400 hover:text-white hover:bg-white/5'
+                          : 'bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold shadow-sm'
+                        : 'text-slate-400 hover:bg-brand-50 hover:text-brand-700'
                     }`}
                   >
                     {item.label}
@@ -915,11 +909,11 @@ export default function App() {
           <div className="flex items-center gap-2">
             {currentUser ? (
               <>
-                <div className="hidden lg:flex flex-col items-end mr-1">
-                  <span className="text-xs font-semibold text-white leading-tight">
+                <div className="hidden min-[1260px]:flex max-w-40 flex-col items-end mr-1">
+                  <span className="max-w-full truncate text-xs font-semibold text-slate-100 leading-tight">
                     {currentUser.name}
                   </span>
-                  <span className="text-[10px] font-medium text-slate-400 leading-tight">
+                  <span className="max-w-full truncate text-xs font-medium text-slate-400 leading-tight">
                     {portalType === 'admin'
                       ? currentUser.companyName ?? adminConfig.institutionName
                       : currentUser.programName
@@ -932,7 +926,7 @@ export default function App() {
                   <button
                     type="button"
                     onClick={handleExportCsv}
-                    className="h-9 px-3.5 rounded-xl bg-slate-800/90 hover:bg-slate-700 border border-slate-700 text-white text-xs font-semibold inline-flex items-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap"
+                    className="h-9 px-3.5 rounded-xl bg-slate-800/90 hover:bg-slate-700 border border-slate-700 text-slate-100 text-xs font-semibold inline-flex items-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap"
                   >
                     <Download className="w-3.5 h-3.5 text-emerald-400" />
                     <span className="hidden sm:inline">Exportar CSV</span>
@@ -954,8 +948,10 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setMobileMenuOpen((o) => !o)}
+                  aria-expanded={mobileMenuOpen}
+                  aria-controls="mobile-navigation"
                   aria-label={mobileMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
-                  className="md:hidden w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-white cursor-pointer"
+                  className="min-[1100px]:hidden size-10 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-100 cursor-pointer"
                 >
                   {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
                 </button>
@@ -963,9 +959,10 @@ export default function App() {
             ) : (
               <a
                 href={portalType === 'admin' ? '/' : '/admin'}
-                className="h-9 px-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 text-xs font-semibold inline-flex items-center gap-1.5 transition-colors whitespace-nowrap"
+                className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-slate-700 bg-white px-3 text-sm font-semibold text-espresso transition-colors hover:bg-brand-50 sm:px-4"
               >
-                {portalType === 'admin' ? 'Ir a Portal Usuarios' : 'Portal Admin Empresa'}
+                <Building2 className="size-4 shrink-0 text-brand-700" aria-hidden="true" />
+                {portalType === 'admin' ? 'Portal universitario' : 'Administración'}
               </a>
             )}
           </div>
@@ -973,7 +970,7 @@ export default function App() {
 
         {/* Mobile Menu */}
         {currentUser && mobileMenuOpen && (
-          <div className="md:hidden border-t border-slate-800 bg-[#060b14]/95 backdrop-blur-xl px-4 py-4 space-y-1.5">
+          <nav id="mobile-navigation" aria-label="Navegación principal" className="min-[1100px]:hidden border-t border-slate-800 bg-canvas px-4 py-4 space-y-1.5">
             {navItems.map((item) => {
               const active = activeScreen === item.id;
               return (
@@ -984,9 +981,10 @@ export default function App() {
                     setActiveScreen(item.id);
                     setMobileMenuOpen(false);
                   }}
+                  aria-current={active ? 'page' : undefined}
                   className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
                     active
-                      ? 'bg-emerald-500 text-slate-950 font-bold'
+                      ? 'bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold'
                       : 'text-slate-300 hover:bg-slate-800/60'
                   }`}
                 >
@@ -994,12 +992,12 @@ export default function App() {
                 </button>
               );
             })}
-          </div>
+          </nav>
         )}
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 w-full max-w-[1360px] mx-auto px-4 sm:px-8 py-8 sm:py-10 pb-28">
+      <main id="contenido" tabIndex={-1} className="flex-1 w-full max-w-[1360px] mx-auto px-5 sm:px-8 py-8 sm:py-12">
         {!currentUser ? (
           <AuthPortalScreen
             portalType={portalType}
@@ -1010,18 +1008,19 @@ export default function App() {
         <Suspense fallback={<PageSkeleton />}>
           {activeScreen === 'landing' && (
             <LandingPage
-              onOpenProjector={() =>
-                setActiveScreen(currentUser.role === 'APRENDIZ' ? 'scanner' : 'projector')
-              }
+              name={currentUser.name}
+              isStudent={currentUser.role === 'APRENDIZ'}
+              onOpenProjector={() => setActiveScreen('projector')}
               onOpenScanner={() => setActiveScreen('scanner')}
               onOpenOverview={() =>
                 setActiveScreen(currentUser.role === 'APRENDIZ' ? 'my-attendance' : 'overview')
               }
-              onOpenAdmin={() =>
-                setActiveScreen(currentUser.role === 'APRENDIZ' ? 'my-attendance' : 'overview')
-              }
-              pythonOnline={pythonOnline}
-              currentToken={currentToken}
+              onOpenStudentCard={() => setActiveScreen('student-card')}
+              liveSession={activeSession.status === SessionStatus.LIVE ? {
+                title: activeSession.title,
+                room: activeSession.room,
+                token: currentToken,
+              } : undefined}
             />
           )}
 
@@ -1151,37 +1150,26 @@ export default function App() {
         )}
       </main>
 
-      {/* Bottom Live Status Bar */}
-      <footer
-        aria-label="Barra de estado en vivo"
-        className="fixed bottom-0 left-0 right-0 z-30 bg-[#060b14]/85 backdrop-blur-xl border-t border-slate-800/80"
-      >
-        <div className="w-full max-w-[1360px] mx-auto px-4 sm:px-8 py-2.5 flex items-center justify-between gap-4 overflow-x-auto text-xs">
-          <div className="flex items-center gap-3 shrink-0">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" aria-hidden="true" />
-            <span className="font-mono-tabular text-slate-300">
-              <strong className="text-white">{activeSession.cohortCode}</strong> · {activeSession.room}
-            </span>
-          </div>
-
-          <div className="hidden sm:flex items-center gap-2 font-mono-tabular text-slate-300 shrink-0">
-            <span className="text-slate-500">Token:</span>
-            <span className="text-emerald-300 font-bold">{currentToken}</span>
-            <span className="text-slate-500">({secondsRemaining}s)</span>
-          </div>
-
-          <div className="hidden md:flex items-center gap-2 text-[11px] shrink-0">
-            <span
-              className={`w-2 h-2 rounded-full ${
-                pythonOnline ? 'bg-emerald-400' : 'bg-amber-400'
-              }`}
-            />
-            <span className="text-slate-400">
-              {pythonOnline ? 'Python QR Engine: En Línea' : 'Python QR Engine: Esperando'}
-            </span>
-          </div>
+      <footer className="border-t border-slate-800">
+        <div className="mx-auto flex w-full max-w-[1360px] flex-wrap items-center justify-between gap-x-6 gap-y-2 px-4 py-5 text-sm text-slate-400 sm:px-8">
+          <span><strong className="text-espresso">AcadeQR</strong> · Asistencia universitaria</span>
+          {currentUser && (
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+              {activeScreen === 'projector' && (
+                <span className="font-mono-tabular">{activeSession.cohortCode} · {activeSession.room}</span>
+              )}
+              <span className="inline-flex items-center gap-2">
+                <span
+                  className={`size-2 rounded-full ${pythonOnline ? 'bg-emerald-500' : 'bg-amber-400'}`}
+                  aria-hidden="true"
+                />
+                {pythonOnline ? 'Servicio QR conectado' : 'Servicio QR en modo local'}
+              </span>
+            </div>
+          )}
         </div>
       </footer>
+
       {/* Confirmation Dialog (Native Top-Layer) */}
       <dialog
         ref={confirmDialogRef}
@@ -1201,7 +1189,7 @@ export default function App() {
         {confirmPrompt && (
           <form method="dialog" className="p-6 space-y-5">
             <div className="space-y-2">
-              <h2 id="confirm-dialog-title" className="text-lg font-bold text-white">
+              <h2 id="confirm-dialog-title" className="text-lg font-bold text-slate-100">
                 {confirmPrompt.title}
               </h2>
               <p className="text-sm text-slate-300 leading-relaxed">

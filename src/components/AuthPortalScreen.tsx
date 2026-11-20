@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
   ArrowLeft,
   Building2,
+  ClipboardCheck,
   Eye,
   EyeOff,
   GraduationCap,
@@ -9,6 +10,7 @@ import {
   Lock,
   Mail,
   QrCode,
+  ScanLine,
   Search,
   ShieldAlert,
   ShieldCheck,
@@ -177,6 +179,7 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
   onAuthenticated,
 }) => {
   const isAdminPortal = portalType === 'admin';
+  const AccountHeading = isAdminPortal ? 'h1' : 'h2';
   const [mode, setMode] = useState<'login' | 'register' | 'recover'>('login');
   const [recoverTab, setRecoverTab] = useState<'password' | 'account'>('password');
   const [showPassword, setShowPassword] = useState(false);
@@ -512,63 +515,94 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
   };
 
   return (
-    <div className="min-h-[calc(100vh-8rem)] flex items-center justify-center py-6 px-4">
-      <div className="w-full max-w-md glass-panel-elevated rounded-3xl p-6 sm:p-8 space-y-6 animate-fade-in">
-        {/* Header */}
-        <div className="text-center space-y-2">
-          <div
-            className={`w-14 h-14 mx-auto rounded-2xl flex items-center justify-center shadow-lg ${
-              isAdminPortal
-                ? 'bg-gradient-to-br from-indigo-500 to-cyan-500 text-white shadow-indigo-500/25'
-                : 'bg-gradient-to-br from-emerald-500 to-cyan-500 text-slate-950 shadow-emerald-500/25'
-            }`}
-          >
-            {isAdminPortal ? <ShieldCheck className="w-7 h-7" /> : <QrCode className="w-7 h-7" />}
+    <div className={isAdminPortal ? 'mx-auto max-w-lg' : 'campus-layout'}>
+      {!isAdminPortal && (
+        <section className="contents" aria-labelledby="campus-title">
+          <div className="space-y-5 pt-1 sm:space-y-6 sm:pt-3">
+            <p className="flex items-center gap-2 text-sm font-bold text-brand-700">
+              <GraduationCap className="size-5" aria-hidden="true" />
+              Asistencia universitaria
+            </p>
+            <h1 id="campus-title" className="campus-title">
+              Tu asistencia,<br />
+              <em className="font-medium text-brand-500">a un escaneo.</em>
+            </h1>
+            <p className="max-w-md text-base leading-relaxed text-slate-400 sm:text-lg">
+              Escanea el código QR de tu clase y consulta tu asistencia. Si eres docente,
+              abre la sesión, proyecta el código y revisa los registros del grupo.
+            </p>
           </div>
-
-          <p
-            className={`text-[11px] font-bold uppercase tracking-widest ${
-              isAdminPortal ? 'text-indigo-400' : 'text-emerald-400'
-            }`}
-          >
-            {isAdminPortal ? 'Portal Corporativo Protegido' : 'Portal de Acceso Seguro'}
-          </p>
-
-          <h1 className="text-2xl font-extrabold text-white">
+          <div className="campus-media space-y-5">
+            <figure className="campus-photo">
+              <img
+                src="/images/mobile-scan.webp"
+                alt="Estudiante que escanea un código QR con su celular en clase"
+                width="1376"
+                height="768"
+              />
+              <figcaption className="inline-flex items-center gap-2 rounded-lg bg-espresso/90 px-3 py-2 text-sm font-semibold text-white">
+                <ScanLine className="size-4 text-brand-100" aria-hidden="true" />
+                Escaneo desde tu celular
+              </figcaption>
+            </figure>
+            <ol className="grid grid-cols-3 gap-2 border-t border-slate-700 pt-4 text-xs font-semibold text-slate-300 sm:gap-4 sm:text-sm" aria-label="Cómo funciona AcadeQR">
+              <li className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:gap-2">
+                <QrCode className="size-5 shrink-0 text-brand-600" aria-hidden="true" /> Proyecta el QR
+              </li>
+              <li className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:gap-2">
+                <ScanLine className="size-5 shrink-0 text-brand-600" aria-hidden="true" /> Escanea en clase
+              </li>
+              <li className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:gap-2">
+                <ClipboardCheck className="size-5 shrink-0 text-brand-600" aria-hidden="true" /> Consulta el registro
+              </li>
+            </ol>
+          </div>
+        </section>
+      )}
+      <section
+        id="acceso"
+        aria-label="Acceso a la cuenta"
+        className="auth-card glass-panel-elevated space-y-5"
+      >
+        <div className="space-y-2">
+          <div className="mb-4 flex size-12 items-center justify-center rounded-xl bg-brand-50 text-brand-700">
+            {isAdminPortal ? <ShieldCheck className="size-6" /> : <QrCode className="size-6" />}
+          </div>
+          <AccountHeading className="text-3xl font-extrabold leading-tight text-slate-100">
             {mode === 'recover'
-              ? 'Recuperación de Acceso'
+              ? 'Recupera tu acceso'
               : isAdminPortal
-              ? 'Monitor Admin de Empresa'
-              : 'Bienvenido a AcadeQR'}
-          </h1>
-
-          <p className="text-xs text-slate-400">
+              ? 'Administración'
+              : 'Accede a tu cuenta'}
+          </AccountHeading>
+          <p className="text-sm leading-relaxed text-slate-400">
             {mode === 'recover'
-              ? 'Restablece tu contraseña con OTP o localiza tu cuenta registrada.'
+              ? 'Restablece tu contraseña o encuentra tu cuenta.'
               : isAdminPortal
-              ? 'Autenticación protegida con bloqueo anti fuerza bruta y caché Redis.'
-              : 'Inicia sesión o regístrate con contraseña cifrada para acceder.'}
+              ? 'Accede al panel de gestión institucional.'
+              : 'Ingresa para registrar o gestionar la asistencia de tus clases.'}
           </p>
         </div>
 
+
         {/* Mode Switch */}
         {mode !== 'recover' && (
-          <div className="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-slate-900/90 border border-slate-800">
+          <div className="grid grid-cols-2 gap-1.5 rounded-xl border border-slate-800 bg-slate-900 p-1">
             <button
               type="button"
               onClick={() => {
                 setMode('login');
                 setError(null);
               }}
-              className={`h-9 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+              className={`h-10 rounded-lg text-sm font-semibold transition-colors cursor-pointer ${
                 mode === 'login'
                   ? isAdminPortal
                     ? 'bg-indigo-500 text-white font-bold'
-                    : 'bg-emerald-500 text-slate-950 font-bold'
-                  : 'text-slate-400 hover:text-white'
+                    : 'bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold'
+                  : 'text-slate-400 hover:text-slate-100'
               }`}
             >
-              Iniciar Sesión
+              Iniciar sesión
             </button>
             <button
               type="button"
@@ -576,15 +610,15 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
                 setMode('register');
                 setError(null);
               }}
-              className={`h-9 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+              className={`h-10 rounded-lg text-sm font-semibold transition-colors cursor-pointer ${
                 mode === 'register'
                   ? isAdminPortal
                     ? 'bg-indigo-500 text-white font-bold'
-                    : 'bg-emerald-500 text-slate-950 font-bold'
-                  : 'text-slate-400 hover:text-white'
+                    : 'bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold'
+                  : 'text-slate-400 hover:text-slate-100'
               }`}
             >
-              Crear Cuenta
+              Crear cuenta
             </button>
           </div>
         )}
@@ -620,17 +654,17 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
         {/* Recovery Flow */}
         {mode === 'recover' ? (
           <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-slate-900/90 border border-slate-800">
+            <div className="grid grid-cols-2 gap-1.5 rounded-xl border border-slate-800 bg-slate-900 p-1">
               <button
                 type="button"
                 onClick={() => {
                   setRecoverTab('password');
                   setError(null);
                 }}
-                className={`h-9 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+                className={`h-10 rounded-lg text-sm font-semibold transition-colors cursor-pointer ${
                   recoverTab === 'password'
                     ? 'bg-cyan-500 text-slate-950 font-bold'
-                    : 'text-slate-400 hover:text-white'
+                    : 'text-slate-400 hover:text-slate-100'
                 }`}
               >
                 Restablecer Clave
@@ -641,10 +675,10 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
                   setRecoverTab('account');
                   setError(null);
                 }}
-                className={`h-9 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+                className={`h-10 rounded-lg text-sm font-semibold transition-colors cursor-pointer ${
                   recoverTab === 'account'
                     ? 'bg-cyan-500 text-slate-950 font-bold'
-                    : 'text-slate-400 hover:text-white'
+                    : 'text-slate-400 hover:text-slate-100'
                 }`}
               >
                 Buscar Cuenta
@@ -655,7 +689,7 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
               !otpSent ? (
                 <form onSubmit={handleRequestOtp} className="space-y-4">
                   <div className="space-y-1.5">
-                    <label htmlFor="recover-email" className="block text-xs font-semibold text-slate-300">
+                    <label htmlFor="recover-email" className="block text-sm font-semibold text-slate-300">
                       Correo electrónico registrado
                     </label>
                     <div className="relative">
@@ -668,7 +702,7 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
                         required
                         value={recoverEmail}
                         onChange={(e) => setRecoverEmail(e.target.value)}
-                        placeholder="usuario@correo.com"
+                        placeholder="nombre@universidad.edu"
                         className="modern-input w-full pl-10 text-sm"
                       />
                     </div>
@@ -684,7 +718,7 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
               ) : (
                 <form onSubmit={handleResetPassword} className="space-y-4">
                   <div className="space-y-1.5">
-                    <label htmlFor="otp-code" className="block text-xs font-semibold text-slate-300">
+                    <label htmlFor="otp-code" className="block text-sm font-semibold text-slate-300">
                       Código OTP de 6 dígitos
                     </label>
                     <input
@@ -701,7 +735,7 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label htmlFor="new-password" className="block text-xs font-semibold text-slate-300">
+                    <label htmlFor="new-password" className="block text-sm font-semibold text-slate-300">
                       Nueva contraseña (mín. 8 caracteres, Mayús, minús y número)
                     </label>
                     <input
@@ -717,7 +751,7 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
                   </div>
                   <button
                     type="submit"
-                    className="w-full h-11 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-sm font-bold cursor-pointer"
+                    className="w-full h-11 rounded-xl bg-brand-600 hover:bg-brand-700 text-slate-950 text-sm font-bold cursor-pointer"
                   >
                     Verificar OTP y Guardar Contraseña
                   </button>
@@ -726,7 +760,7 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
             ) : (
               <form onSubmit={handleRecoverAccount} className="space-y-4">
                 <div className="space-y-1.5">
-                  <label htmlFor="lookup-account" className="block text-xs font-semibold text-slate-300">
+                  <label htmlFor="lookup-account" className="block text-sm font-semibold text-slate-300">
                     Nombre completo o Número de Documento
                   </label>
                   <div className="relative">
@@ -752,7 +786,7 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
                   <div className="rounded-xl bg-slate-900 border border-cyan-500/40 p-3.5 text-xs space-y-1">
                     <div className="text-cyan-300 font-bold">Cuenta encontrada ({foundHint.role})</div>
                     <div className="text-slate-300 font-mono-tabular">
-                      Correo registrado: <strong className="text-white">{foundHint.maskedEmail}</strong>
+                      Correo registrado: <strong className="text-slate-100">{foundHint.maskedEmail}</strong>
                     </div>
                   </div>
                 )}
@@ -766,10 +800,10 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
                 setError(null);
                 setNotice(null);
               }}
-              className="w-full h-9 rounded-xl text-xs font-semibold text-slate-400 hover:text-white inline-flex items-center justify-center gap-1.5 cursor-pointer"
+              className="w-full h-9 rounded-xl text-xs font-semibold text-slate-400 hover:text-slate-100 inline-flex items-center justify-center gap-1.5 cursor-pointer"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
-              <span>Volver a Iniciar Sesión</span>
+              <span>Volver a Iniciar sesión</span>
             </button>
           </div>
         ) : (
@@ -777,7 +811,7 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
           <form onSubmit={handleSubmit} className="space-y-4">
             {isAdminPortal && (
               <div className="space-y-1.5">
-                <label htmlFor="admin-company" className="block text-xs font-semibold text-slate-300">
+                <label htmlFor="admin-company" className="block text-sm font-semibold text-slate-300">
                   Empresa / Institución
                 </label>
                 <div className="relative">
@@ -802,7 +836,7 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
 
             {mode === 'register' && (
               <div className="space-y-1.5">
-                <label htmlFor="auth-fullname" className="block text-xs font-semibold text-slate-300">
+                <label htmlFor="auth-fullname" className="block text-sm font-semibold text-slate-300">
                   {isAdminPortal ? 'Nombre del Administrador' : 'Nombre completo'}
                 </label>
                 <div className="relative">
@@ -827,7 +861,7 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
               <>
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
-                    <label htmlFor="auth-doc" className="block text-xs font-semibold text-slate-300">
+                    <label htmlFor="auth-doc" className="block text-sm font-semibold text-slate-300">
                       Documento
                     </label>
                     <input
@@ -842,7 +876,7 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label htmlFor="auth-role" className="block text-xs font-semibold text-slate-300">
+                    <label htmlFor="auth-role" className="block text-sm font-semibold text-slate-300">
                       Rol
                     </label>
                     <select
@@ -859,7 +893,7 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
 
                 {sessions.length > 0 && (
                   <div className="space-y-1.5">
-                    <label htmlFor="auth-program" className="block text-xs font-semibold text-slate-300">
+                    <label htmlFor="auth-program" className="block text-sm font-semibold text-slate-300">
                       {publicRole === 'INSTRUCTOR'
                         ? 'Carrera / Programa que dictas (y Sede)'
                         : 'Carrera / Programa que vas a estudiar (y Sede)'}
@@ -886,7 +920,7 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
             )}
 
             <div className="space-y-1.5">
-              <label htmlFor="auth-email" className="block text-xs font-semibold text-slate-300">
+              <label htmlFor="auth-email" className="block text-sm font-semibold text-slate-300">
                 Correo electrónico
               </label>
               <div className="relative">
@@ -901,15 +935,15 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder={isAdminPortal ? 'admin@empresa.edu' : 'usuario@correo.com'}
+                  placeholder={isAdminPortal ? 'admin@empresa.edu' : 'nombre@universidad.edu'}
                   className="modern-input w-full pl-10 text-sm"
                 />
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <div className="flex items-center justify-between">
-                <label htmlFor="auth-password" className="block text-xs font-semibold text-slate-300">
+              <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
+                <label htmlFor="auth-password" className="block text-sm font-semibold text-slate-300">
                   Contraseña
                 </label>
                 {mode === 'login' && (
@@ -920,9 +954,9 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
                       setError(null);
                       setNotice(null);
                     }}
-                    className="text-[11px] font-semibold text-cyan-400 hover:underline cursor-pointer"
+                    className="text-xs font-semibold text-brand-700 hover:underline cursor-pointer"
                   >
-                    ¿Olvidaste tu cuenta o clave?
+                    ¿Olvidaste tu contraseña?
                   </button>
                 )}
               </div>
@@ -944,7 +978,7 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
                   type="button"
                   onClick={() => setShowPassword((s) => !s)}
                   aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white cursor-pointer p-1"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-100 cursor-pointer p-1"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -959,21 +993,21 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
             <button
               type="submit"
               disabled={lockSecondsLeft > 0}
-              className={`w-full h-11 rounded-xl text-sm font-bold inline-flex items-center justify-center gap-2 transition-colors ${
+              className={`w-full h-12 rounded-xl text-base font-bold inline-flex items-center justify-center gap-2 transition-colors ${
                 lockSecondsLeft > 0
                   ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
                   : isAdminPortal
-                  ? 'bg-indigo-500 hover:bg-indigo-400 text-white cursor-pointer'
-                  : 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 cursor-pointer'
+                  ? 'bg-indigo-500 hover:bg-indigo-600 text-white cursor-pointer'
+                  : 'bg-brand-600 hover:bg-brand-700 text-slate-950 cursor-pointer'
               }`}
             >
               {mode === 'register' ? (
                 <>
                   <UserPlus className="w-4 h-4" />
-                  <span>{isAdminPortal ? 'Registrar Admin y Entrar' : 'Registrarse y Entrar'}</span>
+                  <span>{isAdminPortal ? 'Registrar Admin y Entrar' : 'Crear cuenta e ingresar'}</span>
                 </>
               ) : (
-                <span>{isAdminPortal ? 'Ingresar al Monitor Admin' : 'Iniciar Sesión'}</span>
+                <span>{isAdminPortal ? 'Ingresar al Monitor Admin' : 'Iniciar sesión'}</span>
               )}
             </button>
           </form>
@@ -983,7 +1017,7 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
         {mode !== 'recover' && (
           <div className="pt-4 border-t border-slate-800 space-y-2.5">
             <p className="text-[11px] text-center text-slate-400 uppercase tracking-wider font-semibold">
-              Acceso rápido de demostración
+              Explora una cuenta de demostración
             </p>
             {isAdminPortal ? (
               <button
@@ -998,22 +1032,22 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
                 <button
                   type="button"
                   onClick={() => handleQuickDemo('APRENDIZ')}
-                  className="h-10 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-emerald-300 text-xs font-semibold transition-colors cursor-pointer"
+                  className="flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-700 bg-white px-2 text-sm font-semibold text-brand-700 transition-colors hover:bg-brand-50 cursor-pointer"
                 >
-                  Demo Aprendiz
+                  <GraduationCap className="size-4 shrink-0" aria-hidden="true" /> Demo estudiante
                 </button>
                 <button
                   type="button"
                   onClick={() => handleQuickDemo('INSTRUCTOR')}
-                  className="h-10 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-cyan-300 text-xs font-semibold transition-colors cursor-pointer"
+                  className="flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-700 bg-white px-2 text-sm font-semibold text-brand-700 transition-colors hover:bg-brand-50 cursor-pointer"
                 >
-                  Demo Instructor
+                  <User className="size-4 shrink-0" aria-hidden="true" /> Demo docente
                 </button>
               </div>
             )}
           </div>
         )}
-      </div>
+      </section>
     </div>
   );
 };
