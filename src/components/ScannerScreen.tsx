@@ -87,10 +87,11 @@ export const ScannerScreen: React.FC<ScannerScreenProps> = ({
 
   useEffect(() => {
     if (currentUser) {
+      const currentUserName = (currentUser.name || '').trim().toLowerCase();
       const matched = activeSession.learners.find(
         (l) =>
           l.id === currentUser.id ||
-          l.fullName.toLowerCase() === currentUser.name.toLowerCase()
+          (currentUserName && l.fullName.toLowerCase() === currentUserName)
       );
       if (matched) {
         setSelectedLearnerId(matched.id);

@@ -109,11 +109,13 @@ export function CampusHome({
             {currentUser ? (
               <div className="campus-user-nav-chip">
                 <span className="campus-user-avatar">
-                  {currentUser.name.slice(0, 2).toUpperCase()}
+                  {((currentUser.name || 'US').trim() || 'US').slice(0, 2).toUpperCase()}
                 </span>
                 <span className="campus-user-info">
-                  <span className="campus-user-name">{currentUser.name.split(' ')[0]}</span>
-                  <span className="campus-user-role-badge">{currentUser.role}</span>
+                  <span className="campus-user-name">
+                    {(currentUser.name || 'Usuario').trim().split(' ')[0] || 'Usuario'}
+                  </span>
+                  <span className="campus-user-role-badge">{currentUser.role || 'APRENDIZ'}</span>
                 </span>
                 <button
                   type="button"

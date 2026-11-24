@@ -30,7 +30,7 @@ export const StudentIdCardScreen: React.FC<StudentIdCardScreenProps> = ({
   const [downloading, setDownloading] = useState(false);
 
   const enrolledSession = useMemo(() => {
-    const userNameLower = currentUser.name.trim().toLowerCase();
+    const userNameLower = (currentUser.name || '').trim().toLowerCase();
     const userDocLower = (currentUser.nationalId ?? '').trim().toLowerCase();
     return (
       sessions.find((s) => s.id === currentUser.programId) ??
@@ -39,7 +39,7 @@ export const StudentIdCardScreen: React.FC<StudentIdCardScreenProps> = ({
           (l) =>
             l.id === currentUser.id ||
             (userDocLower && l.nationalId.trim().toLowerCase() === userDocLower) ||
-            l.fullName.trim().toLowerCase() === userNameLower
+            (userNameLower && l.fullName.trim().toLowerCase() === userNameLower)
         )
       ) ??
       sessions[0]
@@ -103,13 +103,13 @@ export const StudentIdCardScreen: React.FC<StudentIdCardScreenProps> = ({
       ctx.fillStyle = '#ffffff';
       ctx.font = 'bold 34px sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText(getInitials(currentUser.name), 100, 200);
+      ctx.fillText(getInitials(currentUser.name || 'Estudiante'), 100, 200);
       ctx.textAlign = 'left';
 
       // Student details
       ctx.fillStyle = '#ffffff';
       ctx.font = 'bold 32px sans-serif';
-      ctx.fillText(currentUser.name, 176, 178);
+      ctx.fillText(currentUser.name || 'Estudiante', 176, 178);
 
       ctx.fillStyle = '#67e8f9';
       ctx.font = 'bold 20px monospace';
@@ -143,7 +143,7 @@ export const StudentIdCardScreen: React.FC<StudentIdCardScreenProps> = ({
         ctx.fillText('ESCANEAR PARA VERIFICAR IDENTIDAD', 776, 440);
 
         const link = document.createElement('a');
-        link.download = `carne-estudiantil-${currentUser.name.toLowerCase().replace(/\s+/g, '-')}.png`;
+        link.download = `carne-estudiantil-${(currentUser.name || 'estudiante').toLowerCase().replace(/\s+/g, '-')}.png`;
         link.href = canvas.toDataURL('image/png');
         link.click();
         setDownloading(false);
@@ -223,14 +223,14 @@ export const StudentIdCardScreen: React.FC<StudentIdCardScreenProps> = ({
             <div className="md:col-span-7 space-y-5">
               <div className="flex items-center gap-4">
                 <div className="w-16 h-16 rounded-2xl bg-brand-600 flex items-center justify-center text-slate-950 text-xl font-extrabold shadow-lg shrink-0">
-                  {getInitials(currentUser.name)}
+                  {getInitials(currentUser.name || 'Estudiante')}
                 </div>
                 <div className="min-w-0">
                   <div className="text-xs font-bold uppercase tracking-wider text-emerald-400">
                     Aprendiz Matriculado
                   </div>
                   <h2 className="text-xl sm:text-2xl font-extrabold text-slate-100 truncate">
-                    {currentUser.name}
+                    {currentUser.name || 'Estudiante'}
                   </h2>
                   <p className="text-xs font-mono-tabular text-cyan-300 font-semibold mt-0.5">
                     Documento: {documentId}

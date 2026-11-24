@@ -22,7 +22,8 @@ import {
 import { LandingPage } from './components/LandingPage';
 import { PageSkeleton } from './components/PageSkeleton';
 import { AuthPortalScreen, AuthUserSession } from './components/AuthPortalScreen';
-import { Building2, Download, LogOut, Menu, QrCode, X } from 'lucide-react';
+import { CampusHome, CampusBrand } from './components/CampusHome';
+import { Building2, Download, GraduationCap, LogOut, Menu, QrCode, X } from 'lucide-react';
 
 const OverviewScreen = lazy(() =>
   import('./components/OverviewScreen').then((m) => ({ default: m.OverviewScreen })),
@@ -136,7 +137,22 @@ export default function App() {
   const [currentUser, setCurrentUser] = useState<AuthUserSession | null>(() => {
     try {
       const raw = localStorage.getItem(authStorageKey);
-      if (raw) return JSON.parse(raw) as AuthUserSession;
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === 'object') {
+          const name = parsed.name || parsed.fullName || parsed.nombre || parsed.email?.split('@')[0] || 'Usuario';
+          const role = (parsed.role === 'ADMIN' || parsed.role === 'INSTRUCTOR') ? parsed.role : 'APRENDIZ';
+          const id = parsed.id || 'usr-default';
+          const email = parsed.email || 'usuario@politecnico.edu.co';
+          return {
+            ...parsed,
+            id,
+            name,
+            email,
+            role,
+          } as AuthUserSession;
+        }
+      }
     } catch {
       // Fallback
     }
@@ -969,12 +985,12 @@ export default function App() {
               <>
                 <div className="hidden min-[1260px]:flex items-center gap-2.5 mr-2 pl-3 border-l border-white/15">
                   <div className="size-8 rounded-lg bg-blue-600/30 border border-blue-400/40 flex items-center justify-center font-bold text-xs text-white">
-                    {currentUser.name.slice(0, 2).toUpperCase()}
+                    {((currentUser.name || 'US').trim() || 'US').slice(0, 2).toUpperCase()}
                   </div>
                   <div className="flex flex-col items-start leading-tight">
                     <div className="flex items-center gap-1.5">
                       <span className="max-w-[130px] truncate text-xs font-bold text-white">
-                        {currentUser.name}
+                        {currentUser.name || 'Usuario'}
                       </span>
                       <span className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-blue-500/25 text-blue-200 border border-blue-400/30">
                         {currentUser.role}
@@ -1085,21 +1101,12 @@ export default function App() {
           />
         ) : (
           <Suspense fallback={<PageSkeleton />}>
-            {activeScreen === 'landing' && (
-              <LandingPage
-                name={currentUser.name}
-                isStudent={currentUser.role === 'APRENDIZ'}
-                onOpenProjector={() => setActiveScreen('projector')}
-                onOpenScanner={() => setActiveScreen('scanner')}
-                onOpenOverview={() =>
-                  setActiveScreen(currentUser.role === 'APRENDIZ' ? 'my-attendance' : 'overview')
-                }
-                onOpenStudentCard={() => setActiveScreen('student-card')}
-                liveSession={activeSession.status === SessionStatus.LIVE ? {
-                  title: activeSession.title,
-                  room: activeSession.room,
-                  token: currentToken,
-                } : undefined}
+            {activeScreen === 'overview' && currentUser.role === 'APRENDIZ' && (
+              <LearnerAttendanceScreen
+                currentUser={currentUser}
+                sessions={sessions}
+                scanLogs={scanLogs}
+                onGoToScanner={() => setActiveScreen('scanner')}
               />
             )}
 

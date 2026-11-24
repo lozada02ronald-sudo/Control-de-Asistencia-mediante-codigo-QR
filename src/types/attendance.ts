@@ -92,6 +92,7 @@ export interface AdminSystemConfig {
 
 export type AppScreen =
   | 'landing'
+  | 'acceso'
   | 'overview'
   | 'projector'
   | 'scanner'

@@ -85,7 +85,7 @@ export const LearnerAttendanceScreen: React.FC<LearnerAttendanceScreenProps> = (
   }, []);
 
   const allEntries = useMemo<LearnerDailyEntry[]>(() => {
-    const userNameLower = currentUser.name.trim().toLowerCase();
+    const userNameLower = (currentUser.name || '').trim().toLowerCase();
     const userDocLower = (currentUser.nationalId ?? '').trim().toLowerCase();
     const entries: LearnerDailyEntry[] = [];
 
@@ -166,7 +166,7 @@ export const LearnerAttendanceScreen: React.FC<LearnerAttendanceScreenProps> = (
   }, [allEntries]);
 
   const myLogs = useMemo(() => {
-    const userNameLower = currentUser.name.trim().toLowerCase();
+    const userNameLower = (currentUser.name || '').trim().toLowerCase();
     const userDocLower = (currentUser.nationalId ?? '').trim().toLowerCase();
     return scanLogs.filter(
       (log) =>
@@ -274,7 +274,7 @@ export const LearnerAttendanceScreen: React.FC<LearnerAttendanceScreenProps> = (
             Mis Asistencias y Fallas
           </h1>
           <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            Aprendiz: <strong className="text-slate-100">{currentUser.name}</strong>
+            Aprendiz: <strong className="text-slate-100">{currentUser.name || 'Aprendiz'}</strong>
             {currentUser.nationalId ? ` · ${currentUser.nationalId}` : ''}
           </p>
         </div>

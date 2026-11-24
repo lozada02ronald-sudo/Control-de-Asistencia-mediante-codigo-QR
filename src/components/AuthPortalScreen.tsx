@@ -298,6 +298,32 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
 
         const chosenSession =
           sessions.find((s) => s.id === selectedProgramId) ?? sessions[0];
+
+        // Register in live MySQL REST API backend
+        try {
+          const apiRes = await fetch('/api/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              nombre: fullName.trim(),
+              documento: nationalId.trim() || undefined,
+              email: normalizedEmail,
+              password,
+              rol: isAdminPortal ? 'ADMIN' : publicRole,
+              programa: chosenSession?.title,
+              sede: chosenSession?.campus,
+            }),
+          });
+          if (apiRes.ok) {
+            const apiData = await apiRes.json();
+            if (apiData.access_token) {
+              localStorage.setItem('acadeqr_jwt_token', apiData.access_token);
+            }
+          }
+        } catch {
+          // Offline fallback
+        }
+
         const passwordHash = await hashPasswordClient(password);
         const newAccount: StoredAccount = isAdminPortal
           ? {
@@ -328,7 +354,43 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
         return;
       }
 
-      // Login flow with anti-enumeration & salted hash verification
+      // Try live backend authentication with JWT
+      try {
+        const apiRes = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: normalizedEmail,
+            password,
+          }),
+        });
+        if (apiRes.ok) {
+          const apiData = await apiRes.json();
+          if (apiData.access_token && apiData.usuario) {
+            localStorage.setItem('acadeqr_jwt_token', apiData.access_token);
+            const user = apiData.usuario;
+            if (isAdminPortal && user.rol !== 'ADMIN') {
+              registerFailedAttempt();
+              return;
+            }
+            saveLockout(portalType, { attempts: 0, lockedUntil: 0 });
+            completeLogin({
+              id: user.id,
+              name: user.nombre,
+              email: user.email,
+              role: user.rol,
+              programName: user.programa,
+              campus: user.sede,
+              companyName: isAdminPortal ? companyName : undefined,
+            });
+            return;
+          }
+        }
+      } catch {
+        // Backend offline, fallback to client accounts
+      }
+
+      // Login flow with anti-enumeration & salted hash verification (fallback)
       const existing = accounts.find((acc) => acc.email === normalizedEmail);
       if (existing) {
         const valid = await verifyStoredPassword(password, existing);
