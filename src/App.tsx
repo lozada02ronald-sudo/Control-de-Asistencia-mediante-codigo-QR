@@ -798,10 +798,14 @@ export default function App() {
     if (!currentUser) return [];
     if (portalType === 'admin') {
       return [
+        { id: 'landing', label: 'Inicio 3D' },
         { id: 'admin', label: 'Administración' },
         { id: 'overview', label: 'Resumen' },
-        { id: 'roster', label: 'Registro de Asistencia' },
-        { id: 'modules', label: 'Gestión Académica' },
+        { id: 'projector', label: 'Proyector QR' },
+        { id: 'scanner', label: 'Escáner' },
+        { id: 'roster', label: 'Asistencias' },
+        { id: 'student-card', label: 'Carnet QR' },
+        { id: 'modules', label: 'Módulos' },
       ];
     }
     if (currentUser.role === 'APRENDIZ') {
@@ -1225,6 +1229,45 @@ export default function App() {
           </form>
         )}
       </dialog>
+
+      {/* Floating Live Screen Showcase Switcher */}
+      {currentUser && (
+        <aside
+          aria-label="Selector rápido de pantallas"
+          className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1.5 p-1.5 rounded-2xl bg-slate-900/90 border border-white/15 backdrop-blur-2xl shadow-2xl shadow-black/80 max-w-[95vw] overflow-x-auto"
+        >
+          <span className="text-[10px] font-mono font-bold text-emerald-400 uppercase tracking-wider px-2 hidden sm:inline">
+            Vistas en Vivo:
+          </span>
+          {[
+            { id: 'landing', label: 'Inicio 3D', icon: '🏠' },
+            { id: 'admin', label: 'Admin HUD', icon: '🛡️' },
+            { id: 'overview', label: 'Resumen', icon: '📊' },
+            { id: 'projector', label: 'Proyector QR', icon: '📽️' },
+            { id: 'scanner', label: 'Escáner', icon: '📱' },
+            { id: 'roster', label: 'Asistencias', icon: '📋' },
+            { id: 'student-card', label: 'Carnet QR', icon: '🪪' },
+            { id: 'modules', label: 'Módulos', icon: '🧩' },
+          ].map((view) => {
+            const active = activeScreen === view.id;
+            return (
+              <button
+                key={view.id}
+                type="button"
+                onClick={() => setActiveScreen(view.id as AppScreen)}
+                className={`h-7 px-2.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 ${
+                  active
+                    ? 'bg-emerald-500 text-slate-950 font-bold shadow-md shadow-emerald-500/30'
+                    : 'text-slate-300 hover:text-white hover:bg-white/10'
+                }`}
+              >
+                <span>{view.icon}</span>
+                <span>{view.label}</span>
+              </button>
+            );
+          })}
+        </aside>
+      )}
     </div>
   );
 }
