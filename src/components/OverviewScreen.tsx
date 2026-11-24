@@ -142,103 +142,155 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-white/[0.08]">
         <div>
-          <p className="text-xs font-semibold text-emerald-400 uppercase tracking-wider mb-1">
-            Panel de Control · Cohortes y Asistencia
-          </p>
-          <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-100">
-            Resumen Institucional
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 font-mono text-[10px] font-bold uppercase tracking-wider">
+              <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              TELEMETRÍA EN VIVO
+            </span>
+            <span className="text-slate-500 font-mono text-[11px]">/</span>
+            <span className="text-slate-400 font-mono text-[11px] uppercase tracking-wider">
+              Aulas & Cohortes
+            </span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+            Monitoreo de Sesiones Académicas
           </h1>
+          <p className="text-xs text-slate-400 mt-1">
+            Supervisión de cohortes en tiempo real, registro de presencia por código QR rotativo y calibración de geocerca.
+          </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2.5">
+        <div className="flex flex-wrap items-center gap-2 shrink-0">
           {onResetDemoData && (
             <button
               type="button"
               onClick={onResetDemoData}
-              className="h-11 px-4 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs font-semibold inline-flex items-center gap-2 transition-colors cursor-pointer"
+              className="h-8 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 border border-white/10 text-slate-300 text-xs font-medium inline-flex items-center gap-1.5 transition-colors cursor-pointer"
             >
               <RotateCcw className="w-3.5 h-3.5" />
-              <span>Restablecer Demo</span>
+              <span>Restablecer</span>
             </button>
           )}
 
           <button
             type="button"
             onClick={() => setIsModalOpen(true)}
-            className="h-11 px-5 rounded-xl bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold text-sm inline-flex items-center gap-2 shadow-lg shadow-brand-500/20 active:scale-[0.98] transition-all cursor-pointer"
+            className="h-8 px-3.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs inline-flex items-center gap-1.5 shadow-md shadow-emerald-950/40 transition-colors cursor-pointer"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-3.5 h-3.5" />
             <span>Nueva Sesión</span>
           </button>
         </div>
       </div>
 
-      {/* Metrics Strip */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="glass-panel rounded-2xl p-5 space-y-1.5">
-          <div className="text-xs font-semibold text-slate-400">Tasa de Asistencia</div>
-          <div className="text-3xl sm:text-4xl font-extrabold text-slate-100 font-mono-tabular">
-            {summary.rate}%
+      {/* Metrics Strip - High-Tech Telemetry HUD */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="cyber-panel cyber-bracket rounded-xl p-4 sm:p-5 relative overflow-hidden group">
+          <div className="flex items-center justify-between text-[11px] font-mono text-emerald-400 mb-2">
+            <span className="flex items-center gap-1.5 font-bold tracking-wider">
+              <span className="size-1.5 rounded-full bg-emerald-400 animate-ping-slow" />
+              MÉTRICA // 01
+            </span>
+            <span className="text-slate-400 text-[10px]">TASA GLOBAL</span>
           </div>
-          <p className="text-xs text-slate-400">
-            {summary.verifiedTotal} de {summary.totalLearners} aprendices
-          </p>
+          <div className="flex items-baseline justify-between">
+            <div className="text-3xl sm:text-4xl font-extrabold text-white font-mono-tabular tracking-tight">
+              {summary.rate}%
+            </div>
+            <span className="text-[10px] font-mono font-bold text-emerald-400 px-1.5 py-0.5 rounded bg-emerald-500/15 border border-emerald-500/30">
+              {summary.verifiedTotal}/{summary.totalLearners}
+            </span>
+          </div>
+          <div className="mt-3 flex items-center justify-between text-xs text-slate-400 pt-2.5 border-t border-white/[0.06]">
+            <span>Presencia confirmada</span>
+            <span className="font-mono text-[11px] text-slate-300">En Aula</span>
+          </div>
         </div>
 
-        <div className="glass-panel rounded-2xl p-5 space-y-1.5">
-          <div className="text-xs font-semibold text-slate-400">Puntualidad</div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-3xl sm:text-4xl font-extrabold text-emerald-400 font-mono-tabular">
+        <div className="cyber-panel cyber-bracket rounded-xl p-4 sm:p-5 relative overflow-hidden group">
+          <div className="flex items-center justify-between text-[11px] font-mono text-cyan-400 mb-2">
+            <span className="flex items-center gap-1.5 font-bold tracking-wider">
+              <span className="size-1.5 rounded-full bg-cyan-400" />
+              PUNTUALIDAD // 02
+            </span>
+            <span className="text-slate-400 text-[10px]">A TIEMPO</span>
+          </div>
+          <div className="flex items-baseline justify-between">
+            <div className="text-3xl sm:text-4xl font-extrabold text-cyan-300 font-mono-tabular tracking-tight">
               {summary.presentCount}
+            </div>
+            <span className="text-[10px] font-mono font-bold text-amber-400 px-1.5 py-0.5 rounded bg-amber-500/15 border border-amber-500/30">
+              {summary.lateCount} TARDANZAS
             </span>
-            <span className="text-xs text-slate-400">a tiempo</span>
           </div>
-          <p className="text-xs text-slate-400">{summary.lateCount} con tardanza</p>
+          <div className="mt-3 flex items-center justify-between text-xs text-slate-400 pt-2.5 border-t border-white/[0.06]">
+            <span>Dentro de margen</span>
+            <span className="font-mono text-[11px] text-slate-300">Margen 10m</span>
+          </div>
         </div>
 
-        <div className="glass-panel rounded-2xl p-5 space-y-1.5">
-          <div className="text-xs font-semibold text-slate-400 flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>Sesiones en Vivo</span>
+        <div className="cyber-panel cyber-bracket rounded-xl p-4 sm:p-5 relative overflow-hidden group">
+          <div className="flex items-center justify-between text-[11px] font-mono text-emerald-400 mb-2">
+            <span className="flex items-center gap-1.5 font-bold tracking-wider">
+              <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              EN VIVO // 03
+            </span>
+            <span className="text-slate-400 text-[10px]">SESIONES ACTIVAS</span>
           </div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-3xl sm:text-4xl font-extrabold text-cyan-400 font-mono-tabular">
+          <div className="flex items-baseline justify-between">
+            <div className="text-3xl sm:text-4xl font-extrabold text-white font-mono-tabular tracking-tight">
               {summary.liveCount}
+            </div>
+            <span className="text-[10px] font-mono font-bold text-emerald-400 px-1.5 py-0.5 rounded bg-emerald-500/15 border border-emerald-500/30">
+              ROTANDO
             </span>
-            <span className="text-xs text-slate-400">activas</span>
           </div>
-          <p className="text-xs text-slate-400">Rotación continua de tokens</p>
+          <div className="mt-3 flex items-center justify-between text-xs text-slate-400 pt-2.5 border-t border-white/[0.06]">
+            <span>Generación de QR activa</span>
+            <span className="font-mono text-[11px] text-slate-300">TTL 20s</span>
+          </div>
         </div>
 
-        <div className="glass-panel rounded-2xl p-5 space-y-1.5">
-          <div className="text-xs font-semibold text-slate-400">Geocerca Máxima</div>
-          <div className="flex items-baseline gap-1.5">
-            <span className="text-3xl sm:text-4xl font-extrabold text-indigo-400 font-mono-tabular">
-              50
+        <div className="cyber-panel cyber-bracket rounded-xl p-4 sm:p-5 relative overflow-hidden group">
+          <div className="flex items-center justify-between text-[11px] font-mono text-indigo-400 mb-2">
+            <span className="flex items-center gap-1.5 font-bold tracking-wider">
+              <span className="size-1.5 rounded-full bg-indigo-400" />
+              PERÍMETRO // 04
             </span>
-            <span className="text-xs text-slate-400">metros</span>
+            <span className="text-slate-400 text-[10px]">GEOCERCA GPS</span>
           </div>
-          <p className="text-xs text-slate-400">Perímetro de aula verificado</p>
+          <div className="flex items-baseline justify-between">
+            <div className="text-3xl sm:text-4xl font-extrabold text-indigo-300 font-mono-tabular tracking-tight">
+              50<span className="text-lg font-normal text-slate-400 ml-1">m</span>
+            </div>
+            <span className="text-[10px] font-mono font-bold text-indigo-300 px-1.5 py-0.5 rounded bg-indigo-500/15 border border-indigo-500/30">
+              CALIBRADO
+            </span>
+          </div>
+          <div className="mt-3 flex items-center justify-between text-xs text-slate-400 pt-2.5 border-t border-white/[0.06]">
+            <span>Radio perimetral seguro</span>
+            <span className="font-mono text-[11px] text-slate-300">Antifraude</span>
+          </div>
         </div>
       </div>
 
       {/* Filter & Search Toolbar */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 p-3 rounded-xl bg-[#080d18] border border-white/[0.07]">
         <div className="relative flex-1 max-w-md">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Buscar ficha, asignatura, aula o instructor..."
+            placeholder="Buscar cohorte, programa, aula o docente..."
             aria-label="Buscar sesiones de clase"
-            className="modern-input w-full pl-10 text-sm"
+            className="w-full h-8 pl-9 pr-3 rounded-lg bg-slate-900/90 border border-white/10 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500/50 font-mono"
           />
         </div>
 
-        <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-900/90 border border-slate-800 overflow-x-auto">
+        <div className="flex items-center gap-1 p-0.5 rounded-lg bg-slate-900 border border-white/10 overflow-x-auto">
           {(
             [
               { key: 'ALL', label: 'Todas' },
@@ -253,10 +305,10 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
                 key={tab.key}
                 type="button"
                 onClick={() => setStatusFilter(tab.key)}
-                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer ${
+                className={`h-7 px-3 rounded-md text-xs font-medium whitespace-nowrap transition-colors cursor-pointer ${
                   active
-                    ? 'bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold'
-                    : 'text-slate-400 hover:text-slate-100'
+                    ? 'bg-slate-800 text-white font-semibold border border-white/15'
+                    : 'text-slate-400 hover:text-white'
                 }`}
               >
                 {tab.label}
@@ -268,7 +320,7 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
 
       {/* Sessions Grid */}
       {filteredSessions.length === 0 ? (
-        <div className="glass-panel rounded-2xl p-12 text-center space-y-3">
+        <div className="cyber-panel rounded-xl p-12 text-center space-y-3 border border-white/[0.08]">
           <p className="text-xl font-bold text-slate-100">No se encontraron sesiones coincidentes</p>
           <p className="text-sm text-slate-400">
             Ajusta los términos de búsqueda o cambia el filtro seleccionado.
@@ -300,22 +352,22 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
             return (
               <article
                 key={session.id}
-                className="glass-panel rounded-2xl p-6 flex flex-col justify-between gap-5 hover:border-emerald-400/35 transition-colors"
+                className="cyber-panel rounded-xl p-5 sm:p-6 flex flex-col justify-between gap-5 border border-white/[0.08] hover:border-emerald-500/35 transition-all"
               >
                 <div className="space-y-4">
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
-                      <div className="text-xs font-semibold text-cyan-400 mb-1 flex items-center gap-2">
-                        <span className="font-mono-tabular">{session.cohortCode}</span>
+                      <div className="text-xs font-semibold text-emerald-400 mb-1 flex items-center gap-2 font-mono">
+                        <span className="font-bold px-1.5 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30">{session.cohortCode}</span>
                         <span>·</span>
                         <span className="text-slate-400 truncate">{session.department}</span>
                       </div>
-                      <h2 className="text-xl font-bold text-slate-100 leading-snug">
+                      <h2 className="text-lg sm:text-xl font-bold text-white leading-snug">
                         {session.title}
                       </h2>
                     </div>
 
-                    <div className="flex flex-col items-end gap-2 shrink-0">
+                    <div className="flex flex-col items-end gap-1.5 shrink-0">
                       <SessionStatusBadge status={session.status} />
                       {onUpdateSessionStatus && (
                         <button
@@ -328,7 +380,7 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
                                 : SessionStatus.LIVE
                             )
                           }
-                          className="text-[11px] font-semibold text-slate-400 hover:text-slate-100 underline cursor-pointer"
+                          className="text-[11px] font-mono text-slate-400 hover:text-white underline cursor-pointer"
                         >
                           {session.status === SessionStatus.LIVE ? 'Finalizar sesión' : 'Activar en vivo'}
                         </button>
@@ -336,7 +388,7 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-slate-300 border-y border-slate-800/80 py-2.5">
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-slate-300 border-y border-white/[0.06] py-2.5 font-mono">
                     <span className="inline-flex items-center gap-1.5">
                       <MapPin className="w-3.5 h-3.5 text-emerald-400" />
                       <span>{session.room} ({session.geofenceRadiusMeters}m)</span>
@@ -345,28 +397,28 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
                       <Clock className="w-3.5 h-3.5 text-cyan-400" />
                       <span>{session.startTime}–{session.endTime}</span>
                     </span>
-                    <span className="inline-flex items-center gap-1.5">
+                    <span className="inline-flex items-center gap-1.5 text-slate-300">
                       <Users className="w-3.5 h-3.5 text-indigo-400" />
                       <span>{session.instructor}</span>
                     </span>
                   </div>
 
-                  <div className="space-y-1.5">
-                    <div className="flex items-center justify-between text-xs font-semibold text-slate-300">
-                      <span>Asistencia Verificada</span>
-                      <span className="font-mono-tabular">
+                  <div className="space-y-1.5 font-mono">
+                    <div className="flex items-center justify-between text-xs text-slate-300">
+                      <span className="text-[11px] text-slate-400 uppercase tracking-wider">Asistencia Verificada</span>
+                      <span className="font-mono-tabular font-bold text-emerald-400">
                         {checkedIn}/{total} ({pct}%)
                       </span>
                     </div>
-                    <div className="h-2 w-full rounded-full bg-slate-800 overflow-hidden flex">
+                    <div className="h-1.5 w-full rounded-full bg-slate-900 border border-white/[0.05] overflow-hidden flex">
                       {total > 0 && (
                         <>
                           <div
-                            className="h-full bg-emerald-500 transition-all duration-300"
+                            className="h-full bg-emerald-400 transition-all duration-300 shadow-[0_0_8px_#34d399]"
                             style={{ width: `${(present / total) * 100}%` }}
                           />
                           <div
-                            className="h-full bg-amber-400 transition-all duration-300"
+                            className="h-full bg-amber-400 transition-all duration-300 shadow-[0_0_8px_#fbbf24]"
                             style={{ width: `${(late / total) * 100}%` }}
                           />
                         </>
@@ -380,28 +432,28 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
                   <button
                     type="button"
                     onClick={() => onSelectSessionForProjector(session.id)}
-                    className="flex-1 min-w-[140px] h-10 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold text-xs inline-flex items-center justify-center gap-2 transition-all cursor-pointer"
+                    className="flex-1 min-w-[130px] h-9 px-3 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs inline-flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-md shadow-emerald-950/50"
                   >
-                    <QrCode className="w-4 h-4 shrink-0" />
+                    <QrCode className="w-3.5 h-3.5 shrink-0" />
                     <span>{session.status === SessionStatus.LIVE ? 'Proyectar QR' : 'Abrir Proyector'}</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => onSelectSessionForScanner(session.id)}
-                    className="h-10 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-100 text-xs font-semibold inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+                    className="h-9 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 border border-white/10 text-slate-200 text-xs font-medium inline-flex items-center gap-1.5 transition-colors cursor-pointer"
                   >
-                    <ScanLine className="w-4 h-4 text-cyan-400" />
-                    <span>Escáner</span>
+                    <ScanLine className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>Escanear</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => onSelectSessionForRoster(session.id)}
-                    className="h-10 px-4 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-slate-100 text-xs font-semibold inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+                    className="h-9 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 border border-white/10 text-slate-300 hover:text-white text-xs font-medium inline-flex items-center gap-1.5 transition-colors cursor-pointer"
                   >
-                    <Users className="w-4 h-4" />
-                    <span>Registro</span>
+                    <Users className="w-3.5 h-3.5" />
+                    <span>Listado</span>
                   </button>
                 </div>
               </article>

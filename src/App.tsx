@@ -576,14 +576,14 @@ export default function App() {
           records: session.records.map((rec) =>
             rec.learnerId === learnerId
               ? {
-                  learnerId,
-                  status: finalStatus,
-                  checkedInAt: nowStr,
-                  checkedInDate: dateStr,
-                  method,
-                  distanceMeters,
-                  tokenSignature: signature,
-                }
+                learnerId,
+                status: finalStatus,
+                checkedInAt: nowStr,
+                checkedInDate: dateStr,
+                method,
+                distanceMeters,
+                tokenSignature: signature,
+              }
               : rec
           ),
         };
@@ -830,16 +830,14 @@ export default function App() {
         <div
           role="status"
           aria-live="polite"
-          className={`fixed top-20 right-4 sm:right-8 z-50 rounded-xl px-4 py-3 flex items-center gap-3 text-xs font-semibold shadow-2xl border backdrop-blur-xl animate-fade-in ${
-            toast.type === 'error'
+          className={`fixed top-20 right-4 sm:right-8 z-50 rounded-xl px-4 py-3 flex items-center gap-3 text-xs font-semibold shadow-2xl border backdrop-blur-xl animate-fade-in ${toast.type === 'error'
               ? 'bg-rose-950/90 border-rose-500/50 text-rose-200'
               : 'bg-slate-900/90 border-emerald-500/40 text-emerald-200'
-          }`}
+            }`}
         >
           <span
-            className={`w-2 h-2 rounded-full ${
-              toast.type === 'error' ? 'bg-rose-400' : 'bg-emerald-400'
-            }`}
+            className={`w-2 h-2 rounded-full ${toast.type === 'error' ? 'bg-rose-400' : 'bg-emerald-400'
+              }`}
             aria-hidden="true"
           />
           <span>{toast.message}</span>
@@ -858,14 +856,18 @@ export default function App() {
               setActiveScreen(portalType === 'admin' ? 'admin' : 'landing');
               setMobileMenuOpen(false);
             }}
-            className="flex shrink-0 items-center gap-3 text-white transition-opacity hover:opacity-90"
+            className="flex shrink-0 items-center gap-3 text-white transition-opacity hover:opacity-90 group"
           >
-            <span className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 text-slate-950 font-black shadow-md shadow-emerald-500/20">
-              {portalType === 'admin' ? <Building2 className="size-5" /> : <QrCode className="size-5" />}
-            </span>
+            <div className="relative flex size-10 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-950/40 text-emerald-400 font-mono font-black shadow-lg shadow-emerald-950/50 backdrop-blur-md group-hover:border-emerald-400/60 transition-colors">
+              <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-emerald-500/10 to-transparent pointer-events-none" />
+              {portalType === 'admin' ? <Building2 className="size-5 text-emerald-300" /> : <QrCode className="size-5 text-emerald-300" />}
+              <span className="absolute -top-1 -right-1 size-2 rounded-full bg-emerald-400 animate-pulse" />
+            </div>
             <span className="flex flex-col leading-none">
-              <span className="font-display text-xl font-black tracking-tight text-white">
-                Acade<span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">QR</span>
+              <span className="font-display text-lg font-extrabold tracking-tight text-white flex items-center gap-1.5">
+                <span>Acade</span>
+                <span className="text-emerald-400 font-mono font-black">QR</span>
+                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded border border-emerald-500/30 bg-emerald-500/10 text-emerald-300 font-bold uppercase tracking-wider ml-0.5">v2.4</span>
               </span>
               {!currentUser && (
                 <span className="mt-1 text-[11px] font-mono tracking-wider text-slate-400 uppercase">
@@ -875,13 +877,13 @@ export default function App() {
             </span>
           </a>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation - High-Tech Linear Command Dock */}
           {currentUser && (
             <nav
               aria-label="Navegación principal"
-              className="hidden min-[1100px]:flex items-center gap-1.5 rounded-2xl border border-white/10 bg-slate-900/80 p-1.5 backdrop-blur-xl shadow-inner shadow-black/40"
+              className="hidden min-[1100px]:flex items-center gap-1 rounded-xl border border-white/10 bg-[#090d16]/90 p-1 backdrop-blur-2xl shadow-xl shadow-black/60"
             >
-              {navItems.map((item) => {
+              {navItems.map((item, idx) => {
                 const active = activeScreen === item.id;
                 return (
                   <button
@@ -889,15 +891,17 @@ export default function App() {
                     type="button"
                     onClick={() => setActiveScreen(item.id)}
                     aria-current={active ? 'page' : undefined}
-                    className={`whitespace-nowrap rounded-xl px-3.5 py-2 text-xs font-semibold transition-all duration-200 cursor-pointer ${
+                    className={`relative whitespace-nowrap rounded-lg px-3.5 py-1.5 text-xs font-medium transition-all duration-200 cursor-pointer flex items-center gap-2 ${
                       active
-                        ? portalType === 'admin'
-                          ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold shadow-md shadow-indigo-500/25'
-                          : 'bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 font-bold shadow-md shadow-emerald-500/25'
-                        : 'text-slate-300 hover:text-white hover:bg-white/5'
+                        ? 'bg-slate-800/95 text-white font-semibold border border-white/15 shadow-md shadow-black/40'
+                        : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.04]'
                     }`}
                   >
-                    {item.label}
+                    {active && (
+                      <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+                    )}
+                    <span>{item.label}</span>
+                    <span className="text-[10px] font-mono text-slate-500 font-normal">⌘{idx + 1}</span>
                   </button>
                 );
               })}
@@ -905,27 +909,35 @@ export default function App() {
           )}
 
           {/* Right Actions */}
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2">
             {currentUser ? (
               <>
-                <div className="hidden min-[1260px]:flex max-w-44 flex-col items-end mr-1">
-                  <span className="max-w-full truncate text-xs font-bold text-white leading-tight">
-                    {currentUser.name}
-                  </span>
-                  <span className="max-w-full truncate text-[11px] font-mono font-medium text-emerald-400 leading-tight">
-                    {portalType === 'admin'
-                      ? currentUser.companyName ?? adminConfig.institutionName
-                      : currentUser.programName
-                      ? `${currentUser.role} · ${currentUser.programName}`
-                      : currentUser.role}
-                  </span>
+                <div className="hidden min-[1260px]:flex items-center gap-2.5 mr-2 pl-3 border-l border-white/10">
+                  <div className="size-8 rounded-lg border border-emerald-500/30 bg-emerald-950/40 flex items-center justify-center font-mono font-bold text-xs text-emerald-300">
+                    {currentUser.name.slice(0, 2).toUpperCase()}
+                  </div>
+                  <div className="flex flex-col items-start leading-tight">
+                    <div className="flex items-center gap-1.5">
+                      <span className="max-w-[130px] truncate text-xs font-semibold text-white">
+                        {currentUser.name}
+                      </span>
+                      <span className="text-[9px] font-mono font-bold uppercase px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                        {currentUser.role}
+                      </span>
+                    </div>
+                    <span className="text-[10px] font-mono text-slate-400 truncate max-w-[150px]">
+                      {portalType === 'admin'
+                        ? currentUser.companyName ?? adminConfig.institutionName
+                        : currentUser.programName ?? 'Formación Técnica'}
+                    </span>
+                  </div>
                 </div>
 
                 {currentUser.role !== 'APRENDIZ' && (
                   <button
                     type="button"
                     onClick={handleExportCsv}
-                    className="h-9 px-3.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-white/15 text-slate-200 text-xs font-semibold inline-flex items-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap shadow-sm"
+                    className="h-8 px-3 rounded-lg bg-slate-900/90 hover:bg-slate-800 border border-white/10 hover:border-emerald-500/40 text-slate-200 text-xs font-medium inline-flex items-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap shadow-sm"
                   >
                     <Download className="w-3.5 h-3.5 text-emerald-400" />
                     <span className="hidden sm:inline">Exportar CSV</span>
@@ -938,7 +950,7 @@ export default function App() {
                   onClick={handleLogout}
                   title="Cerrar sesión"
                   aria-label="Cerrar sesión"
-                  className="h-9 px-3 rounded-xl bg-slate-900 hover:bg-rose-950/60 border border-white/15 hover:border-rose-500/40 text-slate-300 hover:text-rose-200 text-xs font-semibold inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+                  className="h-8 px-3 rounded-lg bg-slate-900/90 hover:bg-rose-950/40 border border-white/10 hover:border-rose-500/40 text-slate-300 hover:text-rose-200 text-xs font-medium inline-flex items-center gap-1.5 transition-colors cursor-pointer"
                 >
                   <LogOut className="w-3.5 h-3.5" />
                   <span className="hidden sm:inline">Salir</span>
@@ -981,11 +993,10 @@ export default function App() {
                     setMobileMenuOpen(false);
                   }}
                   aria-current={active ? 'page' : undefined}
-                  className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
-                    active
+                  className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors ${active
                       ? 'bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold'
                       : 'text-slate-300 hover:bg-slate-800/60'
-                  }`}
+                    }`}
                 >
                   {item.label}
                 </button>
@@ -1004,148 +1015,148 @@ export default function App() {
             onAuthenticated={handleAuthenticated}
           />
         ) : (
-        <Suspense fallback={<PageSkeleton />}>
-          {activeScreen === 'landing' && (
-            <LandingPage
-              name={currentUser.name}
-              isStudent={currentUser.role === 'APRENDIZ'}
-              onOpenProjector={() => setActiveScreen('projector')}
-              onOpenScanner={() => setActiveScreen('scanner')}
-              onOpenOverview={() =>
-                setActiveScreen(currentUser.role === 'APRENDIZ' ? 'my-attendance' : 'overview')
-              }
-              onOpenStudentCard={() => setActiveScreen('student-card')}
-              liveSession={activeSession.status === SessionStatus.LIVE ? {
-                title: activeSession.title,
-                room: activeSession.room,
-                token: currentToken,
-              } : undefined}
-            />
-          )}
+          <Suspense fallback={<PageSkeleton />}>
+            {activeScreen === 'landing' && (
+              <LandingPage
+                name={currentUser.name}
+                isStudent={currentUser.role === 'APRENDIZ'}
+                onOpenProjector={() => setActiveScreen('projector')}
+                onOpenScanner={() => setActiveScreen('scanner')}
+                onOpenOverview={() =>
+                  setActiveScreen(currentUser.role === 'APRENDIZ' ? 'my-attendance' : 'overview')
+                }
+                onOpenStudentCard={() => setActiveScreen('student-card')}
+                liveSession={activeSession.status === SessionStatus.LIVE ? {
+                  title: activeSession.title,
+                  room: activeSession.room,
+                  token: currentToken,
+                } : undefined}
+              />
+            )}
 
-          {activeScreen === 'overview' && currentUser.role !== 'APRENDIZ' && (
-            <OverviewScreen
-              sessions={instructorSessions}
-              onSelectSessionForProjector={(id) => {
-                setActiveSessionId(id);
-                setActiveScreen('projector');
-              }}
-              onSelectSessionForScanner={(id) => {
-                setActiveSessionId(id);
-                setActiveScreen('scanner');
-              }}
-              onSelectSessionForRoster={(id) => {
-                setActiveSessionId(id);
-                setActiveScreen('roster');
-              }}
-              onCreateSession={handleCreateSession}
-              onUpdateSessionStatus={(id, status) => {
-                handleUpdateSessionSettings(id, { status });
-              }}
-              onResetDemoData={handleResetDemoData}
-            />
-          )}
+            {activeScreen === 'overview' && currentUser.role !== 'APRENDIZ' && (
+              <OverviewScreen
+                sessions={instructorSessions}
+                onSelectSessionForProjector={(id) => {
+                  setActiveSessionId(id);
+                  setActiveScreen('projector');
+                }}
+                onSelectSessionForScanner={(id) => {
+                  setActiveSessionId(id);
+                  setActiveScreen('scanner');
+                }}
+                onSelectSessionForRoster={(id) => {
+                  setActiveSessionId(id);
+                  setActiveScreen('roster');
+                }}
+                onCreateSession={handleCreateSession}
+                onUpdateSessionStatus={(id, status) => {
+                  handleUpdateSessionSettings(id, { status });
+                }}
+                onResetDemoData={handleResetDemoData}
+              />
+            )}
 
-          {activeScreen === 'projector' && currentUser.role !== 'APRENDIZ' && (
-            <QrProjectorScreen
-              sessions={instructorSessions}
-              activeSession={activeSession}
-              onSelectSession={setActiveSessionId}
-              currentToken={currentToken}
-              secondsRemaining={secondsRemaining}
-              rotationInterval={rotationInterval}
-              isPaused={isPaused}
-              onTogglePause={() => setIsPaused((p) => !p)}
-              onRotateNow={handleRotateNow}
-              onChangeInterval={handleChangeInterval}
-              onUpdateSessionSettings={handleUpdateSessionSettings}
-              scanLogs={scanLogs}
-              onSimulateScan={handleSimulateProjectorScan}
-              onOpenScanner={() => setActiveScreen('scanner')}
-            />
-          )}
+            {activeScreen === 'projector' && currentUser.role !== 'APRENDIZ' && (
+              <QrProjectorScreen
+                sessions={instructorSessions}
+                activeSession={activeSession}
+                onSelectSession={setActiveSessionId}
+                currentToken={currentToken}
+                secondsRemaining={secondsRemaining}
+                rotationInterval={rotationInterval}
+                isPaused={isPaused}
+                onTogglePause={() => setIsPaused((p) => !p)}
+                onRotateNow={handleRotateNow}
+                onChangeInterval={handleChangeInterval}
+                onUpdateSessionSettings={handleUpdateSessionSettings}
+                scanLogs={scanLogs}
+                onSimulateScan={handleSimulateProjectorScan}
+                onOpenScanner={() => setActiveScreen('scanner')}
+              />
+            )}
 
-          {activeScreen === 'scanner' && (
-            <ScannerScreen
-              sessions={sessions}
-              activeSession={activeSession}
-              onSelectSession={setActiveSessionId}
-              currentToken={currentToken}
-              previousToken={previousToken}
-              onVerifyCheckIn={handleVerifyCheckIn}
-              onBackToProjector={() => setActiveScreen('projector')}
-              onGoToRoster={
-                currentUser.role !== 'APRENDIZ'
-                  ? () => setActiveScreen('roster')
-                  : undefined
-              }
-              currentUser={currentUser}
-              onEnrollLearner={handleAddLearner}
-            />
-          )}
+            {activeScreen === 'scanner' && (
+              <ScannerScreen
+                sessions={sessions}
+                activeSession={activeSession}
+                onSelectSession={setActiveSessionId}
+                currentToken={currentToken}
+                previousToken={previousToken}
+                onVerifyCheckIn={handleVerifyCheckIn}
+                onBackToProjector={() => setActiveScreen('projector')}
+                onGoToRoster={
+                  currentUser.role !== 'APRENDIZ'
+                    ? () => setActiveScreen('roster')
+                    : undefined
+                }
+                currentUser={currentUser}
+                onEnrollLearner={handleAddLearner}
+              />
+            )}
 
-          {activeScreen === 'my-attendance' && (
-            <LearnerAttendanceScreen
-              currentUser={currentUser}
-              sessions={sessions}
-              scanLogs={scanLogs}
-              onGoToScanner={() => setActiveScreen('scanner')}
-            />
-          )}
+            {activeScreen === 'my-attendance' && (
+              <LearnerAttendanceScreen
+                currentUser={currentUser}
+                sessions={sessions}
+                scanLogs={scanLogs}
+                onGoToScanner={() => setActiveScreen('scanner')}
+              />
+            )}
 
-          {activeScreen === 'student-card' && (
-            <StudentIdCardScreen
-              currentUser={currentUser}
-              sessions={sessions}
-              institutionName={adminConfig.institutionName}
-            />
-          )}
+            {activeScreen === 'student-card' && (
+              <StudentIdCardScreen
+                currentUser={currentUser}
+                sessions={sessions}
+                institutionName={adminConfig.institutionName}
+              />
+            )}
 
-          {activeScreen === 'roster' && currentUser.role !== 'APRENDIZ' && (
-            <RosterScreen
-              sessions={instructorSessions}
-              activeSession={activeSession}
-              onSelectSession={setActiveSessionId}
-              onSetLearnerStatus={handleSetLearnerStatus}
-              onAddLearner={handleAddLearner}
-              allowManualOverride={adminConfig.allowManualOverride}
-            />
-          )}
+            {activeScreen === 'roster' && currentUser.role !== 'APRENDIZ' && (
+              <RosterScreen
+                sessions={instructorSessions}
+                activeSession={activeSession}
+                onSelectSession={setActiveSessionId}
+                onSetLearnerStatus={handleSetLearnerStatus}
+                onAddLearner={handleAddLearner}
+                allowManualOverride={adminConfig.allowManualOverride}
+              />
+            )}
 
-          {activeScreen === 'modules' && currentUser.role !== 'APRENDIZ' && (
-            <ModulesAndAiScreen
-              sessions={instructorSessions}
-              scanLogs={scanLogs}
-              currentToken={currentToken}
-              onCreateSession={handleCreateSession}
-              onAddLearner={handleAddLearner}
-              onUpdateSessionStatus={(id, status) => {
-                handleUpdateSessionSettings(id, { status });
-              }}
-              onOpenProjector={(id) => {
-                setActiveSessionId(id);
-                setActiveScreen('projector');
-              }}
-              onOpenRoster={(id) => {
-                setActiveSessionId(id);
-                setActiveScreen('roster');
-              }}
-            />
-          )}
+            {activeScreen === 'modules' && currentUser.role !== 'APRENDIZ' && (
+              <ModulesAndAiScreen
+                sessions={instructorSessions}
+                scanLogs={scanLogs}
+                currentToken={currentToken}
+                onCreateSession={handleCreateSession}
+                onAddLearner={handleAddLearner}
+                onUpdateSessionStatus={(id, status) => {
+                  handleUpdateSessionSettings(id, { status });
+                }}
+                onOpenProjector={(id) => {
+                  setActiveSessionId(id);
+                  setActiveScreen('projector');
+                }}
+                onOpenRoster={(id) => {
+                  setActiveSessionId(id);
+                  setActiveScreen('roster');
+                }}
+              />
+            )}
 
-          {activeScreen === 'admin' && portalType === 'admin' && (
-            <AdminScreen
-              sessions={sessions}
-              scanLogs={scanLogs}
-              adminConfig={adminConfig}
-              onUpdateAdminConfig={handleUpdateAdminConfig}
-              onClearLogs={handleClearLogs}
-              onSimulateSecurityBreach={handleSimulateSecurityBreach}
-              onResetDemoData={handleResetDemoData}
-              onExportFullBackup={handleExportFullBackup}
-            />
-          )}
-        </Suspense>
+            {activeScreen === 'admin' && portalType === 'admin' && (
+              <AdminScreen
+                sessions={sessions}
+                scanLogs={scanLogs}
+                adminConfig={adminConfig}
+                onUpdateAdminConfig={handleUpdateAdminConfig}
+                onClearLogs={handleClearLogs}
+                onSimulateSecurityBreach={handleSimulateSecurityBreach}
+                onResetDemoData={handleResetDemoData}
+                onExportFullBackup={handleExportFullBackup}
+              />
+            )}
+          </Suspense>
         )}
       </main>
 

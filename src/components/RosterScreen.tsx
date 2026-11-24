@@ -210,22 +210,32 @@ export const RosterScreen: React.FC<RosterScreenProps> = ({
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-2 border-b border-white/[0.08]">
         <div>
-          <p className="text-xs font-semibold text-emerald-400 uppercase tracking-wider mb-1">
-            Registro Oficial de Asistencia por Cohorte
-          </p>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-100">
-            Listado de Asistencia
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 font-mono text-[10px] font-bold uppercase tracking-wider">
+              <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              REGISTRO OFICIAL
+            </span>
+            <span className="text-slate-500 font-mono text-[11px]">/</span>
+            <span className="text-slate-400 font-mono text-[11px] uppercase tracking-wider">
+              Control de Asistencia
+            </span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+            Bitácora de Asistencia y Matriz Diaria
           </h1>
+          <p className="text-xs text-slate-400 mt-1">
+            Validación de puntualidad por cohorte, auditoría de presencias y exportación certificada.
+          </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2.5">
+        <div className="flex flex-wrap items-center gap-2 shrink-0">
           <select
             aria-label="Seleccionar listado de cohorte"
             value={activeSession.id}
             onChange={(e) => onSelectSession(e.target.value)}
-            className="modern-input text-sm font-semibold min-w-[240px]"
+            className="h-8 px-3 rounded-lg bg-slate-900 border border-white/10 text-xs font-mono text-white focus:outline-none focus:border-emerald-500/50 min-w-[200px]"
           >
             {sessions.map((s) => (
               <option key={s.id} value={s.id} className="bg-slate-900">
@@ -237,54 +247,58 @@ export const RosterScreen: React.FC<RosterScreenProps> = ({
           <button
             type="button"
             onClick={() => setIsAddOpen(true)}
-            className="h-11 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-100 text-xs font-semibold inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+            className="h-8 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 border border-white/10 text-slate-200 text-xs font-medium inline-flex items-center gap-1.5 transition-colors cursor-pointer"
           >
-            <UserPlus className="w-4 h-4 text-cyan-400" />
-            <span>Inscribir Aprendiz</span>
+            <UserPlus className="w-3.5 h-3.5 text-cyan-400" />
+            <span>Inscribir</span>
           </button>
 
           <button
             type="button"
             onClick={() => downloadAttendanceCsv(activeSession)}
-            className="h-11 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold text-xs inline-flex items-center gap-1.5 transition-all cursor-pointer"
+            className="h-8 px-3.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs inline-flex items-center gap-1.5 transition-colors cursor-pointer shadow-md shadow-emerald-950/40"
           >
-            <Download className="w-4 h-4" />
-            <span>Exportar CSV</span>
+            <Download className="w-3.5 h-3.5" />
+            <span>CSV</span>
           </button>
         </div>
       </div>
 
-      {/* Cohort Summary Strip */}
-      <div className="glass-panel rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      {/* Cohort Summary Strip - Cyber Panel */}
+      <div className="cyber-panel cyber-bracket rounded-xl p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 border border-white/[0.08]">
         <div>
-          <div className="text-xs font-semibold text-cyan-400">
-            {activeSession.cohortCode} · {activeSession.room} · {activeSession.instructor}
+          <div className="text-[11px] font-mono font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-2">
+            <span className="px-1.5 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30">{activeSession.cohortCode}</span>
+            <span>·</span>
+            <span className="text-slate-400">{activeSession.room}</span>
+            <span>·</span>
+            <span className="text-slate-400">{activeSession.instructor}</span>
           </div>
-          <div className="text-lg font-bold text-slate-100 mt-0.5">{activeSession.title}</div>
+          <div className="text-lg font-bold text-white mt-1">{activeSession.title}</div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-6 text-sm font-mono-tabular">
-          <div>
-            <span className="text-[11px] text-slate-400 block">Presentes</span>
+        <div className="grid grid-cols-4 gap-3 sm:gap-6 font-mono text-center md:text-right">
+          <div className="p-2 rounded-lg bg-slate-900/60 border border-white/[0.06]">
+            <span className="text-[10px] text-slate-400 uppercase tracking-wider block">Presentes</span>
             <span className="font-bold text-emerald-400 text-xl">{counts.present}</span>
           </div>
-          <div>
-            <span className="text-[11px] text-slate-400 block">Tardanzas</span>
+          <div className="p-2 rounded-lg bg-slate-900/60 border border-white/[0.06]">
+            <span className="text-[10px] text-slate-400 uppercase tracking-wider block">Tardanzas</span>
             <span className="font-bold text-amber-400 text-xl">{counts.late}</span>
           </div>
-          <div>
-            <span className="text-[11px] text-slate-400 block">Ausentes</span>
+          <div className="p-2 rounded-lg bg-slate-900/60 border border-white/[0.06]">
+            <span className="text-[10px] text-slate-400 uppercase tracking-wider block">Ausentes</span>
             <span className="font-bold text-rose-400 text-xl">{counts.absent}</span>
           </div>
-          <div>
-            <span className="text-[11px] text-slate-400 block">Inscritos</span>
-            <span className="font-bold text-slate-100 text-xl">{counts.total}</span>
+          <div className="p-2 rounded-lg bg-slate-900/60 border border-white/[0.06]">
+            <span className="text-[10px] text-slate-400 uppercase tracking-wider block">Total</span>
+            <span className="font-bold text-white text-xl">{counts.total}</span>
           </div>
         </div>
       </div>
 
       {/* Attendance Calendar Bar & Optional Monthly Grid */}
-      <div className="glass-panel rounded-2xl p-4 sm:p-5 space-y-4">
+      <div className="cyber-panel rounded-xl p-4 sm:p-5 space-y-4 border border-white/[0.08]">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">

@@ -297,19 +297,29 @@ export const ModulesAndAiScreen: React.FC<ModulesAndAiScreenProps> = ({
   return (
     <div className="space-y-8 animate-fade-in">
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-2 border-b border-white/[0.08]">
         <div>
-          <p className="text-xs font-semibold text-emerald-400 uppercase tracking-wider mb-1">
-            Gestión Académica · Seguridad Criptográfica · Multiplataforma
-          </p>
-          <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-100">
-            Gestión de Módulos y Auditoría
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 font-mono text-[10px] font-bold uppercase tracking-wider">
+              <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              GESTIÓN INSTITUCIONAL
+            </span>
+            <span className="text-slate-500 font-mono text-[11px]">/</span>
+            <span className="text-slate-400 font-mono text-[11px] uppercase tracking-wider">
+              Módulos Académicos
+            </span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+            Administración de Grupos y Sincronización
           </h1>
+          <p className="text-xs text-slate-400 mt-1">
+            Matrícula de aprendices, control de sesiones en vivo y enlace con base de datos en tiempo real.
+          </p>
         </div>
 
-        <div className="flex flex-wrap gap-1.5 p-1.5 rounded-2xl bg-slate-900/90 border border-slate-800">
+        <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[#080d18] border border-white/10 overflow-x-auto shrink-0">
           {[
-            { key: 'MODULES', label: 'Módulos Institucionales', icon: Layers },
+            { key: 'MODULES', label: 'Módulos Académicos', icon: Layers },
             { key: 'AI', label: 'Auditoría Criptográfica', icon: ShieldCheck },
             { key: 'FIREBASE', label: 'Sincronización PWA', icon: Cloud },
           ].map((tab) => {
@@ -320,13 +330,13 @@ export const ModulesAndAiScreen: React.FC<ModulesAndAiScreenProps> = ({
                 key={tab.key}
                 type="button"
                 onClick={() => setActiveTab(tab.key as typeof activeTab)}
-                className={`h-9 px-3.5 rounded-xl text-xs font-semibold inline-flex items-center gap-1.5 transition-colors cursor-pointer ${
+                className={`h-8 px-3.5 rounded-lg text-xs font-medium inline-flex items-center gap-1.5 transition-all cursor-pointer ${
                   active
-                    ? 'bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold'
-                    : 'text-slate-400 hover:text-slate-100'
+                    ? 'bg-slate-800 text-white font-semibold border border-white/15 shadow-sm'
+                    : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'
                 }`}
               >
-                <Icon className="w-3.5 h-3.5" />
+                <Icon className={`w-3.5 h-3.5 ${active ? 'text-emerald-400' : 'text-slate-400'}`} />
                 <span>{tab.label}</span>
               </button>
             );
@@ -361,17 +371,17 @@ export const ModulesAndAiScreen: React.FC<ModulesAndAiScreenProps> = ({
                   key={m.key}
                   type="button"
                   onClick={() => setModuleSubTab(m.key as typeof moduleSubTab)}
-                  className={`glass-panel rounded-2xl p-4 text-left transition-all cursor-pointer ${
-                    active ? 'border-emerald-500/60 bg-emerald-500/10' : 'hover:border-slate-700'
+                  className={`cyber-panel cyber-bracket rounded-xl p-4 text-left transition-all cursor-pointer border ${
+                    active ? 'border-emerald-500/60 bg-emerald-500/10' : 'border-white/[0.08] hover:border-white/20'
                   }`}
                 >
                   <div className="flex items-center justify-between">
                     <Icon className={`w-4 h-4 ${active ? 'text-emerald-400' : 'text-slate-400'}`} />
-                    <span className="text-lg font-extrabold font-mono-tabular text-slate-100">
+                    <span className="text-xl font-extrabold font-mono text-white">
                       {m.count}
                     </span>
                   </div>
-                  <div className="text-xs font-bold text-slate-200 mt-2">Módulo {m.label}</div>
+                  <div className="text-xs font-bold text-slate-200 mt-2 font-mono">Módulo {m.label}</div>
                 </button>
               );
             })}
