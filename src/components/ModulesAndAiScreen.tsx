@@ -330,11 +330,10 @@ export const ModulesAndAiScreen: React.FC<ModulesAndAiScreenProps> = ({
                 key={tab.key}
                 type="button"
                 onClick={() => setActiveTab(tab.key as typeof activeTab)}
-                className={`h-8 px-3.5 rounded-lg text-xs font-medium inline-flex items-center gap-1.5 transition-all cursor-pointer ${
-                  active
+                className={`h-8 px-3.5 rounded-lg text-xs font-medium inline-flex items-center gap-1.5 transition-all cursor-pointer ${active
                     ? 'bg-slate-800 text-white font-semibold border border-white/15 shadow-sm'
                     : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'
-                }`}
+                  }`}
               >
                 <Icon className={`w-3.5 h-3.5 ${active ? 'text-emerald-400' : 'text-slate-400'}`} />
                 <span>{tab.label}</span>
@@ -371,9 +370,8 @@ export const ModulesAndAiScreen: React.FC<ModulesAndAiScreenProps> = ({
                   key={m.key}
                   type="button"
                   onClick={() => setModuleSubTab(m.key as typeof moduleSubTab)}
-                  className={`cyber-panel cyber-bracket rounded-xl p-4 text-left transition-all cursor-pointer border ${
-                    active ? 'border-emerald-500/60 bg-emerald-500/10' : 'border-white/[0.08] hover:border-white/20'
-                  }`}
+                  className={`cyber-panel cyber-bracket rounded-xl p-4 text-left transition-all cursor-pointer border ${active ? 'border-emerald-500/60 bg-emerald-500/10' : 'border-white/[0.08] hover:border-white/20'
+                    }`}
                 >
                   <div className="flex items-center justify-between">
                     <Icon className={`w-4 h-4 ${active ? 'text-emerald-400' : 'text-slate-400'}`} />
@@ -556,17 +554,16 @@ export const ModulesAndAiScreen: React.FC<ModulesAndAiScreenProps> = ({
                           key={st}
                           type="button"
                           onClick={() => onUpdateSessionStatus(s.id, st)}
-                          className={`h-8 px-3 rounded-lg text-xs font-semibold cursor-pointer ${
-                            s.status === st
+                          className={`h-8 px-3 rounded-lg text-xs font-semibold cursor-pointer ${s.status === st
                               ? 'bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold'
                               : 'bg-slate-900 border border-slate-800 text-slate-300'
-                          }`}
+                            }`}
                         >
                           {st === SessionStatus.LIVE
                             ? 'En Vivo'
                             : st === SessionStatus.SCHEDULED
-                            ? 'Programada'
-                            : 'Finalizada'}
+                              ? 'Programada'
+                              : 'Finalizada'}
                         </button>
                       )
                     )}
@@ -723,11 +720,10 @@ export const ModulesAndAiScreen: React.FC<ModulesAndAiScreenProps> = ({
                     </div>
                     <div className="text-right shrink-0 font-mono-tabular">
                       <span
-                        className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                          r.passed
+                        className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${r.passed
                             ? 'bg-emerald-500/20 text-emerald-300'
                             : 'bg-rose-500/20 text-rose-300'
-                        }`}
+                          }`}
                       >
                         {r.passed ? 'PASS' : 'FAIL'}
                       </span>

@@ -229,106 +229,130 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
       </div>
 
       {/* ============================================================== */}
-      {/* 2. HUD METRIC TELEMETRY CARDS (4 PANELES CYBER CON CORCHETES)  */}
+      {/* 2. HUD METRIC TELEMETRY CARDS (4 PANELES VIBRANTES CON GRÁFICOS)*/}
       {/* ============================================================== */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Metric 1 */}
-        <div className="cyber-panel cyber-bracket rounded-xl p-4 sm:p-5 relative overflow-hidden group">
+        {/* Metric 1: Verificados */}
+        <div className="cyber-panel cyber-bracket rounded-xl p-5 relative overflow-hidden group">
           <div className="flex items-center justify-between text-[11px] font-mono text-emerald-400 mb-2">
             <span className="flex items-center gap-1.5 font-bold tracking-wider">
-              <span className="size-1.5 rounded-full bg-emerald-400 animate-ping-slow" />
+              <span className="size-2 rounded-full bg-emerald-400 animate-ping-slow" />
               TELEMETRÍA // 01
             </span>
-            <span className="text-slate-400 text-[10px]">VERIFICADOS</span>
+            <span className="text-slate-400 text-[10px] uppercase">VERIFICADOS</span>
           </div>
-          <div className="flex items-baseline justify-between">
-            <div className="text-3xl sm:text-4xl font-extrabold text-white font-mono-tabular tracking-tight">
-              {totalVerified}
+          <div className="flex items-start justify-between">
+            <div>
+              <div className="text-3xl sm:text-4xl font-extrabold text-white font-mono tracking-tight">
+                {totalVerified}
+              </div>
+              <p className="text-xs text-slate-400 mt-1">Presencia confirmada</p>
             </div>
-            <div className="text-right">
-              <span className="text-[10px] font-mono font-bold text-emerald-400 px-1.5 py-0.5 rounded bg-emerald-500/15 border border-emerald-500/30">
-                99.4% ÉXITO
-              </span>
+            <div className="size-11 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shadow-lg shadow-emerald-500/10 shrink-0">
+              <ShieldCheck className="w-5 h-5" />
             </div>
           </div>
-          <div className="mt-3 flex items-center justify-between text-xs text-slate-400 pt-2.5 border-t border-white/[0.06]">
-            <span>Presencia confirmada</span>
-            <span className="font-mono text-[11px] text-slate-300">QR Dinámico</span>
+          <div className="mt-3 pt-2.5 border-t border-white/[0.06] flex items-center justify-between">
+            <span className="px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-300 font-mono font-bold text-[10px]">
+              ↑ 99.4% ÉXITO
+            </span>
+            <svg className="w-20 h-5 text-emerald-400" viewBox="0 0 80 20" fill="none">
+              <path d="M0 16 L15 12 L30 14 L45 8 L60 10 L80 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              <circle cx="80" cy="4" r="2.5" fill="#34d399" />
+            </svg>
           </div>
         </div>
 
-        {/* Metric 2 */}
-        <div className="cyber-panel cyber-bracket rounded-xl p-4 sm:p-5 relative overflow-hidden group">
+        {/* Metric 2: Denegados */}
+        <div className="cyber-panel cyber-bracket rounded-xl p-5 relative overflow-hidden group">
           <div className="flex items-center justify-between text-[11px] font-mono text-rose-400 mb-2">
             <span className="flex items-center gap-1.5 font-bold tracking-wider">
-              <span className="size-1.5 rounded-full bg-rose-400" />
+              <span className="size-2 rounded-full bg-rose-400" />
               SEGURIDAD // 02
             </span>
-            <span className="text-slate-400 text-[10px]">DENEGADOS</span>
+            <span className="text-slate-400 text-[10px] uppercase">BLOQUEADOS</span>
           </div>
-          <div className="flex items-baseline justify-between">
-            <div className="text-3xl sm:text-4xl font-extrabold text-rose-300 font-mono-tabular tracking-tight">
-              {totalDenials}
+          <div className="flex items-start justify-between">
+            <div>
+              <div className="text-3xl sm:text-4xl font-extrabold text-rose-300 font-mono tracking-tight">
+                {totalDenials}
+              </div>
+              <p className="text-xs text-slate-400 mt-1">Tokens o geocerca inválidos</p>
             </div>
-            <div className="text-right">
-              <span className="text-[10px] font-mono font-bold text-rose-400 px-1.5 py-0.5 rounded bg-rose-500/15 border border-rose-500/30">
-                0 INTRUSIONES
-              </span>
+            <div className="size-11 rounded-xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-400 shadow-lg shadow-rose-500/10 shrink-0">
+              <ShieldAlert className="w-5 h-5" />
             </div>
           </div>
-          <div className="mt-3 flex items-center justify-between text-xs text-slate-400 pt-2.5 border-t border-white/[0.06]">
-            <span>Tokens o geocerca inválidos</span>
-            <span className="font-mono text-[11px] text-slate-300">Filtrado Activo</span>
+          <div className="mt-3 pt-2.5 border-t border-white/[0.06] flex items-center justify-between">
+            <span className="px-1.5 py-0.5 rounded bg-rose-500/15 text-rose-300 font-mono font-bold text-[10px]">
+              0 INTRUSIONES
+            </span>
+            <svg className="w-20 h-5 text-rose-400" viewBox="0 0 80 20" fill="none">
+              <path d="M0 10 L20 10 L40 10 L60 10 L80 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeDasharray="3 3" />
+              <circle cx="80" cy="10" r="2.5" fill="#f87171" />
+            </svg>
           </div>
         </div>
 
-        {/* Metric 3 */}
-        <div className="cyber-panel cyber-bracket rounded-xl p-4 sm:p-5 relative overflow-hidden group">
+        {/* Metric 3: Tardanzas */}
+        <div className="cyber-panel cyber-bracket rounded-xl p-5 relative overflow-hidden group">
           <div className="flex items-center justify-between text-[11px] font-mono text-amber-400 mb-2">
             <span className="flex items-center gap-1.5 font-bold tracking-wider">
-              <span className="size-1.5 rounded-full bg-amber-400" />
+              <span className="size-2 rounded-full bg-amber-400" />
               PUNTUALIDAD // 03
             </span>
-            <span className="text-slate-400 text-[10px]">TARDANZAS</span>
+            <span className="text-slate-400 text-[10px] uppercase">TARDANZAS</span>
           </div>
-          <div className="flex items-baseline justify-between">
-            <div className="text-3xl sm:text-4xl font-extrabold text-amber-300 font-mono-tabular tracking-tight">
-              {totalLate}
+          <div className="flex items-start justify-between">
+            <div>
+              <div className="text-3xl sm:text-4xl font-extrabold text-amber-300 font-mono tracking-tight">
+                {totalLate}
+              </div>
+              <p className="text-xs text-slate-400 mt-1">Margen de 10 min superado</p>
             </div>
-            <div className="text-right">
-              <span className="text-[10px] font-mono font-bold text-amber-400 px-1.5 py-0.5 rounded bg-amber-500/15 border border-amber-500/30">
-                GRACIA 10M
-              </span>
+            <div className="size-11 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 shadow-lg shadow-amber-500/10 shrink-0">
+              <AlertTriangle className="w-5 h-5" />
             </div>
           </div>
-          <div className="mt-3 flex items-center justify-between text-xs text-slate-400 pt-2.5 border-t border-white/[0.06]">
-            <span>Fuera de margen inicial</span>
-            <span className="font-mono text-[11px] text-slate-300">Registrado</span>
+          <div className="mt-3 pt-2.5 border-t border-white/[0.06] flex items-center justify-between">
+            <span className="px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-300 font-mono font-bold text-[10px]">
+              TOLERANCIA ACTIVA
+            </span>
+            <svg className="w-20 h-5 text-amber-400" viewBox="0 0 80 20" fill="none">
+              <path d="M0 6 L25 8 L50 14 L80 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              <circle cx="80" cy="12" r="2.5" fill="#fbbf24" />
+            </svg>
           </div>
         </div>
 
-        {/* Metric 4 */}
-        <div className="cyber-panel cyber-bracket rounded-xl p-4 sm:p-5 relative overflow-hidden group">
+        {/* Metric 4: Cohortes */}
+        <div className="cyber-panel cyber-bracket rounded-xl p-5 relative overflow-hidden group">
           <div className="flex items-center justify-between text-[11px] font-mono text-cyan-400 mb-2">
             <span className="flex items-center gap-1.5 font-bold tracking-wider">
-              <span className="size-1.5 rounded-full bg-cyan-400 animate-pulse" />
+              <span className="size-2 rounded-full bg-cyan-400 animate-pulse" />
               COHORTES // 04
             </span>
-            <span className="text-slate-400 text-[10px]">EN VIVO</span>
+            <span className="text-slate-400 text-[10px] uppercase">EN VIVO</span>
           </div>
-          <div className="flex items-baseline justify-between">
-            <div className="text-3xl sm:text-4xl font-extrabold text-cyan-300 font-mono-tabular tracking-tight">
-              {sessions.length}
+          <div className="flex items-start justify-between">
+            <div>
+              <div className="text-3xl sm:text-4xl font-extrabold text-cyan-300 font-mono tracking-tight">
+                {sessions.length}
+              </div>
+              <p className="text-xs text-slate-400 mt-1">Aulas y talleres vinculados</p>
             </div>
-            <div className="text-right">
-              <span className="text-[10px] font-mono font-bold text-cyan-400 px-1.5 py-0.5 rounded bg-cyan-500/15 border border-cyan-500/30">
-                XAMPP SQL
-              </span>
+            <div className="size-11 rounded-xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shadow-lg shadow-cyan-500/10 shrink-0">
+              <Database className="w-5 h-5" />
             </div>
           </div>
-          <div className="mt-3 flex items-center justify-between text-xs text-slate-400 pt-2.5 border-t border-white/[0.06]">
-            <span>Sedes sincronizadas</span>
-            <span className="font-mono text-[11px] text-slate-300">Conectado</span>
+          <div className="mt-3 pt-2.5 border-t border-white/[0.06] flex items-center justify-between">
+            <span className="px-1.5 py-0.5 rounded bg-cyan-500/15 text-cyan-300 font-mono font-bold text-[10px]">
+              MYSQL XAMPP
+            </span>
+            <svg className="w-20 h-5 text-cyan-400" viewBox="0 0 80 20" fill="none">
+              <path d="M0 14 L20 8 L40 12 L60 6 L80 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              <circle cx="80" cy="4" r="2.5" fill="#22d3ee" />
+            </svg>
           </div>
         </div>
       </div>
@@ -350,11 +374,10 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
               key={tab.key}
               type="button"
               onClick={() => setActiveTab(tab.key as typeof activeTab)}
-              className={`h-9 px-4 rounded-lg text-xs font-medium flex items-center gap-2 whitespace-nowrap cursor-pointer transition-all ${
-                active
+              className={`h-9 px-4 rounded-lg text-xs font-medium flex items-center gap-2 whitespace-nowrap cursor-pointer transition-all ${active
                   ? 'bg-slate-800 text-white font-semibold border border-white/15 shadow-sm'
                   : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'
-              }`}
+                }`}
             >
               <span className={`font-mono text-[10px] ${active ? 'text-emerald-400 font-bold' : 'text-slate-500'}`}>
                 [{tab.code}]
@@ -408,11 +431,10 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
                   key={f.key}
                   type="button"
                   onClick={() => setLogFilter(f.key)}
-                  className={`h-7 px-2.5 rounded-md text-[11px] font-mono font-medium transition-colors cursor-pointer border ${
-                    logFilter === f.key
+                  className={`h-7 px-2.5 rounded-md text-[11px] font-mono font-medium transition-colors cursor-pointer border ${logFilter === f.key
                       ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300 font-bold'
                       : 'bg-slate-900 border-white/[0.08] text-slate-400 hover:text-slate-200'
-                  }`}
+                    }`}
                 >
                   {f.label} <span className="opacity-60 font-normal">[{f.count}]</span>
                 </button>
@@ -464,22 +486,20 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
                       {/* Estado */}
                       <div className="col-span-1 flex items-center gap-1.5">
                         <span
-                          className={`size-2 rounded-full shrink-0 ${
-                            isVerified
+                          className={`size-2 rounded-full shrink-0 ${isVerified
                               ? 'bg-emerald-400 shadow-[0_0_8px_#34d399]'
                               : isLate
-                              ? 'bg-amber-400 shadow-[0_0_8px_#fbbf24]'
-                              : 'bg-rose-400 shadow-[0_0_8px_#f87171]'
-                          }`}
+                                ? 'bg-amber-400 shadow-[0_0_8px_#fbbf24]'
+                                : 'bg-rose-400 shadow-[0_0_8px_#f87171]'
+                            }`}
                         />
                         <span
-                          className={`font-mono text-[10px] font-bold px-1.5 py-0.5 rounded border ${
-                            isVerified
+                          className={`font-mono text-[10px] font-bold px-1.5 py-0.5 rounded border ${isVerified
                               ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
                               : isLate
-                              ? 'bg-amber-500/10 border-amber-500/30 text-amber-300'
-                              : 'bg-rose-500/10 border-rose-500/30 text-rose-300'
-                          }`}
+                                ? 'bg-amber-500/10 border-amber-500/30 text-amber-300'
+                                : 'bg-rose-500/10 border-rose-500/30 text-rose-300'
+                            }`}
                         >
                           {log.outcome}
                         </span>
@@ -505,9 +525,8 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
                       {/* GPS Distance */}
                       <div className="col-span-2 flex items-center gap-2 text-xs font-mono">
                         <MapPin
-                          className={`w-3.5 h-3.5 shrink-0 ${
-                            log.distanceMeters <= 50 ? 'text-emerald-400' : 'text-rose-400'
-                          }`}
+                          className={`w-3.5 h-3.5 shrink-0 ${log.distanceMeters <= 50 ? 'text-emerald-400' : 'text-rose-400'
+                            }`}
                         />
                         <span className="text-slate-200">{log.distanceMeters}m</span>
                         <span className="text-[10px] text-slate-500">/ 50m max</span>
@@ -812,13 +831,12 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
                     {inst.department}
                   </span>
                   <span
-                    className={`font-mono text-[10px] font-bold px-2 py-0.5 rounded border ${
-                      inst.role === 'SUPERADMIN'
+                    className={`font-mono text-[10px] font-bold px-2 py-0.5 rounded border ${inst.role === 'SUPERADMIN'
                         ? 'bg-rose-500/10 border-rose-500/30 text-rose-300'
                         : inst.role === 'COORDINADOR'
-                        ? 'bg-cyan-500/10 border-cyan-500/30 text-cyan-300'
-                        : 'bg-slate-800 border-white/10 text-slate-300'
-                    }`}
+                          ? 'bg-cyan-500/10 border-cyan-500/30 text-cyan-300'
+                          : 'bg-slate-800 border-white/10 text-slate-300'
+                      }`}
                   >
                     {inst.role}
                   </span>

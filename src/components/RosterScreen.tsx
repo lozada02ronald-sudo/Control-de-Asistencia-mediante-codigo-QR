@@ -117,23 +117,23 @@ export const RosterScreen: React.FC<RosterScreenProps> = ({
       const nextRecord: AttendanceRecord =
         status === AttendanceStatus.ABSENT
           ? {
-              learnerId,
-              status: AttendanceStatus.ABSENT,
-              checkedInAt: null,
-              checkedInDate: formatDisplayDate(selectedDate),
-              method: CheckInMethod.NONE,
-              distanceMeters: null,
-              tokenSignature: null,
-            }
+            learnerId,
+            status: AttendanceStatus.ABSENT,
+            checkedInAt: null,
+            checkedInDate: formatDisplayDate(selectedDate),
+            method: CheckInMethod.NONE,
+            distanceMeters: null,
+            tokenSignature: null,
+          }
           : {
-              learnerId,
-              status,
-              checkedInAt: dateMap[learnerId]?.checkedInAt ?? timeStr,
-              checkedInDate: formatDisplayDate(selectedDate),
-              method: CheckInMethod.INSTRUCTOR_OVERRIDE,
-              distanceMeters: null,
-              tokenSignature: null,
-            };
+            learnerId,
+            status,
+            checkedInAt: dateMap[learnerId]?.checkedInAt ?? timeStr,
+            checkedInDate: formatDisplayDate(selectedDate),
+            method: CheckInMethod.INSTRUCTOR_OVERRIDE,
+            distanceMeters: null,
+            tokenSignature: null,
+          };
 
       return {
         ...prev,
@@ -367,11 +367,10 @@ export const RosterScreen: React.FC<RosterScreenProps> = ({
               onClick={() =>
                 setCalendarView((v) => (v === 'year' ? 'none' : 'year'))
               }
-              className={`h-9 px-3 rounded-xl border text-xs font-semibold cursor-pointer transition-colors ${
-                calendarView === 'year'
+              className={`h-9 px-3 rounded-xl border text-xs font-semibold cursor-pointer transition-colors ${calendarView === 'year'
                   ? 'bg-emerald-500 border-emerald-400 text-slate-950 font-bold'
                   : 'bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-100'
-              }`}
+                }`}
             >
               {calendarView === 'year' ? 'Ocultar 12 Meses' : 'Calendario Anual (12 Meses)'}
             </button>
@@ -381,11 +380,10 @@ export const RosterScreen: React.FC<RosterScreenProps> = ({
               onClick={() =>
                 setCalendarView((v) => (v === 'month' ? 'none' : 'month'))
               }
-              className={`h-9 px-3 rounded-xl border text-xs font-semibold cursor-pointer transition-colors ${
-                calendarView === 'month'
+              className={`h-9 px-3 rounded-xl border text-xs font-semibold cursor-pointer transition-colors ${calendarView === 'month'
                   ? 'bg-cyan-500 border-cyan-400 text-slate-950 font-bold'
                   : 'bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-100'
-              }`}
+                }`}
             >
               {calendarView === 'month' ? 'Ocultar Mes' : 'Ver Mes'}
             </button>
@@ -466,17 +464,15 @@ export const RosterScreen: React.FC<RosterScreenProps> = ({
                             ? `${formatDisplayDate(iso)} · Asistencias: ${pCount}, Retardos: ${tCount}, Fallas: ${fCount}`
                             : formatDisplayDate(iso)
                         }
-                        className={`${
-                          compact ? 'h-9 text-[11px]' : 'h-12 text-xs'
-                        } rounded-lg font-mono-tabular flex flex-col items-center justify-center leading-tight transition-colors cursor-pointer relative ${
-                          selected
+                        className={`${compact ? 'h-9 text-[11px]' : 'h-12 text-xs'
+                          } rounded-lg font-mono-tabular flex flex-col items-center justify-center leading-tight transition-colors cursor-pointer relative ${selected
                             ? 'bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold'
                             : iso === todayIso
-                            ? 'bg-slate-800 border border-emerald-500/40 text-emerald-300 hover:bg-slate-700'
-                            : hasData
-                            ? 'bg-slate-900 border border-slate-700 text-slate-100 hover:border-cyan-400'
-                            : 'bg-slate-950/60 border border-slate-800/80 text-slate-300 hover:border-slate-600'
-                        }`}
+                              ? 'bg-slate-800 border border-emerald-500/40 text-emerald-300 hover:bg-slate-700'
+                              : hasData
+                                ? 'bg-slate-900 border border-slate-700 text-slate-100 hover:border-cyan-400'
+                                : 'bg-slate-950/60 border border-slate-800/80 text-slate-300 hover:border-slate-600'
+                          }`}
                       >
                         <span>{dayNum}</span>
                         {hasData && (
@@ -592,11 +588,10 @@ export const RosterScreen: React.FC<RosterScreenProps> = ({
               key={tab.key}
               type="button"
               onClick={() => setStatusFilter(tab.key)}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap cursor-pointer transition-colors ${
-                statusFilter === tab.key
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap cursor-pointer transition-colors ${statusFilter === tab.key
                   ? 'bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold'
                   : 'text-slate-400 hover:text-slate-100'
-              }`}
+                }`}
             >
               {tab.label}
             </button>
@@ -667,9 +662,8 @@ export const RosterScreen: React.FC<RosterScreenProps> = ({
                 </div>
 
                 <div
-                  className={`inline-flex items-center p-0.5 rounded-xl bg-slate-900 border border-slate-800 ${
-                    !allowManualOverride ? 'opacity-50' : ''
-                  }`}
+                  className={`inline-flex items-center p-0.5 rounded-xl bg-slate-900 border border-slate-800 ${!allowManualOverride ? 'opacity-50' : ''
+                    }`}
                   role="group"
                   aria-label={`Definir estado de asistencia para ${learner.fullName}`}
                   title={!allowManualOverride ? 'Override manual deshabilitado en Administración' : undefined}
@@ -697,11 +691,9 @@ export const RosterScreen: React.FC<RosterScreenProps> = ({
                         disabled={!allowManualOverride}
                         title={allowManualOverride ? opt.title : 'Override manual deshabilitado por Admin'}
                         onClick={() => handleMarkDateStatus(learner.id, opt.key)}
-                        className={`w-8 h-8 rounded-lg text-xs font-mono-tabular transition-colors ${
-                          allowManualOverride ? 'cursor-pointer' : 'cursor-not-allowed'
-                        } ${
-                          isActive ? activeStyle : 'text-slate-400 hover:text-slate-100'
-                        }`}
+                        className={`w-8 h-8 rounded-lg text-xs font-mono-tabular transition-colors ${allowManualOverride ? 'cursor-pointer' : 'cursor-not-allowed'
+                          } ${isActive ? activeStyle : 'text-slate-400 hover:text-slate-100'
+                          }`}
                       >
                         {opt.label}
                       </button>

@@ -305,11 +305,10 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
                 key={tab.key}
                 type="button"
                 onClick={() => setStatusFilter(tab.key)}
-                className={`h-7 px-3 rounded-md text-xs font-medium whitespace-nowrap transition-colors cursor-pointer ${
-                  active
+                className={`h-7 px-3 rounded-md text-xs font-medium whitespace-nowrap transition-colors cursor-pointer ${active
                     ? 'bg-slate-800 text-white font-semibold border border-white/15'
                     : 'text-slate-400 hover:text-white'
-                }`}
+                  }`}
               >
                 {tab.label}
               </button>

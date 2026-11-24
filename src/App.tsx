@@ -831,8 +831,8 @@ export default function App() {
           role="status"
           aria-live="polite"
           className={`fixed top-20 right-4 sm:right-8 z-50 rounded-xl px-4 py-3 flex items-center gap-3 text-xs font-semibold shadow-2xl border backdrop-blur-xl animate-fade-in ${toast.type === 'error'
-              ? 'bg-rose-950/90 border-rose-500/50 text-rose-200'
-              : 'bg-slate-900/90 border-emerald-500/40 text-emerald-200'
+            ? 'bg-rose-950/90 border-rose-500/50 text-rose-200'
+            : 'bg-slate-900/90 border-emerald-500/40 text-emerald-200'
             }`}
         >
           <span
@@ -891,11 +891,10 @@ export default function App() {
                     type="button"
                     onClick={() => setActiveScreen(item.id)}
                     aria-current={active ? 'page' : undefined}
-                    className={`relative whitespace-nowrap rounded-lg px-3.5 py-1.5 text-xs font-medium transition-all duration-200 cursor-pointer flex items-center gap-2 ${
-                      active
+                    className={`relative whitespace-nowrap rounded-lg px-3.5 py-1.5 text-xs font-medium transition-all duration-200 cursor-pointer flex items-center gap-2 ${active
                         ? 'bg-slate-800/95 text-white font-semibold border border-white/15 shadow-md shadow-black/40'
                         : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.04]'
-                    }`}
+                      }`}
                   >
                     {active && (
                       <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
@@ -994,8 +993,8 @@ export default function App() {
                   }}
                   aria-current={active ? 'page' : undefined}
                   className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors ${active
-                      ? 'bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold'
-                      : 'text-slate-300 hover:bg-slate-800/60'
+                    ? 'bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold'
+                    : 'text-slate-300 hover:bg-slate-800/60'
                     }`}
                 >
                   {item.label}
