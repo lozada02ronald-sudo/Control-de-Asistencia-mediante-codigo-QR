@@ -540,7 +540,7 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
                 width="1376"
                 height="768"
               />
-              <figcaption className="inline-flex items-center gap-2 rounded-lg bg-espresso/90 px-3 py-2 text-sm font-semibold text-white">
+              <figcaption className="inline-flex items-center gap-2 rounded-lg bg-slate-950/90 px-3 py-2 text-sm font-semibold text-white">
                 <ScanLine className="size-4 text-brand-100" aria-hidden="true" />
                 Escaneo desde tu celular
               </figcaption>

@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
-  Bot,
   CalendarClock,
   CheckCircle2,
   ClipboardCheck,
@@ -13,6 +12,7 @@ import {
   RefreshCw,
   ShieldCheck,
   Smartphone,
+  Terminal,
   Users,
   XCircle,
 } from 'lucide-react';
@@ -89,7 +89,7 @@ export const ModulesAndAiScreen: React.FC<ModulesAndAiScreenProps> = ({
   const [learnerName, setLearnerName] = useState('');
   const [learnerDoc, setLearnerDoc] = useState('');
 
-  // IA QR Generator & Test Suite
+  // Dynamic Security QR Generator & Test Suite
   const [aiSessionId, setAiSessionId] = useState(sessions[0]?.id ?? '');
   const [aiTtl, setAiTtl] = useState(20);
   const [aiSequence, setAiSequence] = useState(301);
@@ -133,7 +133,7 @@ export const ModulesAndAiScreen: React.FC<ModulesAndAiScreenProps> = ({
       sessionId: aiSelectedSession.id,
       cohort: aiSelectedSession.cohortCode,
       ttl: aiTtl,
-      generatedBy: 'AcadeQR-AI-Engine',
+      generatedBy: 'AcadeQR-Security-Core',
     });
   }, [aiSelectedSession, aiGeneratedToken, aiTtl]);
 
@@ -193,7 +193,7 @@ export const ModulesAndAiScreen: React.FC<ModulesAndAiScreenProps> = ({
     results.push({
       id: 'ai-t1',
       name: 'Generación QR Dinámico y Rotación Única',
-      category: 'IA Generación QR',
+      category: 'Criptografía QR',
       passed: tok1 !== tok2 && tok1.startsWith('ACQR-'),
       durationMs: Math.max(1, Math.round(performance.now() - t1Start)),
       detail: `Tokens rotativos distintos: ${tok1} != ${tok2}`,
@@ -299,19 +299,19 @@ export const ModulesAndAiScreen: React.FC<ModulesAndAiScreenProps> = ({
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
-          <p className="text-xs font-semibold text-cyan-400 uppercase tracking-wider mb-1">
-            Arquitectura Modular · Motor IA · Android / Firebase
+          <p className="text-xs font-semibold text-emerald-400 uppercase tracking-wider mb-1">
+            Gestión Académica · Seguridad Criptográfica · Multiplataforma
           </p>
           <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-100">
-            Módulos, IA y Sincronización
+            Gestión de Módulos y Auditoría
           </h1>
         </div>
 
         <div className="flex flex-wrap gap-1.5 p-1.5 rounded-2xl bg-slate-900/90 border border-slate-800">
           {[
-            { key: 'MODULES', label: 'Módulos (4)', icon: Layers },
-            { key: 'AI', label: 'IA: QR y Pruebas', icon: Bot },
-            { key: 'FIREBASE', label: 'Android / Firebase', icon: Cloud },
+            { key: 'MODULES', label: 'Módulos Institucionales', icon: Layers },
+            { key: 'AI', label: 'Auditoría Criptográfica', icon: ShieldCheck },
+            { key: 'FIREBASE', label: 'Sincronización PWA', icon: Cloud },
           ].map((tab) => {
             const Icon = tab.icon;
             const active = activeTab === tab.key;
@@ -609,14 +609,14 @@ export const ModulesAndAiScreen: React.FC<ModulesAndAiScreenProps> = ({
         </div>
       )}
 
-      {/* TAB 2: IA (GENERACIÓN QR, VALIDACIONES Y PRUEBAS) */}
+      {/* TAB 2: AUDITORÍA Y SEGURIDAD */}
       {activeTab === 'AI' && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* AI QR Generator */}
+          {/* QR Generator */}
           <div className="lg:col-span-5 glass-panel rounded-2xl p-5 space-y-4">
             <div className="flex items-center gap-2">
               <QrCode className="w-4 h-4 text-emerald-400" />
-              <h2 className="text-sm font-bold text-slate-100">Generación Inteligente de Código QR</h2>
+              <h2 className="text-sm font-bold text-slate-100">Generador Criptográfico de Código QR</h2>
             </div>
 
             <div className="space-y-2.5">
@@ -633,7 +633,7 @@ export const ModulesAndAiScreen: React.FC<ModulesAndAiScreenProps> = ({
               </select>
 
               <div className="flex items-center justify-between text-xs text-slate-300">
-                <span>TTL dinámico recomendado por IA:</span>
+                <span>TTL de rotación de seguridad:</span>
                 <span className="font-mono-tabular font-bold text-emerald-300">{aiTtl}s</span>
               </div>
               <input
@@ -652,7 +652,7 @@ export const ModulesAndAiScreen: React.FC<ModulesAndAiScreenProps> = ({
             </div>
 
             <div className="rounded-xl bg-slate-900 border border-slate-800 p-3 text-xs font-mono-tabular space-y-1">
-              <div className="text-emerald-300 font-bold">Token IA: {aiGeneratedToken}</div>
+              <div className="text-emerald-300 font-bold">Token Activo: {aiGeneratedToken}</div>
               <div className="text-slate-400 truncate">Payload: {aiQrPayload}</div>
             </div>
 
@@ -662,17 +662,17 @@ export const ModulesAndAiScreen: React.FC<ModulesAndAiScreenProps> = ({
               className="w-full h-10 rounded-xl bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold text-xs inline-flex items-center justify-center gap-2 cursor-pointer"
             >
               <RefreshCw className="w-3.5 h-3.5" />
-              <span>Regenerar Token QR con IA</span>
+              <span>Regenerar Token Criptográfico</span>
             </button>
           </div>
 
-          {/* AI Validation & Automated Test Suite */}
+          {/* System Validation & Automated Test Suite */}
           <div className="lg:col-span-7 glass-panel rounded-2xl p-5 space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
               <div className="flex items-center gap-2">
                 <FlaskConical className="w-4 h-4 text-cyan-400" />
                 <h2 className="text-sm font-bold text-slate-100">
-                  Validaciones y Pruebas Automatizadas (IA)
+                  Auditoría y Pruebas Automatizadas del Sistema
                 </h2>
               </div>
               <button
@@ -687,10 +687,10 @@ export const ModulesAndAiScreen: React.FC<ModulesAndAiScreenProps> = ({
 
             {aiResults.length === 0 ? (
               <div className="py-12 text-center text-xs text-slate-400 space-y-2">
-                <Bot className="w-8 h-8 mx-auto text-cyan-400 opacity-80" />
+                <Terminal className="w-8 h-8 mx-auto text-cyan-400 opacity-80" />
                 <p>
-                  Pulsa <strong>Ejecutar Suite de Pruebas</strong> para validar la generación QR,
-                  anti-duplicados, geocerca, clasificación de asistencia y PWA Android.
+                  Pulsa <strong>Ejecutar Suite de Pruebas</strong> para validar la rotación criptográfica QR,
+                  integridad anti-duplicados, geocerca GPS, clasificación de asistencia y sincronización PWA.
                 </p>
               </div>
             ) : (

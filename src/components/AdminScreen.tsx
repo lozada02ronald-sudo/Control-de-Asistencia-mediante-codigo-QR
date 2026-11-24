@@ -576,7 +576,7 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
       {/* Add Staff Modal */}
       {isAddStaffOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-espresso/50 backdrop-blur-md"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md"
           role="dialog"
           aria-modal="true"
         >

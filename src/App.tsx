@@ -800,16 +800,16 @@ export default function App() {
       return [
         { id: 'admin', label: 'Administración' },
         { id: 'overview', label: 'Resumen' },
-        { id: 'roster', label: 'Registro' },
-        { id: 'modules', label: 'Módulos & IA' },
+        { id: 'roster', label: 'Registro de Asistencia' },
+        { id: 'modules', label: 'Gestión Académica' },
       ];
     }
     if (currentUser.role === 'APRENDIZ') {
       return [
         { id: 'landing', label: 'Inicio' },
         { id: 'scanner', label: 'Escáner QR' },
-        { id: 'my-attendance', label: 'Mis asistencias' },
-        { id: 'student-card', label: 'Carné QR' },
+        { id: 'my-attendance', label: 'Mis Asistencias' },
+        { id: 'student-card', label: 'Carnet QR' },
       ];
     }
     return [
@@ -817,13 +817,13 @@ export default function App() {
       { id: 'overview', label: 'Resumen' },
       { id: 'projector', label: 'Proyector QR' },
       { id: 'scanner', label: 'Escáner' },
-      { id: 'roster', label: 'Registro' },
-      { id: 'modules', label: 'Módulos & IA' },
+      { id: 'roster', label: 'Registro de Asistencia' },
+      { id: 'modules', label: 'Gestión Académica' },
     ];
   }, [currentUser, portalType]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-canvas text-espresso">
+    <div className="min-h-screen flex flex-col bg-canvas text-slate-100">
 
       {/* Toast Banner */}
       {toast && (
@@ -847,9 +847,9 @@ export default function App() {
       )}
 
       {/* Top Navigation Bar */}
-      <a href="#contenido" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-lg focus:bg-white focus:px-4 focus:py-2">Saltar al contenido</a>
-      <header className="sticky top-0 z-40 border-b border-slate-800 bg-canvas/95 backdrop-blur-xl">
-        <div className="w-full max-w-[1360px] mx-auto px-4 sm:px-8 min-h-[4.65rem] flex items-center justify-between gap-4">
+      <a href="#contenido" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-lg focus:bg-emerald-500 focus:text-slate-950 focus:px-4 focus:py-2 focus:font-bold">Saltar al contenido</a>
+      <header className="sticky top-0 z-40 border-b border-white/10 bg-slate-950/85 backdrop-blur-2xl shadow-xl shadow-black/40">
+        <div className="w-full max-w-[1360px] mx-auto px-4 sm:px-8 min-h-[4.75rem] flex items-center justify-between gap-4">
           <a
             href={portalType === 'admin' ? '/admin' : '/'}
             onClick={(event) => {
@@ -858,29 +858,28 @@ export default function App() {
               setActiveScreen(portalType === 'admin' ? 'admin' : 'landing');
               setMobileMenuOpen(false);
             }}
-            className="flex shrink-0 items-center gap-2.5 text-espresso"
+            className="flex shrink-0 items-center gap-3 text-white transition-opacity hover:opacity-90"
           >
-            <span className="flex size-10 items-center justify-center rounded-xl bg-brand-600 text-white">
+            <span className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 text-slate-950 font-black shadow-md shadow-emerald-500/20">
               {portalType === 'admin' ? <Building2 className="size-5" /> : <QrCode className="size-5" />}
             </span>
             <span className="flex flex-col leading-none">
-              <span className="font-display text-xl font-extrabold tracking-tight">
-                Acade<span className="text-brand-600">QR</span>
+              <span className="font-display text-xl font-black tracking-tight text-white">
+                Acade<span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">QR</span>
               </span>
               {!currentUser && (
-                <span className="mt-1 text-xs font-medium text-slate-400">
-                  Asistencia universitaria
+                <span className="mt-1 text-[11px] font-mono tracking-wider text-slate-400 uppercase">
+                  Control Institucional
                 </span>
               )}
             </span>
           </a>
 
-
           {/* Desktop Navigation */}
           {currentUser && (
             <nav
               aria-label="Navegación principal"
-              className="hidden min-[1100px]:flex items-center gap-1 rounded-xl border border-slate-800 bg-white p-1"
+              className="hidden min-[1100px]:flex items-center gap-1.5 rounded-2xl border border-white/10 bg-slate-900/80 p-1.5 backdrop-blur-xl shadow-inner shadow-black/40"
             >
               {navItems.map((item) => {
                 const active = activeScreen === item.id;
@@ -890,12 +889,12 @@ export default function App() {
                     type="button"
                     onClick={() => setActiveScreen(item.id)}
                     aria-current={active ? 'page' : undefined}
-                    className={`whitespace-nowrap rounded-lg px-3 py-2 text-xs font-semibold transition-colors cursor-pointer ${
+                    className={`whitespace-nowrap rounded-xl px-3.5 py-2 text-xs font-semibold transition-all duration-200 cursor-pointer ${
                       active
                         ? portalType === 'admin'
-                          ? 'bg-indigo-500 text-white font-bold shadow-sm'
-                          : 'bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold shadow-sm'
-                        : 'text-slate-400 hover:bg-brand-50 hover:text-brand-700'
+                          ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold shadow-md shadow-indigo-500/25'
+                          : 'bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 font-bold shadow-md shadow-emerald-500/25'
+                        : 'text-slate-300 hover:text-white hover:bg-white/5'
                     }`}
                   >
                     {item.label}
@@ -906,14 +905,14 @@ export default function App() {
           )}
 
           {/* Right Actions */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
             {currentUser ? (
               <>
-                <div className="hidden min-[1260px]:flex max-w-40 flex-col items-end mr-1">
-                  <span className="max-w-full truncate text-xs font-semibold text-slate-100 leading-tight">
+                <div className="hidden min-[1260px]:flex max-w-44 flex-col items-end mr-1">
+                  <span className="max-w-full truncate text-xs font-bold text-white leading-tight">
                     {currentUser.name}
                   </span>
-                  <span className="max-w-full truncate text-xs font-medium text-slate-400 leading-tight">
+                  <span className="max-w-full truncate text-[11px] font-mono font-medium text-emerald-400 leading-tight">
                     {portalType === 'admin'
                       ? currentUser.companyName ?? adminConfig.institutionName
                       : currentUser.programName
@@ -926,7 +925,7 @@ export default function App() {
                   <button
                     type="button"
                     onClick={handleExportCsv}
-                    className="h-9 px-3.5 rounded-xl bg-slate-800/90 hover:bg-slate-700 border border-slate-700 text-slate-100 text-xs font-semibold inline-flex items-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap"
+                    className="h-9 px-3.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-white/15 text-slate-200 text-xs font-semibold inline-flex items-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap shadow-sm"
                   >
                     <Download className="w-3.5 h-3.5 text-emerald-400" />
                     <span className="hidden sm:inline">Exportar CSV</span>
@@ -939,7 +938,7 @@ export default function App() {
                   onClick={handleLogout}
                   title="Cerrar sesión"
                   aria-label="Cerrar sesión"
-                  className="h-9 px-3 rounded-xl bg-slate-900 hover:bg-rose-950/60 border border-slate-800 hover:border-rose-500/40 text-slate-300 hover:text-rose-200 text-xs font-semibold inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+                  className="h-9 px-3 rounded-xl bg-slate-900 hover:bg-rose-950/60 border border-white/15 hover:border-rose-500/40 text-slate-300 hover:text-rose-200 text-xs font-semibold inline-flex items-center gap-1.5 transition-colors cursor-pointer"
                 >
                   <LogOut className="w-3.5 h-3.5" />
                   <span className="hidden sm:inline">Salir</span>
@@ -951,7 +950,7 @@ export default function App() {
                   aria-expanded={mobileMenuOpen}
                   aria-controls="mobile-navigation"
                   aria-label={mobileMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
-                  className="min-[1100px]:hidden size-10 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-100 cursor-pointer"
+                  className="min-[1100px]:hidden size-10 rounded-xl bg-slate-900 border border-white/15 flex items-center justify-center text-white cursor-pointer"
                 >
                   {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
                 </button>
@@ -959,10 +958,10 @@ export default function App() {
             ) : (
               <a
                 href={portalType === 'admin' ? '/' : '/admin'}
-                className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-slate-700 bg-white px-3 text-sm font-semibold text-espresso transition-colors hover:bg-brand-50 sm:px-4"
+                className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 text-xs font-bold text-white transition-all hover:bg-white/10 hover:border-white/25 sm:px-4"
               >
-                <Building2 className="size-4 shrink-0 text-brand-700" aria-hidden="true" />
-                {portalType === 'admin' ? 'Portal universitario' : 'Administración'}
+                <Building2 className="size-4 shrink-0 text-emerald-400" aria-hidden="true" />
+                {portalType === 'admin' ? 'Portal Académico' : 'Portal Administrativo'}
               </a>
             )}
           </div>
@@ -1152,7 +1151,7 @@ export default function App() {
 
       <footer className="border-t border-slate-800">
         <div className="mx-auto flex w-full max-w-[1360px] flex-wrap items-center justify-between gap-x-6 gap-y-2 px-4 py-5 text-sm text-slate-400 sm:px-8">
-          <span><strong className="text-espresso">AcadeQR</strong> · Asistencia universitaria</span>
+          <span><strong className="text-slate-100">AcadeQR</strong> · Asistencia universitaria</span>
           {currentUser && (
             <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
               {activeScreen === 'projector' && (

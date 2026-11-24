@@ -413,7 +413,7 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
       {/* Create Session Modal */}
       {isModalOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-espresso/50 backdrop-blur-md"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md"
           role="dialog"
           aria-modal="true"
           aria-labelledby="create-session-title"
