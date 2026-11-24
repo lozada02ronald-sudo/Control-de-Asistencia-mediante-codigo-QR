@@ -172,27 +172,27 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
   };
 
   return (
-    <div className="space-y-6 sm:space-y-8 animate-fade-in">
+    <div className="space-y-6 sm:space-y-8 animate-fade-in text-slate-800">
       {/* ============================================================== */}
-      {/* 1. TOP COMMAND BAR - ESTILO MISSION CONTROL LINEAR              */}
+      {/* 1. TOP COMMAND BAR - ESTILO INSTITUCIONAL UNIVERSITARIO        */}
       {/* ============================================================== */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-2 border-b border-white/[0.08]">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-2 border-b border-slate-200">
         <div>
           <div className="flex items-center gap-2 mb-1.5">
-            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 font-mono text-[10px] font-bold uppercase tracking-wider">
-              <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              NÚCLEO ACTIVO
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border border-blue-200 bg-blue-50 text-[#2563EB] font-bold text-[10px] uppercase tracking-wider">
+              <span className="size-1.5 rounded-full bg-[#2563EB] animate-pulse" />
+              SISTEMA OPERATIVO
             </span>
-            <span className="text-slate-500 font-mono text-[11px]">/</span>
-            <span className="text-slate-400 font-mono text-[11px] uppercase tracking-wider">
-              Control de Acceso & Telemetría
+            <span className="text-slate-400 font-mono text-[11px]">/</span>
+            <span className="text-slate-500 font-bold text-[11px] uppercase tracking-wider">
+              Control de Asistencias & Acreditación
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight flex items-center gap-3">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#142B49] tracking-tight flex items-center gap-3">
             <span>Consola de Administración Institucional</span>
           </h1>
-          <p className="text-xs text-slate-400 mt-1 max-w-2xl">
-            Supervisión continua de autenticidad en tiempo real, verificación perimetral por geocerca y bitácora de asistencia.
+          <p className="text-xs text-slate-500 mt-1 max-w-2xl">
+            Supervisión continua de autenticidad en tiempo real, verificación perimetral por geocerca y bitácora de asistencia académica.
           </p>
         </div>
 
@@ -201,26 +201,26 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
           <button
             type="button"
             onClick={onSimulateSecurityBreach}
-            className="h-8 px-3 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-300 text-xs font-medium inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+            className="h-8 px-3 rounded-lg bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 text-xs font-semibold inline-flex items-center gap-1.5 transition-colors cursor-pointer"
             title="Simula un acceso anómalo con token inválido o fuera de rango"
           >
-            <ShieldAlert className="w-3.5 h-3.5 text-rose-400" />
-            <span>Simular Incidente</span>
+            <ShieldAlert className="w-3.5 h-3.5 text-rose-600" />
+            <span>Simular Acceso Inválido</span>
           </button>
 
           <button
             type="button"
             onClick={onExportFullBackup}
-            className="h-8 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 border border-white/10 hover:border-emerald-500/40 text-slate-200 text-xs font-medium inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+            className="h-8 px-3 rounded-lg bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 text-xs font-semibold inline-flex items-center gap-1.5 transition-colors cursor-pointer shadow-sm"
           >
-            <Download className="w-3.5 h-3.5 text-cyan-400" />
+            <Download className="w-3.5 h-3.5 text-[#2563EB]" />
             <span>Respaldo JSON</span>
           </button>
 
           <button
             type="button"
             onClick={onResetDemoData}
-            className="h-8 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 border border-white/10 text-slate-400 hover:text-white text-xs font-medium inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+            className="h-8 px-3 rounded-lg bg-white hover:bg-slate-50 border border-slate-300 text-slate-600 text-xs font-semibold inline-flex items-center gap-1.5 transition-colors cursor-pointer shadow-sm"
           >
             <RefreshCw className="w-3.5 h-3.5" />
             <span>Restablecer</span>
@@ -229,143 +229,127 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
       </div>
 
       {/* ============================================================== */}
-      {/* 2. HUD METRIC TELEMETRY CARDS (4 PANELES VIBRANTES CON GRÁFICOS)*/}
+      {/* 2. METRIC CARDS INSTITUCIONALES                                */}
       {/* ============================================================== */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Metric 1: Verificados */}
-        <div className="cyber-panel cyber-bracket rounded-xl p-5 relative overflow-hidden group">
-          <div className="flex items-center justify-between text-[11px] font-mono text-emerald-400 mb-2">
-            <span className="flex items-center gap-1.5 font-bold tracking-wider">
-              <span className="size-2 rounded-full bg-emerald-400 animate-ping-slow" />
-              TELEMETRÍA // 01
+        <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm relative overflow-hidden group hover:shadow-md transition-shadow">
+          <div className="flex items-center justify-between text-[11px] text-[#16A34A] mb-2 font-bold">
+            <span className="flex items-center gap-1.5 uppercase tracking-wider">
+              <span className="size-2 rounded-full bg-[#16A34A]" />
+              VERIFICADOS
             </span>
-            <span className="text-slate-400 text-[10px] uppercase">VERIFICADOS</span>
+            <span className="text-slate-400 text-[10px] uppercase">PRESENCIA</span>
           </div>
           <div className="flex items-start justify-between">
             <div>
-              <div className="text-3xl sm:text-4xl font-extrabold text-white font-mono tracking-tight">
+              <div className="text-3xl sm:text-4xl font-extrabold text-[#142B49] font-mono tracking-tight">
                 {totalVerified}
               </div>
-              <p className="text-xs text-slate-400 mt-1">Presencia confirmada</p>
+              <p className="text-xs text-slate-500 mt-1">Presencia confirmada</p>
             </div>
-            <div className="size-11 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shadow-lg shadow-emerald-500/10 shrink-0">
+            <div className="size-11 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-[#16A34A] shrink-0">
               <ShieldCheck className="w-5 h-5" />
             </div>
           </div>
-          <div className="mt-3 pt-2.5 border-t border-white/[0.06] flex items-center justify-between">
-            <span className="px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-300 font-mono font-bold text-[10px]">
-              ↑ 99.4% ÉXITO
+          <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between">
+            <span className="px-2 py-0.5 rounded bg-emerald-50 text-[#16A34A] font-bold text-[10px]">
+              ↑ 99.8% EFECTIVIDAD
             </span>
-            <svg className="w-20 h-5 text-emerald-400" viewBox="0 0 80 20" fill="none">
-              <path d="M0 16 L15 12 L30 14 L45 8 L60 10 L80 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              <circle cx="80" cy="4" r="2.5" fill="#34d399" />
-            </svg>
           </div>
         </div>
 
         {/* Metric 2: Denegados */}
-        <div className="cyber-panel cyber-bracket rounded-xl p-5 relative overflow-hidden group">
-          <div className="flex items-center justify-between text-[11px] font-mono text-rose-400 mb-2">
-            <span className="flex items-center gap-1.5 font-bold tracking-wider">
-              <span className="size-2 rounded-full bg-rose-400" />
-              SEGURIDAD // 02
+        <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm relative overflow-hidden group hover:shadow-md transition-shadow">
+          <div className="flex items-center justify-between text-[11px] text-[#DC2626] mb-2 font-bold">
+            <span className="flex items-center gap-1.5 uppercase tracking-wider">
+              <span className="size-2 rounded-full bg-[#DC2626]" />
+              DENEGADOS
             </span>
-            <span className="text-slate-400 text-[10px] uppercase">BLOQUEADOS</span>
+            <span className="text-slate-400 text-[10px] uppercase">SEGURIDAD</span>
           </div>
           <div className="flex items-start justify-between">
             <div>
-              <div className="text-3xl sm:text-4xl font-extrabold text-rose-300 font-mono tracking-tight">
+              <div className="text-3xl sm:text-4xl font-extrabold text-[#142B49] font-mono tracking-tight">
                 {totalDenials}
               </div>
-              <p className="text-xs text-slate-400 mt-1">Tokens o geocerca inválidos</p>
+              <p className="text-xs text-slate-500 mt-1">Tokens o geocerca inválidos</p>
             </div>
-            <div className="size-11 rounded-xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-400 shadow-lg shadow-rose-500/10 shrink-0">
+            <div className="size-11 rounded-xl bg-rose-50 border border-rose-200 flex items-center justify-center text-[#DC2626] shrink-0">
               <ShieldAlert className="w-5 h-5" />
             </div>
           </div>
-          <div className="mt-3 pt-2.5 border-t border-white/[0.06] flex items-center justify-between">
-            <span className="px-1.5 py-0.5 rounded bg-rose-500/15 text-rose-300 font-mono font-bold text-[10px]">
-              0 INTRUSIONES
+          <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between">
+            <span className="px-2 py-0.5 rounded bg-rose-50 text-[#DC2626] font-bold text-[10px]">
+              0 SUPLANTACIONES
             </span>
-            <svg className="w-20 h-5 text-rose-400" viewBox="0 0 80 20" fill="none">
-              <path d="M0 10 L20 10 L40 10 L60 10 L80 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeDasharray="3 3" />
-              <circle cx="80" cy="10" r="2.5" fill="#f87171" />
-            </svg>
           </div>
         </div>
 
         {/* Metric 3: Tardanzas */}
-        <div className="cyber-panel cyber-bracket rounded-xl p-5 relative overflow-hidden group">
-          <div className="flex items-center justify-between text-[11px] font-mono text-amber-400 mb-2">
-            <span className="flex items-center gap-1.5 font-bold tracking-wider">
-              <span className="size-2 rounded-full bg-amber-400" />
-              PUNTUALIDAD // 03
+        <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm relative overflow-hidden group hover:shadow-md transition-shadow">
+          <div className="flex items-center justify-between text-[11px] text-[#D97706] mb-2 font-bold">
+            <span className="flex items-center gap-1.5 uppercase tracking-wider">
+              <span className="size-2 rounded-full bg-[#D97706]" />
+              TARDANZAS
             </span>
-            <span className="text-slate-400 text-[10px] uppercase">TARDANZAS</span>
+            <span className="text-slate-400 text-[10px] uppercase">PUNTUALIDAD</span>
           </div>
           <div className="flex items-start justify-between">
             <div>
-              <div className="text-3xl sm:text-4xl font-extrabold text-amber-300 font-mono tracking-tight">
+              <div className="text-3xl sm:text-4xl font-extrabold text-[#142B49] font-mono tracking-tight">
                 {totalLate}
               </div>
-              <p className="text-xs text-slate-400 mt-1">Margen de 10 min superado</p>
+              <p className="text-xs text-slate-500 mt-1">Margen de 10 min superado</p>
             </div>
-            <div className="size-11 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 shadow-lg shadow-amber-500/10 shrink-0">
+            <div className="size-11 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-[#D97706] shrink-0">
               <AlertTriangle className="w-5 h-5" />
             </div>
           </div>
-          <div className="mt-3 pt-2.5 border-t border-white/[0.06] flex items-center justify-between">
-            <span className="px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-300 font-mono font-bold text-[10px]">
+          <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between">
+            <span className="px-2 py-0.5 rounded bg-amber-50 text-[#D97706] font-bold text-[10px]">
               TOLERANCIA ACTIVA
             </span>
-            <svg className="w-20 h-5 text-amber-400" viewBox="0 0 80 20" fill="none">
-              <path d="M0 6 L25 8 L50 14 L80 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              <circle cx="80" cy="12" r="2.5" fill="#fbbf24" />
-            </svg>
           </div>
         </div>
 
         {/* Metric 4: Cohortes */}
-        <div className="cyber-panel cyber-bracket rounded-xl p-5 relative overflow-hidden group">
-          <div className="flex items-center justify-between text-[11px] font-mono text-cyan-400 mb-2">
-            <span className="flex items-center gap-1.5 font-bold tracking-wider">
-              <span className="size-2 rounded-full bg-cyan-400 animate-pulse" />
-              COHORTES // 04
+        <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm relative overflow-hidden group hover:shadow-md transition-shadow">
+          <div className="flex items-center justify-between text-[11px] text-[#2563EB] mb-2 font-bold">
+            <span className="flex items-center gap-1.5 uppercase tracking-wider">
+              <span className="size-2 rounded-full bg-[#2563EB] animate-pulse" />
+              SESIONES
             </span>
-            <span className="text-slate-400 text-[10px] uppercase">EN VIVO</span>
+            <span className="text-slate-400 text-[10px] uppercase">EN CURSO</span>
           </div>
           <div className="flex items-start justify-between">
             <div>
-              <div className="text-3xl sm:text-4xl font-extrabold text-cyan-300 font-mono tracking-tight">
+              <div className="text-3xl sm:text-4xl font-extrabold text-[#142B49] font-mono tracking-tight">
                 {sessions.length}
               </div>
-              <p className="text-xs text-slate-400 mt-1">Aulas y talleres vinculados</p>
+              <p className="text-xs text-slate-500 mt-1">Aulas y talleres vinculados</p>
             </div>
-            <div className="size-11 rounded-xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shadow-lg shadow-cyan-500/10 shrink-0">
+            <div className="size-11 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-[#2563EB] shrink-0">
               <Database className="w-5 h-5" />
             </div>
           </div>
-          <div className="mt-3 pt-2.5 border-t border-white/[0.06] flex items-center justify-between">
-            <span className="px-1.5 py-0.5 rounded bg-cyan-500/15 text-cyan-300 font-mono font-bold text-[10px]">
-              MYSQL XAMPP
+          <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between">
+            <span className="px-2 py-0.5 rounded bg-blue-50 text-[#2563EB] font-bold text-[10px]">
+              BASE INSTITUCIONAL
             </span>
-            <svg className="w-20 h-5 text-cyan-400" viewBox="0 0 80 20" fill="none">
-              <path d="M0 14 L20 8 L40 12 L60 6 L80 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              <circle cx="80" cy="4" r="2.5" fill="#22d3ee" />
-            </svg>
           </div>
         </div>
       </div>
 
       {/* ============================================================== */}
-      {/* 3. SUB-NAV TABS - SEGMENTED LINEAR DOCK                       */}
+      {/* 3. SUB-NAV TABS                                                */}
       {/* ============================================================== */}
-      <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[#080d18] border border-white/10 overflow-x-auto">
+      <div className="flex items-center gap-1.5 p-1 rounded-xl bg-white border border-slate-200 shadow-sm overflow-x-auto">
         {[
-          { key: 'AUDIT', code: '01', label: 'Bitácora de Escaneos', icon: ShieldCheck },
-          { key: 'SECURITY', code: '02', label: 'Criptografía & HMAC', icon: Key },
-          { key: 'STAFF', code: '03', label: 'Docentes & Permisos', icon: Users },
-          { key: 'VENUES', code: '04', label: 'Sedes & Geocercas', icon: Building2 },
+          { key: 'AUDIT', label: 'Bitácora de Asistencias', icon: ShieldCheck },
+          { key: 'SECURITY', label: 'Seguridad & Cripto', icon: Key },
+          { key: 'STAFF', label: 'Docentes & Permisos', icon: Users },
+          { key: 'VENUES', label: 'Sedes & Geocercas', icon: Building2 },
         ].map((tab) => {
           const active = activeTab === tab.key;
           const Icon = tab.icon;
@@ -374,15 +358,13 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
               key={tab.key}
               type="button"
               onClick={() => setActiveTab(tab.key as typeof activeTab)}
-              className={`h-9 px-4 rounded-lg text-xs font-medium flex items-center gap-2 whitespace-nowrap cursor-pointer transition-all ${active
-                  ? 'bg-slate-800 text-white font-semibold border border-white/15 shadow-sm'
-                  : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'
-                }`}
+              className={`h-9 px-4 rounded-lg text-xs font-bold flex items-center gap-2 whitespace-nowrap cursor-pointer transition-all ${
+                active
+                  ? 'bg-[#2563EB] text-white shadow-sm'
+                  : 'text-slate-600 hover:text-[#142B49] hover:bg-slate-50'
+              }`}
             >
-              <span className={`font-mono text-[10px] ${active ? 'text-emerald-400 font-bold' : 'text-slate-500'}`}>
-                [{tab.code}]
-              </span>
-              <Icon className={`w-3.5 h-3.5 ${active ? 'text-emerald-400' : 'text-slate-400'}`} />
+              <Icon className={`w-3.5 h-3.5 ${active ? 'text-white' : 'text-slate-400'}`} />
               <span>{tab.label}</span>
             </button>
           );
@@ -395,7 +377,7 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
       {activeTab === 'AUDIT' && (
         <div className="space-y-4">
           {/* Controls toolbar */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 p-3 rounded-xl bg-[#090d18] border border-white/[0.07]">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 p-3 rounded-xl bg-white border border-slate-200 shadow-sm">
             {/* Search Input */}
             <div className="relative flex-1 max-w-md">
               <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -404,13 +386,13 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Filtrar por estudiante, cédula, sesión o token..."
-                className="w-full h-8 pl-9 pr-3 rounded-lg bg-slate-900/90 border border-white/10 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500/50 font-mono"
+                className="w-full h-8 pl-9 pr-3 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#2563EB] focus:bg-white"
               />
               {searchQuery && (
                 <button
                   type="button"
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white text-xs cursor-pointer"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 text-xs cursor-pointer"
                 >
                   ✕
                 </button>
@@ -431,21 +413,22 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
                   key={f.key}
                   type="button"
                   onClick={() => setLogFilter(f.key)}
-                  className={`h-7 px-2.5 rounded-md text-[11px] font-mono font-medium transition-colors cursor-pointer border ${logFilter === f.key
-                      ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300 font-bold'
-                      : 'bg-slate-900 border-white/[0.08] text-slate-400 hover:text-slate-200'
-                    }`}
+                  className={`h-7 px-2.5 rounded-md text-[11px] font-bold transition-colors cursor-pointer border ${
+                    logFilter === f.key
+                      ? 'bg-blue-50 border-blue-300 text-[#2563EB]'
+                      : 'bg-slate-50 border-slate-200 text-slate-600 hover:text-slate-900'
+                  }`}
                 >
-                  {f.label} <span className="opacity-60 font-normal">[{f.count}]</span>
+                  {f.label} <span className="opacity-70 font-normal">[{f.count}]</span>
                 </button>
               ))}
 
-              <div className="h-4 w-px bg-white/10 mx-1 hidden sm:block" />
+              <div className="h-4 w-px bg-slate-200 mx-1 hidden sm:block" />
 
               <button
                 type="button"
                 onClick={onClearLogs}
-                className="h-7 px-2 text-[11px] font-mono text-slate-500 hover:text-rose-400 transition-colors cursor-pointer"
+                className="h-7 px-2 text-[11px] text-slate-500 hover:text-rose-600 transition-colors cursor-pointer font-medium"
               >
                 Limpiar Bitácora
               </button>
@@ -454,52 +437,53 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
 
           {/* Table / Grid */}
           {filteredLogs.length === 0 ? (
-            <div className="cyber-panel rounded-xl p-12 text-center text-xs text-slate-400 space-y-2">
-              <Terminal className="w-8 h-8 mx-auto text-slate-600" />
-              <p className="font-mono text-slate-400">NO SE ENCONTRARON REGISTROS QUE COINCIDAN CON LOS CRITERIOS.</p>
+            <div className="bg-white border border-slate-200 rounded-xl p-12 text-center text-xs text-slate-500 space-y-2 shadow-sm">
+              <Terminal className="w-8 h-8 mx-auto text-slate-400" />
+              <p className="font-bold text-slate-700">NO SE ENCONTRARON REGISTROS QUE COINCIDAN CON LOS CRITERIOS.</p>
               <p className="text-slate-500">Prueba ajustando el filtro o el término de búsqueda.</p>
             </div>
           ) : (
-            <div className="cyber-panel rounded-xl overflow-hidden border border-white/[0.08]">
+            <div className="bg-white rounded-xl overflow-hidden border border-slate-200 shadow-sm">
               {/* Desktop Table Header */}
-              <div className="hidden lg:grid grid-cols-12 gap-3 px-4 py-2.5 bg-slate-900/90 border-b border-white/[0.08] text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">
+              <div className="hidden lg:grid grid-cols-12 gap-3 px-4 py-2.5 bg-slate-50 border-b border-slate-200 text-[10px] font-bold uppercase tracking-wider text-slate-500">
                 <div className="col-span-1">Estado</div>
                 <div className="col-span-3">Aprendiz / Documento</div>
                 <div className="col-span-2">Sesión & Sede</div>
                 <div className="col-span-2">Geocerca GPS</div>
-                <div className="col-span-2">Token Criptográfico</div>
+                <div className="col-span-2">Token QR</div>
                 <div className="col-span-2 text-right">Timestamp</div>
               </div>
 
               {/* Rows */}
-              <div className="divide-y divide-white/[0.05]">
+              <div className="divide-y divide-slate-100">
                 {filteredLogs.map((log) => {
                   const isVerified = log.outcome === 'VERIFIED';
                   const isLate = log.outcome === 'LATE';
-                  const isDenied = log.outcome === 'DENIED';
 
                   return (
                     <div
                       key={log.id}
-                      className="p-3.5 lg:px-4 lg:py-3 grid grid-cols-1 lg:grid-cols-12 gap-2 lg:gap-3 items-center hover:bg-white/[0.02] transition-colors"
+                      className="p-3.5 lg:px-4 lg:py-3 grid grid-cols-1 lg:grid-cols-12 gap-2 lg:gap-3 items-center hover:bg-slate-50/80 transition-colors"
                     >
                       {/* Estado */}
                       <div className="col-span-1 flex items-center gap-1.5">
                         <span
-                          className={`size-2 rounded-full shrink-0 ${isVerified
-                              ? 'bg-emerald-400 shadow-[0_0_8px_#34d399]'
+                          className={`size-2 rounded-full shrink-0 ${
+                            isVerified
+                              ? 'bg-[#16A34A]'
                               : isLate
-                                ? 'bg-amber-400 shadow-[0_0_8px_#fbbf24]'
-                                : 'bg-rose-400 shadow-[0_0_8px_#f87171]'
-                            }`}
+                              ? 'bg-[#D97706]'
+                              : 'bg-[#DC2626]'
+                          }`}
                         />
                         <span
-                          className={`font-mono text-[10px] font-bold px-1.5 py-0.5 rounded border ${isVerified
-                              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
+                          className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${
+                            isVerified
+                              ? 'bg-emerald-50 border-emerald-200 text-[#16A34A]'
                               : isLate
-                                ? 'bg-amber-500/10 border-amber-500/30 text-amber-300'
-                                : 'bg-rose-500/10 border-rose-500/30 text-rose-300'
-                            }`}
+                              ? 'bg-amber-50 border-amber-200 text-[#D97706]'
+                              : 'bg-rose-50 border-rose-200 text-[#DC2626]'
+                          }`}
                         >
                           {log.outcome}
                         </span>
@@ -507,17 +491,17 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
 
                       {/* Aprendiz & Documento */}
                       <div className="col-span-3 min-w-0">
-                        <div className="text-xs font-bold text-white truncate">{log.learnerName}</div>
-                        <div className="text-[11px] font-mono text-slate-400 flex items-center gap-2 mt-0.5">
-                          <span>{log.nationalId}</span>
-                          <span className="text-slate-600">·</span>
-                          <span className="text-slate-400 truncate">{log.reason}</span>
+                        <div className="text-xs font-bold text-[#142B49] truncate">{log.learnerName}</div>
+                        <div className="text-[11px] text-slate-500 flex items-center gap-2 mt-0.5">
+                          <span className="font-mono">{log.nationalId}</span>
+                          <span className="text-slate-300">·</span>
+                          <span className="text-slate-500 truncate">{log.reason}</span>
                         </div>
                       </div>
 
                       {/* Sesión & Sede */}
-                      <div className="col-span-2 font-mono text-xs">
-                        <span className="px-1.5 py-0.5 rounded bg-slate-800 text-cyan-300 text-[11px] border border-cyan-500/20 font-bold">
+                      <div className="col-span-2 text-xs">
+                        <span className="px-1.5 py-0.5 rounded bg-blue-50 text-[#2563EB] text-[11px] border border-blue-200 font-bold font-mono">
                           {log.sessionId}
                         </span>
                       </div>
@@ -525,26 +509,27 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
                       {/* GPS Distance */}
                       <div className="col-span-2 flex items-center gap-2 text-xs font-mono">
                         <MapPin
-                          className={`w-3.5 h-3.5 shrink-0 ${log.distanceMeters <= 50 ? 'text-emerald-400' : 'text-rose-400'
-                            }`}
+                          className={`w-3.5 h-3.5 shrink-0 ${
+                            log.distanceMeters <= 50 ? 'text-[#16A34A]' : 'text-[#DC2626]'
+                          }`}
                         />
-                        <span className="text-slate-200">{log.distanceMeters}m</span>
-                        <span className="text-[10px] text-slate-500">/ 50m max</span>
+                        <span className="text-slate-700 font-semibold">{log.distanceMeters}m</span>
+                        <span className="text-[10px] text-slate-400">/ 50m max</span>
                       </div>
 
                       {/* Token QR con botón de copia */}
                       <div className="col-span-2 flex items-center gap-1.5 font-mono text-[11px]">
-                        <span className="truncate max-w-[130px] text-slate-300 bg-slate-900 px-1.5 py-0.5 rounded border border-white/[0.08]">
+                        <span className="truncate max-w-[130px] text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
                           {log.tokenUsed}
                         </span>
                         <button
                           type="button"
                           onClick={() => handleCopy(log.tokenUsed)}
-                          title="Copiar token criptográfico"
-                          className="size-6 rounded flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
+                          title="Copiar token"
+                          className="size-6 rounded flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer shrink-0"
                         >
                           {copiedToken === log.tokenUsed ? (
-                            <Check className="w-3 h-3 text-emerald-400" />
+                            <Check className="w-3 h-3 text-[#16A34A]" />
                           ) : (
                             <Copy className="w-3 h-3" />
                           )}
@@ -552,8 +537,8 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
                       </div>
 
                       {/* Timestamp */}
-                      <div className="col-span-2 text-right font-mono text-xs text-slate-400 flex items-center justify-end gap-1.5">
-                        <Clock className="w-3 h-3 text-slate-500" />
+                      <div className="col-span-2 text-right font-mono text-xs text-slate-500 flex items-center justify-end gap-1.5">
+                        <Clock className="w-3 h-3 text-slate-400" />
                         <span>{log.timestamp}</span>
                       </div>
                     </div>
@@ -564,66 +549,51 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
           )}
 
           {/* ============================================================== */}
-          {/* RADAR DE TELEMETRÍA Y COORDENADAS GPS (WIDGET HUD FUTURISTA)    */}
+          {/* VALIDACIÓN DE GEOCERCA Y COORDENADAS                           */}
           {/* ============================================================== */}
-          <div className="cyber-panel rounded-xl p-4 sm:p-5 border border-white/[0.08] relative overflow-hidden">
+          <div className="bg-white rounded-xl p-4 sm:p-5 border border-slate-200 shadow-sm relative overflow-hidden">
             <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
-              {/* Radar circular interactivo */}
+              {/* Radar circular */}
               <div className="flex items-center gap-4">
-                <div className="relative size-24 sm:size-28 rounded-full border border-emerald-500/40 bg-emerald-950/20 flex items-center justify-center shrink-0">
-                  {/* Concentric rings */}
-                  <div className="absolute inset-2 rounded-full border border-emerald-500/20" />
-                  <div className="absolute inset-5 rounded-full border border-emerald-500/30" />
-                  <div className="absolute inset-8 rounded-full border border-emerald-500/40" />
-
-                  {/* Crosshairs */}
-                  <div className="absolute inset-x-0 top-1/2 h-px bg-emerald-500/30" />
-                  <div className="absolute inset-y-0 left-1/2 w-px bg-emerald-500/30" />
-
-                  {/* Sweeping laser radar beam */}
-                  <div className="absolute inset-0 rounded-full animate-radar pointer-events-none">
-                    <div className="w-1/2 h-1/2 bg-gradient-to-br from-emerald-400/40 via-emerald-400/10 to-transparent origin-bottom-right rounded-tl-full" />
-                  </div>
-
-                  {/* Beacon blips */}
-                  <span className="absolute top-6 right-7 size-1.5 rounded-full bg-emerald-400 animate-ping-slow" />
-                  <span className="absolute bottom-8 left-6 size-1.5 rounded-full bg-cyan-400 animate-ping-slow" />
-                  <span className="absolute center size-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#10b981]" />
+                <div className="relative size-20 sm:size-24 rounded-full border border-blue-200 bg-blue-50/50 flex items-center justify-center shrink-0">
+                  <div className="absolute inset-2 rounded-full border border-blue-200/50" />
+                  <div className="absolute inset-5 rounded-full border border-blue-300/50" />
+                  <MapPin className="size-6 text-[#2563EB]" />
                 </div>
 
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <Radio className="w-4 h-4 text-emerald-400 animate-pulse" />
-                    <span className="text-xs font-mono font-bold uppercase text-white tracking-wider">
-                      Radar de Presencia GPS y Antenas
+                    <Radio className="w-4 h-4 text-[#2563EB]" />
+                    <span className="text-xs font-bold uppercase text-[#142B49] tracking-wider">
+                      Control Perimetral por Geocerca
                     </span>
                   </div>
-                  <p className="text-xs text-slate-400 max-w-sm">
-                    Triangulación en vivo de coordenadas sobre 4 sedes formativas. Precisión perimetral calibrada en radio de 50 metros.
+                  <p className="text-xs text-slate-500 max-w-sm">
+                    Validación satelital sobre las sedes de formación universitaria. Radio perimetral configurado en 50 metros.
                   </p>
-                  <div className="flex items-center gap-3 font-mono text-[11px] text-emerald-400 mt-2">
+                  <div className="flex items-center gap-3 font-mono text-[11px] text-[#2563EB] mt-1.5 font-semibold">
                     <span>LAT 6.2442° N</span>
-                    <span className="text-slate-600">·</span>
+                    <span className="text-slate-300">·</span>
                     <span>LONG 75.5812° W</span>
-                    <span className="text-slate-600">·</span>
-                    <span className="text-cyan-300">PING 8ms</span>
+                    <span className="text-slate-300">·</span>
+                    <span className="text-[#16A34A]">ACTIVO</span>
                   </div>
                 </div>
               </div>
 
               {/* Server Engine Status Readouts */}
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 w-full lg:w-auto">
-                <div className="p-2.5 rounded-lg bg-slate-900/80 border border-white/[0.07] font-mono text-center">
-                  <div className="text-[10px] text-slate-500 uppercase">Motor REST</div>
-                  <div className="text-xs font-bold text-emerald-400 mt-0.5">FastAPI Python</div>
+                <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-center">
+                  <div className="text-[10px] text-slate-500 uppercase font-semibold">Motor Backend</div>
+                  <div className="text-xs font-bold text-[#142B49] mt-0.5">FastAPI Python</div>
                 </div>
-                <div className="p-2.5 rounded-lg bg-slate-900/80 border border-white/[0.07] font-mono text-center">
-                  <div className="text-[10px] text-slate-500 uppercase">Base de Datos</div>
-                  <div className="text-xs font-bold text-cyan-400 mt-0.5">MySQL XAMPP</div>
+                <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-center">
+                  <div className="text-[10px] text-slate-500 uppercase font-semibold">Base de Datos</div>
+                  <div className="text-xs font-bold text-[#142B49] mt-0.5">MySQL XAMPP</div>
                 </div>
-                <div className="p-2.5 rounded-lg bg-slate-900/80 border border-white/[0.07] font-mono text-center col-span-2 sm:col-span-1">
-                  <div className="text-[10px] text-slate-500 uppercase">Cifrado Token</div>
-                  <div className="text-xs font-bold text-white mt-0.5">HMAC SHA-256</div>
+                <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-center col-span-2 sm:col-span-1">
+                  <div className="text-[10px] text-slate-500 uppercase font-semibold">Cifrado Token</div>
+                  <div className="text-xs font-bold text-[#142B49] mt-0.5">HMAC SHA-256</div>
                 </div>
               </div>
             </div>

@@ -798,7 +798,7 @@ export default function App() {
     if (!currentUser) return [];
     if (portalType === 'admin') {
       return [
-        { id: 'landing', label: 'Inicio 3D' },
+        { id: 'landing', label: 'Portal Universitario' },
         { id: 'admin', label: 'Administración' },
         { id: 'overview', label: 'Resumen' },
         { id: 'projector', label: 'Proyector QR' },
@@ -810,14 +810,14 @@ export default function App() {
     }
     if (currentUser.role === 'APRENDIZ') {
       return [
-        { id: 'landing', label: 'Inicio' },
+        { id: 'landing', label: 'Portal Universitario' },
         { id: 'scanner', label: 'Escáner QR' },
         { id: 'my-attendance', label: 'Mis Asistencias' },
         { id: 'student-card', label: 'Carnet QR' },
       ];
     }
     return [
-      { id: 'landing', label: 'Inicio' },
+      { id: 'landing', label: 'Portal Universitario' },
       { id: 'overview', label: 'Resumen' },
       { id: 'projector', label: 'Proyector QR' },
       { id: 'scanner', label: 'Escáner' },
@@ -826,22 +826,73 @@ export default function App() {
     ];
   }, [currentUser, portalType]);
 
+  if (activeScreen === 'landing') {
+    return (
+      <CampusHome
+        currentUser={currentUser}
+        onNavigateToDashboard={() => {
+          if (!currentUser) {
+            setActiveScreen('acceso');
+          } else {
+            setActiveScreen(
+              currentUser.role === 'APRENDIZ'
+                ? 'scanner'
+                : currentUser.role === 'ADMIN'
+                ? 'admin'
+                : 'overview'
+            );
+          }
+        }}
+        onNavigateToLogin={() => setActiveScreen('acceso')}
+        onLogout={handleLogout}
+      />
+    );
+  }
+
+  if (activeScreen === 'acceso' || (!currentUser && portalType === 'public')) {
+    return (
+      <div className="campus-public campus-access">
+        <header className="campus-header">
+          <div className="campus-container campus-nav">
+            <CampusBrand />
+            <button
+              type="button"
+              onClick={() => setActiveScreen('landing')}
+              className="campus-button campus-button-outline"
+            >
+              Volver al inicio
+            </button>
+          </div>
+        </header>
+        <main className="campus-container campus-access-main">
+          <AuthPortalScreen
+            portalType="public"
+            sessions={sessions}
+            onAuthenticated={handleAuthenticated}
+          />
+        </main>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen flex flex-col bg-canvas text-slate-100">
+    <div className="min-h-screen flex flex-col bg-canvas text-slate-800">
 
       {/* Toast Banner */}
       {toast && (
         <div
           role="status"
           aria-live="polite"
-          className={`fixed top-20 right-4 sm:right-8 z-50 rounded-xl px-4 py-3 flex items-center gap-3 text-xs font-semibold shadow-2xl border backdrop-blur-xl animate-fade-in ${toast.type === 'error'
-            ? 'bg-rose-950/90 border-rose-500/50 text-rose-200'
-            : 'bg-slate-900/90 border-emerald-500/40 text-emerald-200'
-            }`}
+          className={`fixed top-20 right-4 sm:right-8 z-50 rounded-xl px-4 py-3 flex items-center gap-3 text-xs font-semibold shadow-2xl border backdrop-blur-xl animate-fade-in ${
+            toast.type === 'error'
+              ? 'bg-rose-950/90 border-rose-500/50 text-rose-200'
+              : 'bg-[#142B49]/95 border-blue-500/40 text-blue-100'
+          }`}
         >
           <span
-            className={`w-2 h-2 rounded-full ${toast.type === 'error' ? 'bg-rose-400' : 'bg-emerald-400'
-              }`}
+            className={`w-2 h-2 rounded-full ${
+              toast.type === 'error' ? 'bg-rose-400' : 'bg-emerald-400'
+            }`}
             aria-hidden="true"
           />
           <span>{toast.message}</span>
@@ -849,45 +900,49 @@ export default function App() {
       )}
 
       {/* Top Navigation Bar */}
-      <a href="#contenido" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-lg focus:bg-emerald-500 focus:text-slate-950 focus:px-4 focus:py-2 focus:font-bold">Saltar al contenido</a>
-      <header className="sticky top-0 z-40 border-b border-white/10 bg-slate-950/85 backdrop-blur-2xl shadow-xl shadow-black/40">
-        <div className="w-full max-w-[1360px] mx-auto px-4 sm:px-8 min-h-[4.75rem] flex items-center justify-between gap-4">
+      <a
+        href="#contenido"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-lg focus:bg-[#2563EB] focus:text-white focus:px-4 focus:py-2 focus:font-bold"
+      >
+        Saltar al contenido
+      </a>
+      <header className="sticky top-0 z-40 border-b border-white/15 bg-[#142B49] text-white shadow-lg shadow-[#142B49]/20">
+        <div className="w-full max-w-[1360px] mx-auto px-4 sm:px-8 min-h-[4.5rem] flex items-center justify-between gap-4">
           <a
-            href={portalType === 'admin' ? '/admin' : '/'}
+            href="/"
             onClick={(event) => {
-              if (!currentUser || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+              if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
               event.preventDefault();
-              setActiveScreen(portalType === 'admin' ? 'admin' : 'landing');
+              setActiveScreen('landing');
               setMobileMenuOpen(false);
             }}
-            className="flex shrink-0 items-center gap-3 text-white transition-opacity hover:opacity-90 group"
+            className="flex shrink-0 items-center gap-3 text-white transition-opacity hover:opacity-95 group"
           >
-            <div className="relative flex size-10 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-950/40 text-emerald-400 font-mono font-black shadow-lg shadow-emerald-950/50 backdrop-blur-md group-hover:border-emerald-400/60 transition-colors">
-              <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-emerald-500/10 to-transparent pointer-events-none" />
-              {portalType === 'admin' ? <Building2 className="size-5 text-emerald-300" /> : <QrCode className="size-5 text-emerald-300" />}
-              <span className="absolute -top-1 -right-1 size-2 rounded-full bg-emerald-400 animate-pulse" />
+            <div className="relative flex size-10 items-center justify-center rounded-xl bg-[#2563EB] text-white font-mono font-black shadow-md shadow-blue-600/30">
+              <QrCode className="size-5 text-white" />
+              <GraduationCap className="size-3.5 text-white absolute -bottom-1 -right-1 bg-[#142B49] rounded-md p-0.5 border border-[#2563EB]" />
             </div>
             <span className="flex flex-col leading-none">
               <span className="font-display text-lg font-extrabold tracking-tight text-white flex items-center gap-1.5">
                 <span>Acade</span>
-                <span className="text-emerald-400 font-mono font-black">QR</span>
-                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded border border-emerald-500/30 bg-emerald-500/10 text-emerald-300 font-bold uppercase tracking-wider ml-0.5">v2.4</span>
-              </span>
-              {!currentUser && (
-                <span className="mt-1 text-[11px] font-mono tracking-wider text-slate-400 uppercase">
-                  Control Institucional
+                <span className="text-[#60A5FA] font-black">QR</span>
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-white/10 text-blue-200 font-bold uppercase tracking-wider ml-0.5">
+                  SENA ADSO
                 </span>
-              )}
+              </span>
+              <span className="mt-1 text-[11px] tracking-wider text-slate-300 font-medium">
+                Gestión de Asistencia
+              </span>
             </span>
           </a>
 
-          {/* Desktop Navigation - High-Tech Linear Command Dock */}
+          {/* Desktop Navigation */}
           {currentUser && (
             <nav
               aria-label="Navegación principal"
-              className="hidden min-[1100px]:flex items-center gap-1 rounded-xl border border-white/10 bg-[#090d16]/90 p-1 backdrop-blur-2xl shadow-xl shadow-black/60"
+              className="hidden min-[1100px]:flex items-center gap-1.5 rounded-xl border border-white/15 bg-[#0D1E34]/85 p-1 backdrop-blur-xl shadow-md"
             >
-              {navItems.map((item, idx) => {
+              {navItems.map((item) => {
                 const active = activeScreen === item.id;
                 return (
                   <button
@@ -895,16 +950,13 @@ export default function App() {
                     type="button"
                     onClick={() => setActiveScreen(item.id)}
                     aria-current={active ? 'page' : undefined}
-                    className={`relative whitespace-nowrap rounded-lg px-3.5 py-1.5 text-xs font-medium transition-all duration-200 cursor-pointer flex items-center gap-2 ${active
-                        ? 'bg-slate-800/95 text-white font-semibold border border-white/15 shadow-md shadow-black/40'
-                        : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.04]'
-                      }`}
+                    className={`relative whitespace-nowrap rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-all duration-150 cursor-pointer flex items-center gap-1.5 ${
+                      active
+                        ? 'bg-[#2563EB] text-white shadow-md shadow-blue-500/30'
+                        : 'text-slate-200 hover:text-white hover:bg-white/10'
+                    }`}
                   >
-                    {active && (
-                      <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
-                    )}
                     <span>{item.label}</span>
-                    <span className="text-[10px] font-mono text-slate-500 font-normal">⌘{idx + 1}</span>
                   </button>
                 );
               })}
@@ -915,34 +967,43 @@ export default function App() {
           <div className="flex items-center gap-2">
             {currentUser ? (
               <>
-                <div className="hidden min-[1260px]:flex items-center gap-2.5 mr-2 pl-3 border-l border-white/10">
-                  <div className="size-8 rounded-lg border border-emerald-500/30 bg-emerald-950/40 flex items-center justify-center font-mono font-bold text-xs text-emerald-300">
+                <div className="hidden min-[1260px]:flex items-center gap-2.5 mr-2 pl-3 border-l border-white/15">
+                  <div className="size-8 rounded-lg bg-blue-600/30 border border-blue-400/40 flex items-center justify-center font-bold text-xs text-white">
                     {currentUser.name.slice(0, 2).toUpperCase()}
                   </div>
                   <div className="flex flex-col items-start leading-tight">
                     <div className="flex items-center gap-1.5">
-                      <span className="max-w-[130px] truncate text-xs font-semibold text-white">
+                      <span className="max-w-[130px] truncate text-xs font-bold text-white">
                         {currentUser.name}
                       </span>
-                      <span className="text-[9px] font-mono font-bold uppercase px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                      <span className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-blue-500/25 text-blue-200 border border-blue-400/30">
                         {currentUser.role}
                       </span>
                     </div>
-                    <span className="text-[10px] font-mono text-slate-400 truncate max-w-[150px]">
+                    <span className="text-[10px] text-slate-300 truncate max-w-[150px]">
                       {portalType === 'admin'
                         ? currentUser.companyName ?? adminConfig.institutionName
-                        : currentUser.programName ?? 'Formación Técnica'}
+                        : currentUser.programName ?? 'Formación Universitaria'}
                     </span>
                   </div>
                 </div>
+
+                <button
+                  type="button"
+                  onClick={() => setActiveScreen('landing')}
+                  className="h-8 px-3 rounded-lg bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-medium inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+                  title="Ver portal público de inicio"
+                >
+                  <span>🌐 Portal Público</span>
+                </button>
 
                 {currentUser.role !== 'APRENDIZ' && (
                   <button
                     type="button"
                     onClick={handleExportCsv}
-                    className="h-8 px-3 rounded-lg bg-slate-900/90 hover:bg-slate-800 border border-white/10 hover:border-emerald-500/40 text-slate-200 text-xs font-medium inline-flex items-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap shadow-sm"
+                    className="h-8 px-3 rounded-lg bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-medium inline-flex items-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap shadow-sm"
                   >
-                    <Download className="w-3.5 h-3.5 text-emerald-400" />
+                    <Download className="w-3.5 h-3.5 text-blue-300" />
                     <span className="hidden sm:inline">Exportar CSV</span>
                     <span className="sm:hidden">CSV</span>
                   </button>
@@ -953,7 +1014,7 @@ export default function App() {
                   onClick={handleLogout}
                   title="Cerrar sesión"
                   aria-label="Cerrar sesión"
-                  className="h-8 px-3 rounded-lg bg-slate-900/90 hover:bg-rose-950/40 border border-white/10 hover:border-rose-500/40 text-slate-300 hover:text-rose-200 text-xs font-medium inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+                  className="h-8 px-3 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 border border-rose-400/30 text-rose-100 text-xs font-medium inline-flex items-center gap-1.5 transition-colors cursor-pointer"
                 >
                   <LogOut className="w-3.5 h-3.5" />
                   <span className="hidden sm:inline">Salir</span>
@@ -965,7 +1026,7 @@ export default function App() {
                   aria-expanded={mobileMenuOpen}
                   aria-controls="mobile-navigation"
                   aria-label={mobileMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
-                  className="min-[1100px]:hidden size-10 rounded-xl bg-slate-900 border border-white/15 flex items-center justify-center text-white cursor-pointer"
+                  className="min-[1100px]:hidden size-10 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center text-white cursor-pointer"
                 >
                   {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
                 </button>
@@ -973,9 +1034,9 @@ export default function App() {
             ) : (
               <a
                 href={portalType === 'admin' ? '/' : '/admin'}
-                className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 text-xs font-bold text-white transition-all hover:bg-white/10 hover:border-white/25 sm:px-4"
+                className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-white/15 bg-white/10 px-3 text-xs font-bold text-white transition-all hover:bg-white/20 sm:px-4"
               >
-                <Building2 className="size-4 shrink-0 text-emerald-400" aria-hidden="true" />
+                <Building2 className="size-4 shrink-0 text-blue-300" aria-hidden="true" />
                 {portalType === 'admin' ? 'Portal Académico' : 'Portal Administrativo'}
               </a>
             )}
@@ -984,7 +1045,11 @@ export default function App() {
 
         {/* Mobile Menu */}
         {currentUser && mobileMenuOpen && (
-          <nav id="mobile-navigation" aria-label="Navegación principal" className="min-[1100px]:hidden border-t border-slate-800 bg-canvas px-4 py-4 space-y-1.5">
+          <nav
+            id="mobile-navigation"
+            aria-label="Navegación principal"
+            className="min-[1100px]:hidden border-t border-white/15 bg-[#0D1E34] px-4 py-4 space-y-1.5"
+          >
             {navItems.map((item) => {
               const active = activeScreen === item.id;
               return (
@@ -996,10 +1061,11 @@ export default function App() {
                     setMobileMenuOpen(false);
                   }}
                   aria-current={active ? 'page' : undefined}
-                  className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors ${active
-                    ? 'bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold'
-                    : 'text-slate-300 hover:bg-slate-800/60'
-                    }`}
+                  className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
+                    active
+                      ? 'bg-[#2563EB] text-white font-bold'
+                      : 'text-slate-200 hover:bg-white/10'
+                  }`}
                 >
                   {item.label}
                 </button>
@@ -1163,13 +1229,13 @@ export default function App() {
         )}
       </main>
 
-      <footer className="border-t border-slate-800">
-        <div className="mx-auto flex w-full max-w-[1360px] flex-wrap items-center justify-between gap-x-6 gap-y-2 px-4 py-5 text-sm text-slate-400 sm:px-8">
-          <span><strong className="text-slate-100">AcadeQR</strong> · Asistencia universitaria</span>
+      <footer className="border-t border-slate-200 bg-white">
+        <div className="mx-auto flex w-full max-w-[1360px] flex-wrap items-center justify-between gap-x-6 gap-y-2 px-4 py-5 text-sm text-slate-600 sm:px-8">
+          <span><strong className="text-[#142B49]">AcadeQR</strong> · Sistema de Gestión de Asistencia · ADSO SENA</span>
           {currentUser && (
             <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
               {activeScreen === 'projector' && (
-                <span className="font-mono-tabular">{activeSession.cohortCode} · {activeSession.room}</span>
+                <span className="font-mono-tabular text-slate-800 font-semibold">{activeSession.cohortCode} · {activeSession.room}</span>
               )}
               <span className="inline-flex items-center gap-2">
                 <span
@@ -1234,20 +1300,20 @@ export default function App() {
       {currentUser && (
         <aside
           aria-label="Selector rápido de pantallas"
-          className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1.5 p-1.5 rounded-2xl bg-slate-900/90 border border-white/15 backdrop-blur-2xl shadow-2xl shadow-black/80 max-w-[95vw] overflow-x-auto"
+          className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1.5 p-1.5 rounded-2xl bg-[#142B49]/95 border border-white/20 backdrop-blur-2xl shadow-2xl shadow-navy-950/40 max-w-[95vw] overflow-x-auto text-white"
         >
-          <span className="text-[10px] font-mono font-bold text-emerald-400 uppercase tracking-wider px-2 hidden sm:inline">
-            Vistas en Vivo:
+          <span className="text-[10px] font-bold text-blue-300 uppercase tracking-wider px-2 hidden sm:inline">
+            Vistas:
           </span>
           {[
-            { id: 'landing', label: 'Inicio 3D', icon: '🏠' },
-            { id: 'admin', label: 'Admin HUD', icon: '🛡️' },
+            { id: 'landing', label: 'Inicio', icon: '🏠' },
             { id: 'overview', label: 'Resumen', icon: '📊' },
             { id: 'projector', label: 'Proyector QR', icon: '📽️' },
             { id: 'scanner', label: 'Escáner', icon: '📱' },
             { id: 'roster', label: 'Asistencias', icon: '📋' },
             { id: 'student-card', label: 'Carnet QR', icon: '🪪' },
             { id: 'modules', label: 'Módulos', icon: '🧩' },
+            { id: 'admin', label: 'Admin', icon: '🛡️' },
           ].map((view) => {
             const active = activeScreen === view.id;
             return (
@@ -1255,9 +1321,9 @@ export default function App() {
                 key={view.id}
                 type="button"
                 onClick={() => setActiveScreen(view.id as AppScreen)}
-                className={`h-7 px-2.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 ${
+                className={`h-7 px-2.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 ${
                   active
-                    ? 'bg-emerald-500 text-slate-950 font-bold shadow-md shadow-emerald-500/30'
+                    ? 'bg-[#2563EB] text-white shadow-sm'
                     : 'text-slate-300 hover:text-white hover:bg-white/10'
                 }`}
               >

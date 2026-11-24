@@ -1,0 +1,1141 @@
+/* ==========================================================================
+   SISTEMA DE GESTIÓN DE ASISTENCIA MEDIANTE CÓDIGOS QR
+   Identidad Visual Institucional Universitaria · SENA ADSO
+   Colores:
+     - Azul oscuro institucional: #142B49
+     - Azul principal: #2563EB
+     - Blanco: #FFFFFF
+     - Gris claro: #F4F6F9
+     - Verde confirmación: #16A34A
+     - Rojo alertas / inasistencias: #DC2626
+   Tipografía: 'DM Sans', 'Inter', system-ui
+   ========================================================================== */
+
+.campus-public {
+  --campus-navy: #142b49;
+  --campus-navy-dark: #0d1e34;
+  --campus-blue: #2563eb;
+  --campus-blue-hover: #1d4ed8;
+  --campus-blue-light: #eff6ff;
+  --campus-gray: #f4f6f9;
+  --campus-gray-border: #e2e8f0;
+  --campus-muted: #4a5e77;
+  --campus-green: #16a34a;
+  --campus-red: #dc2626;
+
+  background: #ffffff;
+  color: var(--campus-navy);
+  color-scheme: light;
+  min-height: 100dvh;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.campus-public :focus-visible {
+  outline: 3px solid var(--campus-blue);
+  outline-offset: 4px;
+}
+
+.campus-container {
+  width: min(100% - 3rem, 1200px);
+  margin-inline: auto;
+}
+
+/* Header & Nav */
+.campus-header {
+  border-bottom: 1px solid #e0e7ef;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+.campus-nav {
+  min-height: 74px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+}
+
+.campus-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.45rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--campus-navy);
+  text-decoration: none;
+}
+
+.campus-brand > span > span {
+  color: var(--campus-blue);
+}
+
+.campus-mark {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  color: #ffffff;
+  background: var(--campus-navy);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(20, 43, 73, 0.2);
+}
+
+.campus-mark svg:last-child {
+  position: absolute;
+  right: -4px;
+  bottom: -3px;
+  background: var(--campus-blue);
+  border-radius: 6px;
+  padding: 2px;
+  color: #ffffff;
+}
+
+.campus-nav nav {
+  display: flex;
+  gap: clamp(0.9rem, 2vw, 2rem);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.campus-nav nav a {
+  color: var(--campus-navy);
+  text-decoration: none;
+  transition: color 0.15s ease;
+  padding: 0.4rem 0.2rem;
+}
+
+.campus-nav nav a:hover,
+.campus-footer a:hover {
+  color: var(--campus-blue);
+}
+
+.campus-menu {
+  display: none;
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0.5rem;
+  color: var(--campus-navy);
+}
+
+.campus-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* User Nav Chip */
+.campus-user-nav-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  background: var(--campus-gray);
+  border: 1px solid var(--campus-gray-border);
+  border-radius: 12px;
+  padding: 0.35rem 0.65rem;
+}
+
+.campus-user-avatar {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--campus-navy);
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.campus-user-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.campus-user-name {
+  font-size: 0.8rem;
+  font-weight: 750;
+  color: var(--campus-navy);
+}
+
+.campus-user-role-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--campus-blue);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.campus-button-icon {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  padding: 0.35rem;
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  transition: all 0.15s ease;
+}
+
+.campus-button-icon:hover {
+  background: #fee2e2;
+  color: var(--campus-red);
+}
+
+/* Buttons */
+.campus-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  border: 1px solid var(--campus-blue);
+  background: var(--campus-blue);
+  color: #ffffff;
+  border-radius: 10px;
+  min-height: 46px;
+  padding: 0.65rem 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  width: fit-content;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.2);
+}
+
+.campus-button:hover {
+  background: var(--campus-blue-hover);
+  border-color: var(--campus-blue-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+}
+
+.campus-button-lg {
+  min-height: 50px;
+  padding: 0.75rem 1.6rem;
+  font-size: 0.95rem;
+}
+
+.campus-button-primary-compact {
+  min-height: 34px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.78rem;
+}
+
+.campus-button-outline {
+  color: var(--campus-navy);
+  background: #ffffff;
+  border-color: #cbd5e1;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.campus-button-outline:hover {
+  color: var(--campus-blue);
+  background: var(--campus-blue-light);
+  border-color: #93c5fd;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.12);
+}
+
+.campus-button-block {
+  width: 100%;
+}
+
+/* Hero Section */
+.campus-hero {
+  padding-block: clamp(3rem, 6vw, 5.5rem);
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: center;
+}
+
+.campus-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--campus-blue);
+  font-size: 0.85rem;
+  font-weight: 750;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.campus-kicker-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #dbeafe;
+  color: #1e40af;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.campus-hero h1 {
+  font-size: clamp(2.4rem, 4.4vw, 3.85rem);
+  line-height: 1.08;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  margin-block: 1rem 1.25rem;
+  color: var(--campus-navy);
+}
+
+.campus-hero h1 span {
+  color: var(--campus-blue);
+  display: block;
+}
+
+.campus-lead {
+  color: var(--campus-muted);
+  font-size: 1.1rem;
+  line-height: 1.7;
+  max-width: 52ch;
+  margin: 0;
+}
+
+.campus-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-top: 1.85rem;
+}
+
+.campus-trust-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.campus-trust-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.campus-check-green {
+  color: var(--campus-green);
+  flex-shrink: 0;
+}
+
+.campus-hero-photo {
+  position: relative;
+  margin: 0;
+}
+
+.campus-hero-photo img {
+  width: 100%;
+  aspect-ratio: 1.25;
+  object-fit: cover;
+  border-radius: 1.5rem;
+  border: 1px solid #dce4ee;
+  box-shadow: 0 20px 45px -12px rgba(20, 43, 73, 0.16);
+}
+
+.campus-hero-photo figcaption {
+  position: absolute;
+  bottom: 1.2rem;
+  left: 1.2rem;
+  right: 1.2rem;
+  width: fit-content;
+  max-width: calc(100% - 2.4rem);
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(10px);
+  border-radius: 1rem;
+  padding: 0.75rem 1.1rem;
+  box-shadow: 0 10px 30px rgba(20, 43, 73, 0.14);
+  border: 1px solid #e2e8f0;
+}
+
+.campus-badge-icon {
+  background: #eff6ff;
+  color: var(--campus-blue);
+  padding: 0.55rem;
+  border-radius: 0.65rem;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.campus-hero-photo figcaption strong {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--campus-navy);
+}
+
+.campus-hero-photo figcaption p {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--campus-muted);
+}
+
+/* 2. Metrics Bar */
+.campus-metrics-bar {
+  background: var(--campus-navy);
+  color: #ffffff;
+  padding-block: 2.75rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.campus-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.75rem;
+}
+
+.campus-metric-card {
+  border-left: 2px solid rgba(255, 255, 255, 0.2);
+  padding-left: 1.25rem;
+}
+
+.campus-metric-number {
+  font-size: clamp(2rem, 3.2vw, 2.75rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.campus-metric-label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #93c5fd;
+  margin-top: 0.45rem;
+}
+
+.campus-metric-desc {
+  font-size: 0.78rem;
+  color: #cbd5e1;
+  margin-top: 0.25rem;
+  line-height: 1.4;
+}
+
+/* Sections Shared */
+.campus-public h2 {
+  font-weight: 800;
+  font-size: clamp(1.9rem, 3.2vw, 2.85rem);
+  line-height: 1.15;
+  letter-spacing: -0.045em;
+  color: var(--campus-navy);
+  margin-block: 0.6rem 0.85rem;
+}
+
+.campus-section-head {
+  max-width: 680px;
+  margin-bottom: 2.85rem;
+}
+
+.campus-section-sub {
+  color: var(--campus-muted);
+  font-size: 1.05rem;
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* 3. Sobre el Sistema & Pillars */
+.campus-about {
+  background: var(--campus-gray);
+  padding-block: clamp(3.5rem, 6vw, 5.5rem);
+}
+
+.campus-pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.75rem;
+}
+
+.campus-pillar-card {
+  background: #ffffff;
+  border: 1px solid var(--campus-gray-border);
+  border-radius: 1.25rem;
+  padding: 2rem 1.75rem;
+  box-shadow: 0 4px 20px -2px rgba(20, 43, 73, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.campus-pillar-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px -4px rgba(20, 43, 73, 0.1);
+}
+
+.campus-pillar-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.campus-icon-blue {
+  background: #eff6ff;
+  color: var(--campus-blue);
+}
+
+.campus-icon-green {
+  background: #ecfdf5;
+  color: var(--campus-green);
+}
+
+.campus-icon-navy {
+  background: #f1f5f9;
+  color: var(--campus-navy);
+}
+
+.campus-pillar-card h3 {
+  font-size: 1.22rem;
+  font-weight: 800;
+  color: var(--campus-navy);
+  margin: 0 0 0.65rem;
+}
+
+.campus-pillar-card p {
+  color: var(--campus-muted);
+  font-size: 0.92rem;
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* 4. Workflow (Cómo funciona) */
+.campus-workflow {
+  padding-block: clamp(3.5rem, 6vw, 5.5rem);
+}
+
+.campus-workflow-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.75rem;
+}
+
+.campus-step-card {
+  position: relative;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-top: 4px solid var(--campus-blue);
+  border-radius: 1.25rem;
+  padding: 2.25rem 1.85rem;
+  box-shadow: 0 4px 18px rgba(20, 43, 73, 0.04);
+}
+
+.campus-step-number {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #e2e8f0;
+  line-height: 1;
+}
+
+.campus-step-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  background: var(--campus-blue-light);
+  color: var(--campus-blue);
+  display: grid;
+  place-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.campus-step-card h3 {
+  font-size: 1.22rem;
+  font-weight: 800;
+  color: var(--campus-navy);
+  margin: 0 0 0.65rem;
+}
+
+.campus-step-card p {
+  color: var(--campus-muted);
+  font-size: 0.92rem;
+  line-height: 1.65;
+  margin: 0 0 1.25rem;
+}
+
+.campus-step-tag {
+  display: inline-block;
+  background: #f1f5f9;
+  color: var(--campus-navy);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+}
+
+/* 5. Beneficios */
+.campus-benefits {
+  background: var(--campus-gray);
+  padding-block: clamp(3.5rem, 6vw, 5.5rem);
+}
+
+.campus-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: center;
+}
+
+.campus-benefits-visual {
+  position: relative;
+}
+
+.campus-benefits-visual img {
+  width: 100%;
+  aspect-ratio: 1.45;
+  object-fit: cover;
+  border-radius: 1.5rem;
+  border: 1px solid #dce4ee;
+  box-shadow: 0 20px 45px -12px rgba(20, 43, 73, 0.16);
+}
+
+.campus-benefits-floating-card {
+  position: absolute;
+  bottom: -1.25rem;
+  right: 1.25rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  padding: 0.85rem 1.25rem;
+  box-shadow: 0 12px 35px rgba(20, 43, 73, 0.16);
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  max-width: 320px;
+}
+
+.campus-benefits-floating-icon {
+  background: #ecfdf5;
+  color: var(--campus-green);
+  padding: 0.5rem;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.campus-benefits-floating-card strong {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--campus-navy);
+}
+
+.campus-benefits-floating-card p {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--campus-muted);
+}
+
+.campus-benefits-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+  margin-top: 1.85rem;
+}
+
+.campus-benefit-item {
+  display: flex;
+  gap: 0.85rem;
+  align-items: flex-start;
+}
+
+.campus-benefit-bullet {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: #ecfdf5;
+  color: var(--campus-green);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+}
+
+.campus-benefit-item h4 {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--campus-navy);
+  margin: 0 0 0.25rem;
+}
+
+.campus-benefit-item p {
+  color: var(--campus-muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* 6. Contacto */
+.campus-contact-section {
+  padding-block: clamp(3.5rem, 6vw, 5.5rem);
+}
+
+.campus-contact-grid {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: start;
+}
+
+.campus-contact-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  margin-top: 2rem;
+}
+
+.campus-contact-card {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 1rem 1.25rem;
+  background: var(--campus-gray);
+  border: 1px solid var(--campus-gray-border);
+  border-radius: 12px;
+}
+
+.campus-contact-icon {
+  color: var(--campus-blue);
+  flex-shrink: 0;
+}
+
+.campus-contact-card strong {
+  display: block;
+  font-size: 0.88rem;
+  color: var(--campus-navy);
+}
+
+.campus-contact-card p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--campus-muted);
+}
+
+.campus-contact-form-wrapper {
+  background: #ffffff;
+  border: 1px solid #dce4ee;
+  border-radius: 1.5rem;
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  box-shadow: 0 10px 30px rgba(20, 43, 73, 0.08);
+}
+
+.campus-contact-form h3 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--campus-navy);
+  margin: 0 0 1.25rem;
+}
+
+.campus-form-group {
+  margin-bottom: 1.15rem;
+}
+
+.campus-form-group label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--campus-navy);
+  margin-bottom: 0.4rem;
+}
+
+.campus-input {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 44px;
+  padding: 0.65rem 0.95rem;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: var(--campus-navy);
+  font-family: inherit;
+  font-size: 0.9rem;
+  transition: all 0.15s ease;
+}
+
+.campus-input:focus {
+  outline: none;
+  border-color: var(--campus-blue);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.campus-textarea {
+  resize: vertical;
+  min-height: 90px;
+}
+
+.campus-contact-success {
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.campus-success-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: #ecfdf5;
+  color: var(--campus-green);
+  display: grid;
+  place-items: center;
+  margin: 0 auto 1.25rem;
+}
+
+.campus-contact-success h3 {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--campus-navy);
+  margin: 0 0 0.65rem;
+}
+
+.campus-contact-success p {
+  color: var(--campus-muted);
+  font-size: 0.92rem;
+  line-height: 1.65;
+  margin: 0 0 1.5rem;
+}
+
+/* 7. Footer */
+.campus-footer {
+  border-top: 1px solid #e0e7ef;
+  background: #ffffff;
+  padding-block: 3.5rem 2rem;
+}
+
+.campus-footer-top {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 2.5rem;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.campus-footer-brand {
+  max-width: 380px;
+}
+
+.campus-footer-desc {
+  margin-top: 0.85rem;
+  color: var(--campus-muted);
+  font-size: 0.86rem;
+  line-height: 1.6;
+}
+
+.campus-footer-links {
+  display: flex;
+  gap: clamp(2rem, 5vw, 4rem);
+}
+
+.campus-footer-links h5 {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--campus-navy);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 0.9rem;
+}
+
+.campus-footer-links ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.campus-footer-links a {
+  color: var(--campus-muted);
+  font-size: 0.86rem;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.campus-footer-links a:hover {
+  color: var(--campus-blue);
+}
+
+.campus-footer-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 1.75rem;
+  font-size: 0.82rem;
+  color: #64748b;
+}
+
+.campus-footer-pills {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.campus-footer-pill {
+  background: var(--campus-gray);
+  border: 1px solid var(--campus-gray-border);
+  padding: 0.2rem 0.55rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--campus-navy);
+}
+
+/* ==========================================================================
+   AUTH SCREEN (2 COLUMNAS INSTITUCIONAL)
+   ========================================================================== */
+.campus-access {
+  background: var(--campus-gray);
+}
+
+.campus-access-main {
+  padding-block: clamp(2rem, 5vw, 4.5rem);
+}
+
+.campus-auth-layout {
+  display: grid;
+  grid-template-columns: 0.95fr 1.05fr;
+  max-width: 1040px;
+  margin-inline: auto;
+  background: #ffffff;
+  border: 1px solid #dde6ef;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  box-shadow: 0 18px 60px rgba(20, 43, 73, 0.09);
+}
+
+.campus-auth-photo {
+  position: relative;
+  min-height: 100%;
+  background: var(--campus-navy);
+}
+
+.campus-auth-photo img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.campus-auth-photo figcaption {
+  position: absolute;
+  inset: auto 0 0;
+  padding: 4rem 1.85rem 1.75rem;
+  background: linear-gradient(transparent, rgba(20, 43, 73, 0.96) 65%);
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.campus-auth-photo-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+.campus-auth-photo-sub {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #cbd5e1;
+  line-height: 1.5;
+}
+
+.campus-auth-card {
+  min-width: 0;
+  padding: clamp(1.75rem, 4vw, 3.25rem);
+  background: #ffffff;
+}
+
+.campus-auth-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: #eff6ff;
+  color: var(--campus-blue);
+  padding: 0.35rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  margin-bottom: 0.85rem;
+}
+
+.campus-auth-card h1 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--campus-navy);
+  margin: 0 0 0.4rem;
+}
+
+.campus-auth-card p.campus-auth-sub {
+  color: var(--campus-muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0 0 1.5rem;
+}
+
+.campus-remember {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  user-select: none;
+}
+
+.campus-remember input {
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: var(--campus-blue);
+  cursor: pointer;
+}
+
+/* Quick Demo Role Cards */
+.campus-demo-role-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin-top: 0.65rem;
+}
+
+.campus-demo-role-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 0.75rem 0.5rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.campus-demo-role-btn:hover {
+  background: #eff6ff;
+  border-color: #93c5fd;
+  transform: translateY(-1px);
+}
+
+.campus-demo-role-btn strong {
+  font-size: 0.78rem;
+  color: var(--campus-navy);
+}
+
+.campus-demo-role-btn span {
+  font-size: 0.68rem;
+  color: #64748b;
+}
+
+/* ==========================================================================
+   RESPONSIVIDAD MÓVIL Y TABLET
+   ========================================================================== */
+@media (max-width: 990px) {
+  .campus-hero,
+  .campus-pair,
+  .campus-contact-grid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .campus-metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+
+  .campus-pillars-grid,
+  .campus-workflow-steps {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .campus-benefits-floating-card {
+    position: static;
+    margin-top: 1rem;
+    max-width: none;
+  }
+}
+
+@media (max-width: 860px) {
+  .campus-menu {
+    display: inline-flex;
+    margin-left: auto;
+  }
+
+  .campus-nav nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e0e7ef;
+    box-shadow: 0 10px 25px rgba(20, 43, 73, 0.08);
+  }
+
+  .campus-nav nav[data-open='true'] {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .campus-nav nav a {
+    padding-block: 0.65rem;
+  }
+}
+
+@media (max-width: 680px) {
+  .campus-container {
+    width: calc(100% - 2rem);
+  }
+
+  .campus-auth-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .campus-auth-photo {
+    min-height: 190px;
+  }
+
+  .campus-metrics-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .campus-hero-photo img {
+    aspect-ratio: 1.45;
+  }
+
+  .campus-demo-role-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .campus-nav-login span {
+    display: inline;
+  }
+}

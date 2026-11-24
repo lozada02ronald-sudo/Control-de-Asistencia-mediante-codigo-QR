@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {
   ArrowLeft,
   Building2,
-  ClipboardCheck,
   Eye,
   EyeOff,
   GraduationCap,
@@ -10,7 +9,6 @@ import {
   Lock,
   Mail,
   QrCode,
-  ScanLine,
   Search,
   ShieldAlert,
   ShieldCheck,
@@ -179,7 +177,16 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
   onAuthenticated,
 }) => {
   const isAdminPortal = portalType === 'admin';
-  const AccountHeading = isAdminPortal ? 'h1' : 'h2';
+  const rememberedEmailKey = 'acadeqr_remembered_email';
+  const [rememberedEmail] = useState(() => {
+    if (isAdminPortal) return '';
+    try {
+      return localStorage.getItem(rememberedEmailKey) ?? '';
+    } catch {
+      return '';
+    }
+  });
+  const [rememberEmail, setRememberEmail] = useState(Boolean(rememberedEmail));
   const [mode, setMode] = useState<'login' | 'register' | 'recover'>('login');
   const [recoverTab, setRecoverTab] = useState<'password' | 'account'>('password');
   const [showPassword, setShowPassword] = useState(false);
@@ -192,7 +199,7 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
   // Login / Register fields
   const [fullName, setFullName] = useState('');
   const [nationalId, setNationalId] = useState('');
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(rememberedEmail);
   const [password, setPassword] = useState('');
   const [publicRole, setPublicRole] = useState<'APRENDIZ' | 'INSTRUCTOR'>('APRENDIZ');
   const [selectedProgramId, setSelectedProgramId] = useState<string>(sessions[0]?.id ?? '');
@@ -241,6 +248,18 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
         `Credenciales inválidas. Intentos restantes antes de bloqueo: ${MAX_LOGIN_ATTEMPTS - nextAttempts}.`
       );
     }
+  };
+
+  const completeLogin = (user: AuthUserSession) => {
+    if (!isAdminPortal) {
+      try {
+        if (rememberEmail) localStorage.setItem(rememberedEmailKey, user.email);
+        else localStorage.removeItem(rememberedEmailKey);
+      } catch {
+        // The account can still sign in when browser storage is unavailable.
+      }
+    }
+    onAuthenticated(user);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -319,7 +338,7 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
         }
         saveLockout(portalType, { attempts: 0, lockedUntil: 0 });
         const { passwordHash: _, password: __, ...sessionUser } = existing;
-        onAuthenticated({
+        completeLogin({
           ...sessionUser,
           companyName: isAdminPortal ? companyName : sessionUser.companyName,
         });
@@ -347,7 +366,7 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
       saveLockout(portalType, { attempts: 0, lockedUntil: 0 });
 
       const { passwordHash: _, ...sessionUser } = created;
-      onAuthenticated(sessionUser);
+      completeLogin(sessionUser);
     } catch {
       setError('Ocurrió un error al procesar el acceso. Intenta nuevamente.');
     }
@@ -515,91 +534,63 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
   };
 
   return (
-    <div className={isAdminPortal ? 'mx-auto max-w-lg' : 'campus-layout'}>
-      {!isAdminPortal && (
-        <section className="contents" aria-labelledby="campus-title">
-          <div className="space-y-5 pt-1 sm:space-y-6 sm:pt-3">
-            <p className="flex items-center gap-2 text-sm font-bold text-brand-700">
-              <GraduationCap className="size-5" aria-hidden="true" />
-              Asistencia universitaria
-            </p>
-            <h1 id="campus-title" className="campus-title">
-              Tu asistencia,<br />
-              <em className="font-medium text-brand-500">a un escaneo.</em>
-            </h1>
-            <p className="max-w-md text-base leading-relaxed text-slate-400 sm:text-lg">
-              Escanea el código QR de tu clase y consulta tu asistencia. Si eres docente,
-              abre la sesión, proyecta el código y revisa los registros del grupo.
-            </p>
+    <div className="campus-auth-layout">
+      <figure className="campus-auth-photo">
+        <img
+          src="/images/hero-classroom.webp"
+          alt="Auditorio y aula universitaria de clases para el registro de asistencia"
+        />
+        <figcaption>
+          <div className="campus-auth-photo-title">
+            <GraduationCap size={22} aria-hidden="true" />
+            <span>AcadeQR · Universidad</span>
           </div>
-          <div className="campus-media space-y-5">
-            <figure className="campus-photo">
-              <img
-                src="/images/mobile-scan.webp"
-                alt="Estudiante que escanea un código QR con su celular en clase"
-                width="1376"
-                height="768"
-              />
-              <figcaption className="inline-flex items-center gap-2 rounded-lg bg-slate-950/90 px-3 py-2 text-sm font-semibold text-white">
-                <ScanLine className="size-4 text-brand-100" aria-hidden="true" />
-                Escaneo desde tu celular
-              </figcaption>
-            </figure>
-            <ol className="grid grid-cols-3 gap-2 border-t border-slate-700 pt-4 text-xs font-semibold text-slate-300 sm:gap-4 sm:text-sm" aria-label="Cómo funciona AcadeQR">
-              <li className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:gap-2">
-                <QrCode className="size-5 shrink-0 text-brand-600" aria-hidden="true" /> Proyecta el QR
-              </li>
-              <li className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:gap-2">
-                <ScanLine className="size-5 shrink-0 text-brand-600" aria-hidden="true" /> Escanea en clase
-              </li>
-              <li className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:gap-2">
-                <ClipboardCheck className="size-5 shrink-0 text-brand-600" aria-hidden="true" /> Consulta el registro
-              </li>
-            </ol>
-          </div>
-        </section>
-      )}
+          <p className="campus-auth-photo-sub">
+            Sistema de Gestión de Asistencia mediante Códigos QR. Optimización del tiempo docente,
+            control perimetral y trazabilidad académica. Proyecto formativo ADSO SENA.
+          </p>
+        </figcaption>
+      </figure>
+
       <section
         id="acceso"
         aria-label="Acceso a la cuenta"
-        className="auth-card glass-panel-elevated space-y-5"
+        className="campus-auth-card space-y-5"
       >
-        <div className="space-y-2">
-          <div className="mb-4 flex size-12 items-center justify-center rounded-xl bg-brand-50 text-brand-700">
-            {isAdminPortal ? <ShieldCheck className="size-6" /> : <QrCode className="size-6" />}
+        <div className="space-y-1.5">
+          <div className="campus-auth-badge">
+            <QrCode size={16} />
+            <span>Portal Institucional</span>
           </div>
-          <AccountHeading className="text-3xl font-extrabold leading-tight text-slate-100">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#142B49] tracking-tight">
             {mode === 'recover'
               ? 'Recupera tu acceso'
-              : isAdminPortal
-              ? 'Administración'
-              : 'Accede a tu cuenta'}
-          </AccountHeading>
-          <p className="text-sm leading-relaxed text-slate-400">
+              : mode === 'register'
+              ? 'Crea tu cuenta institucional'
+              : 'Iniciar sesión'}
+          </h1>
+          <p className="text-sm text-slate-500">
             {mode === 'recover'
-              ? 'Restablece tu contraseña o encuentra tu cuenta.'
-              : isAdminPortal
-              ? 'Accede al panel de gestión institucional.'
-              : 'Ingresa para registrar o gestionar la asistencia de tus clases.'}
+              ? 'Restablece tu contraseña con tu código institucional.'
+              : mode === 'register'
+              ? 'Regístrate con tu documento y programa académico.'
+              : 'Ingresa para registrar o gestionar la asistencia a tus clases.'}
           </p>
         </div>
 
-
         {/* Mode Switch */}
         {mode !== 'recover' && (
-          <div className="grid grid-cols-2 gap-1.5 rounded-xl border border-slate-800 bg-slate-900 p-1">
+          <div className="grid grid-cols-2 gap-1 rounded-xl border border-slate-200 bg-slate-100 p-1">
             <button
               type="button"
               onClick={() => {
                 setMode('login');
                 setError(null);
               }}
-              className={`h-10 rounded-lg text-sm font-semibold transition-colors cursor-pointer ${
+              className={`h-10 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                 mode === 'login'
-                  ? isAdminPortal
-                    ? 'bg-indigo-500 text-white font-bold'
-                    : 'bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold'
-                  : 'text-slate-400 hover:text-slate-100'
+                  ? 'bg-[#2563EB] text-white shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               Iniciar sesión
@@ -610,12 +601,10 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
                 setMode('register');
                 setError(null);
               }}
-              className={`h-10 rounded-lg text-sm font-semibold transition-colors cursor-pointer ${
+              className={`h-10 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                 mode === 'register'
-                  ? isAdminPortal
-                    ? 'bg-indigo-500 text-white font-bold'
-                    : 'bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold'
-                  : 'text-slate-400 hover:text-slate-100'
+                  ? 'bg-[#2563EB] text-white shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               Crear cuenta
@@ -921,7 +910,7 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
 
             <div className="space-y-1.5">
               <label htmlFor="auth-email" className="block text-sm font-semibold text-slate-300">
-                Correo electrónico
+                {isAdminPortal ? 'Correo electrónico' : 'Correo institucional'}
               </label>
               <div className="relative">
                 <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -990,24 +979,29 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
               )}
             </div>
 
+            {!isAdminPortal && mode === 'login' && (
+              <label className="campus-remember">
+                <input type="checkbox" checked={rememberEmail} onChange={(event) => setRememberEmail(event.target.checked)} />
+                Recordar mi sesión en este dispositivo
+              </label>
+            )}
+
             <button
               type="submit"
               disabled={lockSecondsLeft > 0}
-              className={`w-full h-12 rounded-xl text-base font-bold inline-flex items-center justify-center gap-2 transition-colors ${
+              className={`w-full h-12 rounded-xl text-sm font-bold inline-flex items-center justify-center gap-2 transition-all cursor-pointer ${
                 lockSecondsLeft > 0
-                  ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
-                  : isAdminPortal
-                  ? 'bg-indigo-500 hover:bg-indigo-600 text-white cursor-pointer'
-                  : 'bg-brand-600 hover:bg-brand-700 text-slate-950 cursor-pointer'
+                  ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                  : 'bg-[#2563EB] hover:bg-[#1D4ED8] text-white shadow-md shadow-blue-500/25'
               }`}
             >
               {mode === 'register' ? (
                 <>
                   <UserPlus className="w-4 h-4" />
-                  <span>{isAdminPortal ? 'Registrar Admin y Entrar' : 'Crear cuenta e ingresar'}</span>
+                  <span>Crear cuenta e ingresar</span>
                 </>
               ) : (
-                <span>{isAdminPortal ? 'Ingresar al Monitor Admin' : 'Iniciar sesión'}</span>
+                <span>Ingresar al sistema</span>
               )}
             </button>
           </form>
@@ -1015,36 +1009,51 @@ export const AuthPortalScreen: React.FC<AuthPortalScreenProps> = ({
 
         {/* Quick Demo Access */}
         {mode !== 'recover' && (
-          <div className="pt-4 border-t border-slate-800 space-y-2.5">
-            <p className="text-[11px] text-center text-slate-400 uppercase tracking-wider font-semibold">
-              Explora una cuenta de demostración
+          <div className="pt-4 border-t border-slate-200 space-y-2.5">
+            <p className="text-[11px] text-center text-slate-500 uppercase tracking-wider font-bold">
+              Acceso rápido a perfiles de prueba
             </p>
-            {isAdminPortal ? (
+            <div className="campus-demo-role-grid">
+              <button
+                type="button"
+                onClick={() => handleQuickDemo('APRENDIZ')}
+                className="campus-demo-role-btn"
+                title="Ingresar como estudiante de prueba"
+              >
+                <GraduationCap className="size-4 text-[#2563EB]" />
+                <strong>Estudiante</strong>
+                <span>Valeria Gómez</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleQuickDemo('INSTRUCTOR')}
+                className="campus-demo-role-btn"
+                title="Ingresar como docente de prueba"
+              >
+                <User className="size-4 text-[#16A34A]" />
+                <strong>Docente</strong>
+                <span>Ing. Restrepo</span>
+              </button>
               <button
                 type="button"
                 onClick={() => handleQuickDemo('ADMIN')}
-                className="w-full h-10 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-indigo-300 text-xs font-semibold transition-colors cursor-pointer"
+                className="campus-demo-role-btn"
+                title="Ingresar como administrador de prueba"
               >
-                Entrar como Admin de {companyName.split(' ')[0]}
+                <ShieldCheck className="size-4 text-[#142B49]" />
+                <strong>Admin</strong>
+                <span>Dr. Caldas</span>
               </button>
-            ) : (
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={() => handleQuickDemo('APRENDIZ')}
-                  className="flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-700 bg-white px-2 text-sm font-semibold text-brand-700 transition-colors hover:bg-brand-50 cursor-pointer"
-                >
-                  <GraduationCap className="size-4 shrink-0" aria-hidden="true" /> Demo estudiante
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleQuickDemo('INSTRUCTOR')}
-                  className="flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-700 bg-white px-2 text-sm font-semibold text-brand-700 transition-colors hover:bg-brand-50 cursor-pointer"
-                >
-                  <User className="size-4 shrink-0" aria-hidden="true" /> Demo docente
-                </button>
-              </div>
-            )}
+            </div>
+            <div className="pt-2 text-center">
+              <a
+                href="/"
+                className="inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-[#2563EB] transition-colors"
+              >
+                <ArrowLeft className="size-3.5" />
+                <span>Volver a la página principal</span>
+              </a>
+            </div>
           </div>
         )}
       </section>
