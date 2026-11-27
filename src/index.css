@@ -232,6 +232,7 @@ dialog:modal {
 }
 
 dialog::backdrop {
+  overflow: hidden;
   overscroll-behavior: contain;
   background: rgba(20, 43, 73, 0.45);
   backdrop-filter: blur(6px);

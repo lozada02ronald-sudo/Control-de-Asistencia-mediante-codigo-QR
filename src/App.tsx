@@ -1,5 +1,11 @@
 import { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react';
 import {
+  apiClient,
+  getStoredJwtToken,
+  mapApiSessionToClassSession,
+  setStoredJwtToken,
+} from './services/apiClient';
+import {
   AdminSystemConfig,
   AppScreen,
   AttendanceStatus,
@@ -189,14 +195,62 @@ export default function App() {
     }, 3600);
   };
 
-  // Check Python FastAPI health
+  // Check Python FastAPI health and hydrate live session + courses when authenticated
   useEffect(() => {
-    fetch('/api/health')
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (data?.status === 'ok') setPythonOnline(true);
+    let cancelled = false;
+    apiClient
+      .health()
+      .then(async (data) => {
+        if (cancelled) return;
+        if (data?.status === 'online' || data?.status === 'ok') {
+          setPythonOnline(true);
+          const token = getStoredJwtToken();
+          if (!token) return;
+          try {
+            const me = await apiClient.auth.me();
+            if (!cancelled && me?.usuario) {
+              setCurrentUser((prev) => ({
+                id: me.usuario.id,
+                name: me.usuario.nombre,
+                email: me.usuario.email,
+                nationalId: me.usuario.documento ?? prev?.nationalId,
+                role: me.usuario.rol,
+                programName: me.usuario.programa ?? prev?.programName,
+                campus: me.usuario.sede ?? prev?.campus,
+                companyName: prev?.companyName,
+              }));
+            }
+            const res = await apiClient.sessions.list();
+            if (!cancelled && Array.isArray(res?.sesiones) && res.sesiones.length > 0) {
+              const detailed = await Promise.all(
+                res.sesiones.slice(0, 12).map(async (s) => {
+                  try {
+                    const detail = await apiClient.sessions.detail(s.id);
+                    return mapApiSessionToClassSession(s, detail.asistencias);
+                  } catch {
+                    return mapApiSessionToClassSession(s);
+                  }
+                })
+              );
+              if (!cancelled && detailed.length > 0) {
+                setSessions(detailed);
+                setActiveSessionId((cur) =>
+                  detailed.some((d) => d.id === cur) ? cur : detailed[0].id
+                );
+              }
+            }
+          } catch {
+            // Token expired or invalid; keep local fallback without disrupting UI
+            setStoredJwtToken(null);
+          }
+        }
       })
-      .catch(() => setPythonOnline(false));
+      .catch(() => {
+        if (!cancelled) setPythonOnline(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
@@ -289,6 +343,11 @@ export default function App() {
   const handleRotateNow = () => {
     setTokenSequence((seq) => seq + 1);
     setSecondsRemaining(rotationInterval);
+    if (pythonOnline && getStoredJwtToken()) {
+      apiClient.qr.rotate(activeSession.id, rotationInterval).catch(() => {
+        // Offline fallback already rotated locally
+      });
+    }
     showToast(`Token rotado para ${activeSession.cohortCode}`);
   };
 
@@ -304,6 +363,32 @@ export default function App() {
     setActiveScreen('projector');
     playFeedbackTone(true);
     showToast(`Sesión ${newSession.cohortCode} creada y proyectada`);
+
+    if (pythonOnline && getStoredJwtToken()) {
+      apiClient.sessions
+        .create({
+          codigo_cohorte: newSession.cohortCode,
+          nombre: newSession.title,
+          departamento: newSession.department,
+          sede: newSession.campus,
+          aula: newSession.room,
+          hora_inicio: `${newSession.startTime}:00`,
+          hora_fin: `${newSession.endTime}:00`,
+          geocerca_metros: newSession.geofenceRadiusMeters,
+          gracia_minutos: newSession.gracePeriodMinutes,
+        })
+        .then((res) => {
+          if (res?.sesion_id) {
+            setSessions((prev) =>
+              prev.map((s) => (s.id === newSession.id ? { ...s, id: res.sesion_id } : s))
+            );
+            setActiveSessionId(res.sesion_id);
+          }
+        })
+        .catch(() => {
+          showToast('Sesión guardada localmente (sin sincronización API)', 'error');
+        });
+    }
   };
 
   const handleUpdateSessionSettings = (
@@ -313,6 +398,20 @@ export default function App() {
     setSessions((prev) =>
       prev.map((s) => (s.id === sessionId ? { ...s, ...updates } : s))
     );
+    if (pythonOnline && getStoredJwtToken()) {
+      apiClient.sessions
+        .update(sessionId, {
+          geocerca_metros: updates.geofenceRadiusMeters,
+          gracia_minutos: updates.gracePeriodMinutes,
+          activa:
+            updates.status !== undefined
+              ? updates.status === SessionStatus.LIVE
+              : undefined,
+        })
+        .catch(() => {
+          // Local state updated
+        });
+    }
     showToast('Parámetros de aula actualizados');
   };
 
@@ -1225,6 +1324,7 @@ export default function App() {
                 sessions={sessions}
                 scanLogs={scanLogs}
                 adminConfig={adminConfig}
+                pythonOnline={pythonOnline}
                 onUpdateAdminConfig={handleUpdateAdminConfig}
                 onClearLogs={handleClearLogs}
                 onSimulateSecurityBreach={handleSimulateSecurityBreach}

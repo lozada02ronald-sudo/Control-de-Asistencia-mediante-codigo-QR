@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   QrCode,
   ScanLine,
@@ -18,6 +18,7 @@ import {
 } from '../types/attendance';
 import { SessionStatusBadge } from './StatusBadge';
 import { useDebouncedValue } from '../hooks/useDebouncedValue';
+import { SessionField, validateSessionForm } from '../utils/validators';
 
 interface OverviewScreenProps {
   sessions: ClassSession[];
@@ -42,6 +43,7 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
   const debouncedSearch = useDebouncedValue(searchQuery, 250);
   const [statusFilter, setStatusFilter] = useState<'ALL' | SessionStatus>('ALL');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const createDialogRef = useRef<HTMLDialogElement | null>(null);
 
   const [cohortCode, setCohortCode] = useState('COH-5120');
   const [title, setTitle] = useState('');
@@ -52,6 +54,52 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
   const [startTime, setStartTime] = useState('14:00');
   const [endTime, setEndTime] = useState('18:00');
   const [geofenceRadius, setGeofenceRadius] = useState(50);
+  const [gracePeriodMinutes, setGracePeriodMinutes] = useState(15);
+  const [touchedFields, setTouchedFields] = useState<Partial<Record<SessionField, boolean>>>({});
+  const [formErrors, setFormErrors] = useState<Partial<Record<SessionField, string>>>({});
+
+  useEffect(() => {
+    const dialog = createDialogRef.current;
+    if (!dialog) return;
+    if (isModalOpen && !dialog.open) {
+      dialog.showModal();
+    } else if (!isModalOpen && dialog.open) {
+      dialog.close();
+    }
+  }, [isModalOpen]);
+
+  const currentFormInput = {
+    cohortCode,
+    title,
+    department,
+    instructor,
+    room,
+    startTime,
+    endTime,
+    geofenceRadius,
+    gracePeriodMinutes,
+  };
+
+  const handleFieldBlur = (field: SessionField) => {
+    setTouchedFields((prev) => ({ ...prev, [field]: true }));
+    const res = validateSessionForm(currentFormInput);
+    setFormErrors((prev) => ({ ...prev, [field]: res.errors[field] }));
+  };
+
+  const clearFieldErrorIfFixed = (
+    field: SessionField,
+    nextPartial: Partial<typeof currentFormInput>
+  ) => {
+    if (!formErrors[field] && !touchedFields[field]) return;
+    const res = validateSessionForm({ ...currentFormInput, ...nextPartial });
+    if (!res.errors[field]) {
+      setFormErrors((prev) => {
+        const copy = { ...prev };
+        delete copy[field];
+        return copy;
+      });
+    }
+  };
 
   const summary = useMemo(() => {
     let totalLearners = 0;
@@ -97,7 +145,18 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
 
   const handleCreateSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title.trim() || !instructor.trim() || !room.trim()) return;
+    const validation = validateSessionForm(currentFormInput);
+    if (!validation.valid) {
+      setFormErrors(validation.errors);
+      const firstInvalid = Object.keys(validation.errors)[0] as SessionField | undefined;
+      if (firstInvalid) {
+        const el = createDialogRef.current?.querySelector<HTMLElement>(
+          `[name="${firstInvalid}"]`
+        );
+        el?.focus();
+      }
+      return;
+    }
 
     const id = `ses-${Date.now().toString().slice(-4)}`;
     const defaultLearners = [
@@ -120,7 +179,7 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
       dateLabel: 'Hoy',
       status: SessionStatus.LIVE,
       geofenceRadiusMeters: geofenceRadius,
-      gracePeriodMinutes: 10,
+      gracePeriodMinutes,
       learners: defaultLearners,
       records: defaultLearners.map((l) => ({
         learnerId: l.id,
@@ -136,6 +195,8 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
     setTitle('');
     setInstructor('');
     setRoom('');
+    setFormErrors({});
+    setTouchedFields({});
     setIsModalOpen(false);
   };
 
@@ -461,164 +522,273 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
         </div>
       )}
 
-      {/* Create Session Modal */}
-      {isModalOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="create-session-title"
-        >
-          <div className="glass-panel-elevated rounded-3xl w-full max-w-lg p-6 sm:p-8 max-h-[90vh] overflow-y-auto space-y-5">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+      {/* Create Session Modal (native <dialog>) */}
+      <dialog
+        ref={createDialogRef}
+        aria-labelledby="create-session-title"
+        onClose={() => setIsModalOpen(false)}
+        className="w-full max-w-lg rounded-3xl p-0"
+      >
+        <div className="glass-panel-elevated rounded-3xl w-full p-6 sm:p-8 max-h-[90vh] overflow-y-auto space-y-5">
+          <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+            <div>
+              <h1 id="create-session-title" className="text-xl font-bold text-slate-100">
+                Nueva Sesión de Clase
+              </h1>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Configura los parámetros del aula y la geocerca
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsModalOpen(false)}
+              aria-label="Cerrar ventana"
+              className="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-300 cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+
+          <form onSubmit={handleCreateSubmit} noValidate className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
               <div>
-                <h2 id="create-session-title" className="text-xl font-bold text-slate-100">
-                  Nueva Sesión de Clase
-                </h2>
-                <p className="text-xs text-slate-400 mt-0.5">
-                  Configura los parámetros del aula y la geocerca
-                </p>
+                <label htmlFor="session-cohort" className="block text-xs font-semibold text-slate-400 mb-1.5">
+                  Código de Cohorte *
+                </label>
+                <input
+                  id="session-cohort"
+                  name="cohortCode"
+                  type="text"
+                  autoFocus
+                  required
+                  value={cohortCode}
+                  onChange={(e) => {
+                    setCohortCode(e.target.value);
+                    clearFieldErrorIfFixed('cohortCode', { cohortCode: e.target.value });
+                  }}
+                  onBlur={() => handleFieldBlur('cohortCode')}
+                  aria-invalid={Boolean(formErrors.cohortCode)}
+                  aria-describedby={formErrors.cohortCode ? 'err-cohortCode' : undefined}
+                  placeholder="Ej. COH-5120"
+                  className="modern-input w-full text-sm font-mono-tabular"
+                />
+                {formErrors.cohortCode && (
+                  <p id="err-cohortCode" className="mt-1 text-xs text-rose-400">
+                    {formErrors.cohortCode}
+                  </p>
+                )}
               </div>
+              <div>
+                <label htmlFor="session-dept" className="block text-xs font-semibold text-slate-400 mb-1.5">
+                  Programa / Área *
+                </label>
+                <input
+                  id="session-dept"
+                  name="department"
+                  type="text"
+                  required
+                  value={department}
+                  onChange={(e) => {
+                    setDepartment(e.target.value);
+                    clearFieldErrorIfFixed('department', { department: e.target.value });
+                  }}
+                  onBlur={() => handleFieldBlur('department')}
+                  aria-invalid={Boolean(formErrors.department)}
+                  aria-describedby={formErrors.department ? 'err-department' : undefined}
+                  className="modern-input w-full text-sm"
+                />
+                {formErrors.department && (
+                  <p id="err-department" className="mt-1 text-xs text-rose-400">
+                    {formErrors.department}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="session-title" className="block text-xs font-semibold text-slate-400 mb-1.5">
+                Título de la Asignatura *
+              </label>
+              <input
+                id="session-title"
+                name="title"
+                type="text"
+                required
+                value={title}
+                onChange={(e) => {
+                  setTitle(e.target.value);
+                  clearFieldErrorIfFixed('title', { title: e.target.value });
+                }}
+                onBlur={() => handleFieldBlur('title')}
+                aria-invalid={Boolean(formErrors.title)}
+                aria-describedby={formErrors.title ? 'err-title' : undefined}
+                placeholder="Ej. Circuitos Neumáticos y Actuadores"
+                className="modern-input w-full text-sm"
+              />
+              {formErrors.title && (
+                <p id="err-title" className="mt-1 text-xs text-rose-400">
+                  {formErrors.title}
+                </p>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <div>
+                <label htmlFor="session-instructor" className="block text-xs font-semibold text-slate-400 mb-1.5">
+                  Instructor *
+                </label>
+                <input
+                  id="session-instructor"
+                  name="instructor"
+                  type="text"
+                  required
+                  value={instructor}
+                  onChange={(e) => {
+                    setInstructor(e.target.value);
+                    clearFieldErrorIfFixed('instructor', { instructor: e.target.value });
+                  }}
+                  onBlur={() => handleFieldBlur('instructor')}
+                  aria-invalid={Boolean(formErrors.instructor)}
+                  aria-describedby={formErrors.instructor ? 'err-instructor' : undefined}
+                  placeholder="Ej. Ing. Sofía Navarro"
+                  className="modern-input w-full text-sm"
+                />
+                {formErrors.instructor && (
+                  <p id="err-instructor" className="mt-1 text-xs text-rose-400">
+                    {formErrors.instructor}
+                  </p>
+                )}
+              </div>
+              <div>
+                <label htmlFor="session-room" className="block text-xs font-semibold text-slate-400 mb-1.5">
+                  Aula / Taller *
+                </label>
+                <input
+                  id="session-room"
+                  name="room"
+                  type="text"
+                  required
+                  value={room}
+                  onChange={(e) => {
+                    setRoom(e.target.value);
+                    clearFieldErrorIfFixed('room', { room: e.target.value });
+                  }}
+                  onBlur={() => handleFieldBlur('room')}
+                  aria-invalid={Boolean(formErrors.room)}
+                  aria-describedby={formErrors.room ? 'err-room' : undefined}
+                  placeholder="Ej. Lab E-104"
+                  className="modern-input w-full text-sm"
+                />
+                {formErrors.room && (
+                  <p id="err-room" className="mt-1 text-xs text-rose-400">
+                    {formErrors.room}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div>
+                <label htmlFor="session-start" className="block text-xs font-semibold text-slate-400 mb-1.5">
+                  Inicio
+                </label>
+                <input
+                  id="session-start"
+                  name="startTime"
+                  type="time"
+                  value={startTime}
+                  onChange={(e) => {
+                    setStartTime(e.target.value);
+                    clearFieldErrorIfFixed('startTime', { startTime: e.target.value });
+                    clearFieldErrorIfFixed('endTime', { startTime: e.target.value });
+                  }}
+                  onBlur={() => handleFieldBlur('startTime')}
+                  aria-invalid={Boolean(formErrors.startTime)}
+                  className="modern-input w-full text-sm font-mono-tabular"
+                />
+              </div>
+              <div>
+                <label htmlFor="session-end" className="block text-xs font-semibold text-slate-400 mb-1.5">
+                  Fin
+                </label>
+                <input
+                  id="session-end"
+                  name="endTime"
+                  type="time"
+                  value={endTime}
+                  onChange={(e) => {
+                    setEndTime(e.target.value);
+                    clearFieldErrorIfFixed('endTime', { endTime: e.target.value });
+                  }}
+                  onBlur={() => handleFieldBlur('endTime')}
+                  aria-invalid={Boolean(formErrors.endTime)}
+                  aria-describedby={formErrors.endTime ? 'err-endTime' : undefined}
+                  className="modern-input w-full text-sm font-mono-tabular"
+                />
+              </div>
+              <div>
+                <label htmlFor="session-geofence" className="block text-xs font-semibold text-slate-400 mb-1.5">
+                  Geocerca
+                </label>
+                <select
+                  id="session-geofence"
+                  name="geofenceRadius"
+                  value={geofenceRadius}
+                  onChange={(e) => setGeofenceRadius(Number(e.target.value))}
+                  className="modern-input w-full text-sm font-mono-tabular"
+                >
+                  <option value={25} className="bg-slate-900">25m</option>
+                  <option value={50} className="bg-slate-900">50m</option>
+                  <option value={100} className="bg-slate-900">100m</option>
+                  <option value={200} className="bg-slate-900">200m</option>
+                </select>
+              </div>
+              <div>
+                <label htmlFor="session-grace" className="block text-xs font-semibold text-slate-400 mb-1.5">
+                  Gracia (min)
+                </label>
+                <input
+                  id="session-grace"
+                  name="gracePeriodMinutes"
+                  type="number"
+                  min={0}
+                  max={60}
+                  value={gracePeriodMinutes}
+                  onChange={(e) => {
+                    const val = Number(e.target.value);
+                    setGracePeriodMinutes(val);
+                    clearFieldErrorIfFixed('gracePeriodMinutes', { gracePeriodMinutes: val });
+                  }}
+                  onBlur={() => handleFieldBlur('gracePeriodMinutes')}
+                  aria-invalid={Boolean(formErrors.gracePeriodMinutes)}
+                  className="modern-input w-full text-sm font-mono-tabular"
+                />
+              </div>
+            </div>
+            {(formErrors.endTime || formErrors.gracePeriodMinutes) && (
+              <p id="err-endTime" className="text-xs text-rose-400">
+                {formErrors.endTime || formErrors.gracePeriodMinutes}
+              </p>
+            )}
+
+            <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                aria-label="Cerrar ventana"
-                className="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-300 cursor-pointer"
+                className="h-10 px-4 rounded-xl text-sm font-semibold text-slate-400 hover:text-slate-100 cursor-pointer"
               >
-                <X className="w-4 h-4" />
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                className="h-10 px-5 rounded-xl bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold text-sm cursor-pointer"
+              >
+                Activar Sesión
               </button>
             </div>
-
-            <form onSubmit={handleCreateSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-400 mb-1.5">
-                    Código de Cohorte
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={cohortCode}
-                    onChange={(e) => setCohortCode(e.target.value)}
-                    placeholder="Ej. COH-5120"
-                    className="modern-input w-full text-sm font-mono-tabular"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-slate-400 mb-1.5">
-                    Programa / Área
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={department}
-                    onChange={(e) => setDepartment(e.target.value)}
-                    className="modern-input w-full text-sm"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-slate-400 mb-1.5">
-                  Título de la Asignatura
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="Ej. Circuitos Neumáticos y Actuadores"
-                  className="modern-input w-full text-sm"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-400 mb-1.5">
-                    Instructor
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={instructor}
-                    onChange={(e) => setInstructor(e.target.value)}
-                    placeholder="Ej. Ing. Sofía Navarro"
-                    className="modern-input w-full text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-slate-400 mb-1.5">
-                    Aula / Taller
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={room}
-                    onChange={(e) => setRoom(e.target.value)}
-                    placeholder="Ej. Lab E-104"
-                    className="modern-input w-full text-sm"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-3 gap-3">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-400 mb-1.5">
-                    Inicio
-                  </label>
-                  <input
-                    type="time"
-                    value={startTime}
-                    onChange={(e) => setStartTime(e.target.value)}
-                    className="modern-input w-full text-sm font-mono-tabular"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-slate-400 mb-1.5">
-                    Fin
-                  </label>
-                  <input
-                    type="time"
-                    value={endTime}
-                    onChange={(e) => setEndTime(e.target.value)}
-                    className="modern-input w-full text-sm font-mono-tabular"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-slate-400 mb-1.5">
-                    Geocerca
-                  </label>
-                  <select
-                    value={geofenceRadius}
-                    onChange={(e) => setGeofenceRadius(Number(e.target.value))}
-                    className="modern-input w-full text-sm font-mono-tabular"
-                  >
-                    <option value={25} className="bg-slate-900">25m</option>
-                    <option value={50} className="bg-slate-900">50m</option>
-                    <option value={100} className="bg-slate-900">100m</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="h-10 px-4 rounded-xl text-sm font-semibold text-slate-400 hover:text-slate-100 cursor-pointer"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  className="h-10 px-5 rounded-xl bg-brand-600 hover:bg-brand-700 text-slate-950 font-bold text-sm cursor-pointer"
-                >
-                  Activar Sesión
-                </button>
-              </div>
-            </form>
-          </div>
+          </form>
         </div>
-      )}
+      </dialog>
     </div>
   );
 };

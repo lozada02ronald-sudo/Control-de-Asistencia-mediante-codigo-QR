@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
 import {
   ShieldAlert,
   ShieldCheck,
@@ -27,11 +27,14 @@ import {
   AdminSystemConfig,
 } from '../types/attendance';
 import { playFeedbackTone } from '../data/mockInstitution';
+import { apiClient, getStoredJwtToken } from '../services/apiClient';
+import { StaffField, validateStaffForm } from '../utils/validators';
 
 interface AdminScreenProps {
   sessions: ClassSession[];
   scanLogs: ScanEventLog[];
   adminConfig: AdminSystemConfig;
+  pythonOnline?: boolean;
   onUpdateAdminConfig: (
     updater: AdminSystemConfig | ((prev: AdminSystemConfig) => AdminSystemConfig)
   ) => void;
@@ -73,6 +76,7 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
   sessions,
   scanLogs,
   adminConfig: config,
+  pythonOnline = false,
   onUpdateAdminConfig: setConfig,
   onClearLogs,
   onSimulateSecurityBreach,
@@ -113,10 +117,53 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
   ]);
 
   const [isAddStaffOpen, setIsAddStaffOpen] = useState(false);
+  const staffDialogRef = useRef<HTMLDialogElement | null>(null);
   const [newStaffName, setNewStaffName] = useState('');
   const [newStaffEmail, setNewStaffEmail] = useState('');
+  const [newStaffPassword, setNewStaffPassword] = useState('AcadeQR2026!');
   const [newStaffDept, setNewStaffDept] = useState('Mecatrónica y Automatización');
   const [newStaffRole, setNewStaffRole] = useState<'INSTRUCTOR' | 'COORDINADOR'>('INSTRUCTOR');
+  const [staffErrors, setStaffErrors] = useState<Partial<Record<StaffField, string>>>({});
+  const [staffSubmitError, setStaffSubmitError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const dialog = staffDialogRef.current;
+    if (!dialog) return;
+    if (isAddStaffOpen && !dialog.open) {
+      dialog.showModal();
+    } else if (!isAddStaffOpen && dialog.open) {
+      dialog.close();
+    }
+  }, [isAddStaffOpen]);
+
+  useEffect(() => {
+    if (!pythonOnline || !getStoredJwtToken()) return;
+    let cancelled = false;
+    apiClient.users
+      .list()
+      .then((res) => {
+        if (cancelled || !Array.isArray(res?.usuarios)) return;
+        const staffUsers: InstructorAccount[] = res.usuarios
+          .filter((u) => u.rol === 'ADMIN' || u.rol === 'INSTRUCTOR')
+          .map((u) => ({
+            id: u.id,
+            name: u.nombre,
+            email: u.email,
+            department: u.programa || 'Formación Académica',
+            role: u.rol === 'ADMIN' ? 'SUPERADMIN' : 'INSTRUCTOR',
+            status: u.activo === 0 || u.activo === false ? 'SUSPENDIDO' : 'ACTIVO',
+          }));
+        if (staffUsers.length > 0) {
+          setInstructors(staffUsers);
+        }
+      })
+      .catch(() => {
+        // Keep local instructors list when API is unavailable or unauthorized
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [pythonOnline]);
 
   const filteredLogs = useMemo(() => {
     return scanLogs.filter((log) => {
@@ -142,12 +189,46 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
     setTimeout(() => setCopiedToken(null), 1800);
   };
 
-  const handleAddStaffSubmit = (e: React.FormEvent) => {
+  const handleAddStaffSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newStaffName.trim() || !newStaffEmail.trim()) return;
+    setStaffSubmitError(null);
+    const validation = validateStaffForm({
+      nombre: newStaffName,
+      email: newStaffEmail,
+      password: newStaffPassword,
+    });
+    if (!validation.valid) {
+      setStaffErrors(validation.errors);
+      const firstInvalid = Object.keys(validation.errors)[0] as StaffField | undefined;
+      if (firstInvalid) {
+        staffDialogRef.current?.querySelector<HTMLElement>(`[name="${firstInvalid}"]`)?.focus();
+      }
+      return;
+    }
+
+    let createdId = `inst-${Date.now().toString().slice(-4)}`;
+    if (pythonOnline && getStoredJwtToken()) {
+      try {
+        const res = await apiClient.users.create({
+          nombre: newStaffName.trim(),
+          email: newStaffEmail.trim().toLowerCase(),
+          password: newStaffPassword,
+          rol: newStaffRole === 'COORDINADOR' ? 'ADMIN' : 'INSTRUCTOR',
+          programa: newStaffDept.trim(),
+        });
+        if (res?.usuario?.id) {
+          createdId = res.usuario.id;
+        }
+      } catch (err) {
+        setStaffSubmitError(
+          err instanceof Error ? err.message : 'No se pudo registrar el docente en el servidor.'
+        );
+        return;
+      }
+    }
 
     const newStaff: InstructorAccount = {
-      id: `inst-${Date.now().toString().slice(-4)}`,
+      id: createdId,
       name: newStaffName.trim(),
       email: newStaffEmail.trim().toLowerCase(),
       department: newStaffDept.trim(),
@@ -158,6 +239,7 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
     setInstructors((prev) => [newStaff, ...prev]);
     setNewStaffName('');
     setNewStaffEmail('');
+    setStaffErrors({});
     setIsAddStaffOpen(false);
     playFeedbackTone(true);
   };
@@ -851,97 +933,172 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({
       )}
 
       {/* ============================================================== */}
-      {/* 8. MODAL PARA ACREDITAR NUEVO DOCENTE                          */}
+      {/* 8. MODAL PARA ACREDITAR NUEVO DOCENTE (native <dialog>)        */}
       {/* ============================================================== */}
-      {isAddStaffOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
-          role="dialog"
-          aria-modal="true"
-        >
-          <div className="cyber-panel rounded-2xl w-full max-w-md p-6 space-y-4 border border-emerald-500/30 shadow-2xl shadow-black/90">
-            <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
-              <h2 className="text-sm font-bold text-white font-mono uppercase tracking-wider flex items-center gap-2">
-                <Plus className="w-4 h-4 text-emerald-400" />
-                <span>Acreditar Nuevo Docente</span>
-              </h2>
+      <dialog
+        ref={staffDialogRef}
+        aria-labelledby="add-staff-title"
+        onClose={() => setIsAddStaffOpen(false)}
+        className="w-full max-w-md rounded-2xl p-0"
+      >
+        <div className="cyber-panel rounded-2xl w-full p-6 space-y-4 border border-emerald-500/30 shadow-2xl shadow-black/90">
+          <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
+            <h1
+              id="add-staff-title"
+              className="text-sm font-bold text-white font-mono uppercase tracking-wider flex items-center gap-2"
+            >
+              <Plus className="w-4 h-4 text-emerald-400" />
+              <span>Acreditar Nuevo Docente</span>
+            </h1>
+            <button
+              type="button"
+              onClick={() => setIsAddStaffOpen(false)}
+              aria-label="Cerrar ventana"
+              className="text-slate-400 hover:text-white text-xs cursor-pointer font-mono"
+            >
+              ✕
+            </button>
+          </div>
+
+          <form onSubmit={handleAddStaffSubmit} noValidate className="space-y-3.5">
+            {staffSubmitError && (
+              <div role="status" className="rounded-lg border border-rose-500/40 bg-rose-500/10 px-3 py-2 text-xs text-rose-300">
+                {staffSubmitError}
+              </div>
+            )}
+
+            <div>
+              <label htmlFor="staff-name" className="block text-xs font-mono text-slate-400 mb-1">
+                Nombre Completo *
+              </label>
+              <input
+                id="staff-name"
+                name="nombre"
+                type="text"
+                autoFocus
+                required
+                value={newStaffName}
+                onChange={(e) => {
+                  setNewStaffName(e.target.value);
+                  if (staffErrors.nombre && e.target.value.trim().length >= 3) {
+                    setStaffErrors((prev) => ({ ...prev, nombre: undefined }));
+                  }
+                }}
+                aria-invalid={Boolean(staffErrors.nombre)}
+                aria-describedby={staffErrors.nombre ? 'err-staff-name' : undefined}
+                placeholder="Ej. Ing. Laura Gómez Vallejo"
+                className="w-full h-9 px-3 rounded-lg bg-slate-900 border border-white/10 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500/50"
+              />
+              {staffErrors.nombre && (
+                <p id="err-staff-name" className="mt-1 text-xs text-rose-400">
+                  {staffErrors.nombre}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label htmlFor="staff-email" className="block text-xs font-mono text-slate-400 mb-1">
+                Correo Institucional *
+              </label>
+              <input
+                id="staff-email"
+                name="email"
+                type="email"
+                required
+                value={newStaffEmail}
+                onChange={(e) => {
+                  setNewStaffEmail(e.target.value);
+                  if (staffErrors.email) {
+                    setStaffErrors((prev) => ({ ...prev, email: undefined }));
+                  }
+                }}
+                aria-invalid={Boolean(staffErrors.email)}
+                aria-describedby={staffErrors.email ? 'err-staff-email' : undefined}
+                placeholder="l.gomez@politecnico.edu"
+                className="w-full h-9 px-3 rounded-lg bg-slate-900 border border-white/10 text-xs font-mono text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500/50"
+              />
+              {staffErrors.email && (
+                <p id="err-staff-email" className="mt-1 text-xs text-rose-400">
+                  {staffErrors.email}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label htmlFor="staff-password" className="block text-xs font-mono text-slate-400 mb-1">
+                Contraseña Inicial *
+              </label>
+              <input
+                id="staff-password"
+                name="password"
+                type="password"
+                required
+                value={newStaffPassword}
+                onChange={(e) => {
+                  setNewStaffPassword(e.target.value);
+                  if (staffErrors.password) {
+                    setStaffErrors((prev) => ({ ...prev, password: undefined }));
+                  }
+                }}
+                aria-invalid={Boolean(staffErrors.password)}
+                aria-describedby={staffErrors.password ? 'err-staff-password' : undefined}
+                className="w-full h-9 px-3 rounded-lg bg-slate-900 border border-white/10 text-xs font-mono text-white"
+              />
+              {staffErrors.password && (
+                <p id="err-staff-password" className="mt-1 text-xs text-rose-400">
+                  {staffErrors.password}
+                </p>
+              )}
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label htmlFor="staff-dept" className="block text-xs font-mono text-slate-400 mb-1">
+                  Departamento
+                </label>
+                <input
+                  id="staff-dept"
+                  type="text"
+                  required
+                  value={newStaffDept}
+                  onChange={(e) => setNewStaffDept(e.target.value)}
+                  className="w-full h-9 px-3 rounded-lg bg-slate-900 border border-white/10 text-xs text-white"
+                />
+              </div>
+              <div>
+                <label htmlFor="staff-role" className="block text-xs font-mono text-slate-400 mb-1">
+                  Rol RBAC
+                </label>
+                <select
+                  id="staff-role"
+                  value={newStaffRole}
+                  onChange={(e) => setNewStaffRole(e.target.value as 'INSTRUCTOR' | 'COORDINADOR')}
+                  className="w-full h-9 px-3 rounded-lg bg-slate-900 border border-white/10 text-xs font-mono text-white"
+                >
+                  <option value="INSTRUCTOR" className="bg-slate-900">Instructor</option>
+                  <option value="COORDINADOR" className="bg-slate-900">Coordinador</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end gap-2 pt-3 border-t border-white/[0.08]">
               <button
                 type="button"
                 onClick={() => setIsAddStaffOpen(false)}
-                className="text-slate-400 hover:text-white text-xs cursor-pointer font-mono"
+                className="h-9 px-3.5 rounded-lg text-xs font-medium text-slate-400 hover:text-white cursor-pointer"
               >
-                ✕
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                className="h-9 px-4 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs cursor-pointer transition-colors"
+              >
+                Guardar Docente
               </button>
             </div>
-
-            <form onSubmit={handleAddStaffSubmit} className="space-y-3.5">
-              <div>
-                <label className="block text-xs font-mono text-slate-400 mb-1">Nombre Completo</label>
-                <input
-                  type="text"
-                  required
-                  value={newStaffName}
-                  onChange={(e) => setNewStaffName(e.target.value)}
-                  placeholder="Ej. Ing. Laura Gómez Vallejo"
-                  className="w-full h-9 px-3 rounded-lg bg-slate-900 border border-white/10 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500/50"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-mono text-slate-400 mb-1">Correo Institucional</label>
-                <input
-                  type="email"
-                  required
-                  value={newStaffEmail}
-                  onChange={(e) => setNewStaffEmail(e.target.value)}
-                  placeholder="l.gomez@politecnico.edu"
-                  className="w-full h-9 px-3 rounded-lg bg-slate-900 border border-white/10 text-xs font-mono text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500/50"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-mono text-slate-400 mb-1">Departamento</label>
-                  <input
-                    type="text"
-                    required
-                    value={newStaffDept}
-                    onChange={(e) => setNewStaffDept(e.target.value)}
-                    className="w-full h-9 px-3 rounded-lg bg-slate-900 border border-white/10 text-xs text-white"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-mono text-slate-400 mb-1">Rol RBAC</label>
-                  <select
-                    value={newStaffRole}
-                    onChange={(e) => setNewStaffRole(e.target.value as 'INSTRUCTOR' | 'COORDINADOR')}
-                    className="w-full h-9 px-3 rounded-lg bg-slate-900 border border-white/10 text-xs font-mono text-white"
-                  >
-                    <option value="INSTRUCTOR" className="bg-slate-900">Instructor</option>
-                    <option value="COORDINADOR" className="bg-slate-900">Coordinador</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-white/[0.08]">
-                <button
-                  type="button"
-                  onClick={() => setIsAddStaffOpen(false)}
-                  className="h-9 px-3.5 rounded-lg text-xs font-medium text-slate-400 hover:text-white cursor-pointer"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  className="h-9 px-4 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs cursor-pointer transition-colors"
-                >
-                  Guardar Docente
-                </button>
-              </div>
-            </form>
-          </div>
+          </form>
         </div>
-      )}
+      </dialog>
     </div>
   );
 };
